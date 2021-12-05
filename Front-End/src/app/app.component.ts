@@ -12,8 +12,6 @@ interface shape{
   x:number;
   y:number;
   color:String;
-  board:HTMLCanvasElement ;
-  canvas:CanvasRenderingContext2D ;
   draw(canvasGlobal:CanvasRenderingContext2D):void;
   getDim(n : number) : number;
 
@@ -47,13 +45,7 @@ class circle implements shape{
 	y = getRandomInt(4,614);
 	radius = 40;
 	color = "black";
-  board: HTMLCanvasElement = document.createElement("canvas");
-  canvas: CanvasRenderingContext2D = this.board.getContext("2d")!;
-  constructor (){
-    this.board.width= 1380;
-    this.board.height= 675;
-
-  }
+  
 	getDim(n : number){
 		var res : number = 0;
 		if(n == 1){
@@ -63,10 +55,9 @@ class circle implements shape{
 	}
 	draw(canvasGlobal:CanvasRenderingContext2D) {
 
-		this.canvas.beginPath();
-		this.canvas.arc(this.x,this.y,this.radius,0,2*Math.PI);
-		this.canvas.stroke();
-    canvasGlobal.drawImage(this.board,0, 0);
+    canvasGlobal.beginPath();
+    canvasGlobal.arc(this.x, this.y, this.radius, 0, 2*Math.PI);
+    canvasGlobal.stroke();
 
 	}
 }
@@ -79,14 +70,6 @@ class rect implements shape{
   width = 120;
   height = 60;
   color = "black";
-  board: HTMLCanvasElement = document.createElement("canvas");
-  canvas: CanvasRenderingContext2D = this.board.getContext("2d")!;
-  constructor(){
-    this.board.width= 1380;
-    this.board.height= 687;
-
-
-  }
   getDim(n : number){
 	var res : number = 0;
 	if(n == 1){
@@ -99,10 +82,9 @@ class rect implements shape{
 }
   draw(canvasGlobal:CanvasRenderingContext2D) {
 
-    this.canvas.beginPath();
-    this.canvas.rect(this.x,this.y,this.width,this.height);
-    this.canvas.stroke();
-    canvasGlobal.drawImage(this.board, 0, 0);
+    canvasGlobal.beginPath();
+    canvasGlobal.rect(this.x,this.y,this.width,this.height);
+    canvasGlobal.stroke();
   }
 }
 
@@ -112,14 +94,7 @@ class square implements shape{
 	x = getRandomInt(108,1386);
 	y = getRandomInt(4,614);
 	width = 60;
-	color = "black";
-  board: HTMLCanvasElement = document.createElement("canvas");
-  canvas: CanvasRenderingContext2D = this.board.getContext("2d")!;
-  constructor(){
-    this.board.width= 1380;
-    this.board.height= 675;
-
-  }
+  color = "black"
 	getDim(n : number){
 		var res : number = 0;
 		if(n == 1){
@@ -129,10 +104,9 @@ class square implements shape{
 	}
 	draw(canvasGlobal:CanvasRenderingContext2D) {
 
-		this.canvas.beginPath();
-		this.canvas.rect(this.x,this.y,this.width,this.width);
-		this.canvas.stroke();
-    canvasGlobal.drawImage(this.board, 0, 0);
+    canvasGlobal.beginPath();
+    canvasGlobal.rect(this.x,this.y,this.width, this.width);
+    canvasGlobal.stroke();
 	}
 }
 
@@ -145,7 +119,7 @@ class square implements shape{
 })
 export class AppComponent {
   factory :factory = new factory();
-  shapes:shape[] =[]
+  shapes:shape[] = []
 
   title = 'Front-End';
   create_circle() {
@@ -172,7 +146,9 @@ export class AppComponent {
 
   }
   remove(){
-
+    
+    
+    
   }
   resize(){
 
