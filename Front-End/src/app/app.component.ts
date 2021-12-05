@@ -1,19 +1,20 @@
 import { Component } from '@angular/core';
 
-function getRandomInt(min:number, max:number) {
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
+/*function getRandomInt(min:number, max:number) {
+	min = Math.ceil(min);
+	max = Math.floor(max);
+	return Math.floor(Math.random() * (max - min + 1)) + min;
+}*/
 
 
 
 //shape interface to cover all shapes under restricted contract
 interface shape{
-  x:Number;
-  y:Number;
+  x:number;
+  y:number;
   color:String;
   draw(canvas:CanvasRenderingContext2D):void;
+  getDim(n : number) : number;
 
 }
 //factory class to produce all kinds of shapes according to the given string
@@ -38,22 +39,43 @@ class factory{
 }
 
 class circle implements shape{
-  x = getRandomInt(108,1300);
-  y = getRandomInt(4,614);
-  radius = 40;
-  color = "black";
-  draw(canvas:CanvasRenderingContext2D) {
-    canvas.beginPath();
-    canvas.arc(this.x,this.y,this.radius,0,2*Math.PI);
-    canvas.stroke();
-  }
+	//x = getRandomInt(108,1300);
+	//y = getRandomInt(4,614);
+	x = 70; 
+  	y = 70; 
+	radius = 40;
+	color = "black";
+	getDim(n : number){
+		var res : number = 0;
+		if(n == 1){
+			res = this.radius;  
+		}
+		return res;
+	}
+	draw(canvas:CanvasRenderingContext2D) {
+		canvas.beginPath();
+		canvas.arc(this.x,this.y,this.radius,0,2*Math.PI);
+		canvas.stroke();
+	}
 }
 class rect implements shape{
-  x = getRandomInt(108,1260);
-  y = getRandomInt(4,614);
+  //x = getRandomInt(108,1260);
+  //y = getRandomInt(4,614);
+  x = 70; 
+  y = 70; 
   width = 120;
   height = 60;
   color = "black";
+  getDim(n : number){
+	var res : number = 0;
+	if(n == 1){
+		res = this.width;  
+	}
+	else if(n == 2){
+		res = this.height;
+	}
+	return res;
+}
   draw(canvas:CanvasRenderingContext2D) {
     canvas.beginPath();
     canvas.rect(this.x,this.y,this.width,this.height);
@@ -61,15 +83,24 @@ class rect implements shape{
   }
 }
 class square implements shape{
-  x = getRandomInt(108,1386);
-  y = getRandomInt(4,614);
-  width = 60;
-  color = "black";
-  draw(canvas:CanvasRenderingContext2D) {
-    canvas.beginPath();
-    canvas.rect(this.x,this.y,this.width,this.width);
-    canvas.stroke();
-  }
+	//x = getRandomInt(108,1386);
+	//y = getRandomInt(4,614);
+	width = 60;
+	color = "black";
+	x = 70;
+	y = 70;
+	getDim(n : number){
+		var res : number = 0;
+		if(n == 1){
+			res = this.width;
+		}
+		return res;
+	}
+	draw(canvas:CanvasRenderingContext2D) {
+		canvas.beginPath();
+		canvas.rect(this.x,this.y,this.width,this.width);
+		canvas.stroke();
+	}
 }
 @Component({
   selector: 'app-root',
@@ -80,10 +111,13 @@ export class AppComponent {
   factory :factory = new factory();
   title = 'Front-End';
   create_circle() {
-    var board = (<HTMLCanvasElement>document.getElementById("board"));
-    var canvas = board.getContext("2d")!;
+    var boardGlobal = (<HTMLCanvasElement>document.getElementById("board"));
+    var canvasGlobal = boardGlobal.getContext("2d")!;
+	var board = document.createElement('canvas');
+	var canvas = board.getContext('2d')!;
     var circle: shape = this.factory.create("circle");
     circle.draw(canvas)
+	canvasGlobal.drawImage(board, circle.x, circle.y);
   }
   create_rect(){
     var board = (<HTMLCanvasElement>document.getElementById("board"));
