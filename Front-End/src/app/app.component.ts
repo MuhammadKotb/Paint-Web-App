@@ -5,6 +5,7 @@ import { Component } from '@angular/core';
 var shapes:shape[] = []
 //flag to activate remove button
 var remove_flag :boolean = false;
+var move_flag :boolean = false;
 
 //randomizer function :pick  a random value between two edges
 function getRandomInt(min:number, max:number) {
@@ -167,7 +168,36 @@ export class AppComponent {
 
 
   }
+  move(){
+    
+    var temp_shape : number = 0;
+    var boardGlobal = (<HTMLCanvasElement>document.getElementById("board"));
+    var canvasGlobal = boardGlobal.getContext("2d")!;
+    move_flag = !move_flag;
+
+    boardGlobal.addEventListener("mousedown",  e => {
+      if(move_flag){
+        for (var i = 0; i < shapes.length; i++){
+          if(canvasGlobal.isPointInPath(shapes[i].area, e.offsetX, e.offsetY)){
+            temp_shape = i;
+          }
+        }
+      }
+    });
+
+    boardGlobal.addEventListener("mousemove", e => {
+      if(move_flag){
+        shapes[temp_shape].x = e.offsetX;
+        shapes[temp_shape].y = e.offsetY;
+        shapes[temp_shape].draw(canvasGlobal)
+      }
+    });
+   
+  }
+
   resize(){
 
   }
+  
+
 }
