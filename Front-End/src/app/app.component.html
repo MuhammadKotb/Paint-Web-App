@@ -1,12 +1,51 @@
 <div class="tool_bar">
   <div>
-    <button id="circle" value="circle" (click)="create_circle()"></button>
+    <button id="circle" value="circle" (click)="create_circle()"> <img src= "assets/icons/circle-icon.png" width = 45px length = 45px /></button>
   </div>
   <div>
-    <button id="rect" value="rect" (click)="create_rect()"></button>
+    <button id="rect" value="rect" (click)="create_rect()"><img src= "assets/icons/rectangle-icon.png" width = 45px length = 45px /></button>
   </div>
   <div>
-    <button id="square" value="square" (click)="create_square()"></button>
+    <button id="square" value="square" (click)="create_square()"><img src= "assets/icons/square-icon.png" width = 45px length = 45px /></button>
+  </div>
+  <div>
+    <button id="polygon" value="polygon"> <img src= "assets/icons/polygon-icon.png" width = 45px length = 45px /> </button>
+  </div>
+  <div>
+    <button id="line" value="line"> <img src= "assets/icons/line-icon.png" width = 45px length = 45px /> </button>
+  </div>
+  <div>
+    <button id="brush" value="brush"> <img src= "assets/icons/brush-icon.png" width = 45px length = 45px /> </button>
+  </div>
+  <div>
+    <button id="save" value="save"> <img src= "assets/icons/save-icon.png" width = 45px length = 45px /> </button>
+  </div>
+  <div>
+    <button id="remove" value="remove" (click)="remove()">remove</button>
+  </div>
+  <div>
+    <button id="resize" value="resize" (click)="resize()">resize</button>
   </div>
 </div>
+
+<div class = "color_bar">
+
+  <div>
+    <input type = "color" id="fill_color" name="Fill Color" value = "#e66465">
+    <label for="fill_color" >Fill Color</label>
+  </div>
+  <div>
+    <input type = "color" id="stroke_color" name="Stroke Color" value = "#f6b73c">
+    <label for="stroke_color">Stroke Color</label>
+  </div>
+  <div>
+    <input type="number" id="stroke_width" name="Stroke Width" value = "3" min="0" max="100">
+    <label for="stroke_width">Stroke Width</label>
+  </div>
+  <div>
+    <button id="pick_color" value="pick_color" (click)="Pick_Color()">OK</button>
+  </div>
+
+</div>
+
 <canvas id="board" width="1380" height="675" style="border:3px solid #f09623"></canvas>
