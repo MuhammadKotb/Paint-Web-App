@@ -171,6 +171,7 @@ export class AppComponent {
   move(){
 
     var temp_shape : number = 0;
+    var is_selected :boolean = false;
     var boardGlobal = (<HTMLCanvasElement>document.getElementById("board"));
     var canvasGlobal = boardGlobal.getContext("2d")!;
     move_flag = !move_flag;
@@ -180,13 +181,14 @@ export class AppComponent {
         for (var i = 0; i < shapes.length; i++){
           if(canvasGlobal.isPointInPath(shapes[i].area, e.offsetX, e.offsetY)){
             temp_shape = i;
+            is_selected = true;
           }
         }
       }
     });
 
     boardGlobal.addEventListener("mousemove", e => {
-      if(move_flag){
+      if(move_flag && is_selected){
         switch(shapes[temp_shape].type){
           case "circle":
             canvasGlobal.clearRect(shapes[temp_shape].x-(0.5*shapes[temp_shape].height)-1,shapes[temp_shape].y-(0.5*shapes[temp_shape].height)-1,shapes[temp_shape].width+2,shapes[temp_shape].height+2);
@@ -201,9 +203,15 @@ export class AppComponent {
       }
     });
 
+    boardGlobal.addEventListener("mouseup", e => {
+      is_selected = false;
+
+    });
+
   }
 
   resize(){
+
 
   }
 
