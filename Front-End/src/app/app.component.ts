@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 
  //container to hold all different shapes on it
 var shapes:shape[] = []
-//flag to activate remove button
+//flag to activate buttons
 var remove_flag :boolean = false;
 var move_flag :boolean = false;
 
@@ -164,12 +164,12 @@ export class AppComponent {
           }
         }
       }
-    })
+    });
 
 
   }
   move(){
-    
+
     var temp_shape : number = 0;
     var boardGlobal = (<HTMLCanvasElement>document.getElementById("board"));
     var canvasGlobal = boardGlobal.getContext("2d")!;
@@ -187,17 +187,25 @@ export class AppComponent {
 
     boardGlobal.addEventListener("mousemove", e => {
       if(move_flag){
+        switch(shapes[temp_shape].type){
+          case "circle":
+            canvasGlobal.clearRect(shapes[temp_shape].x-(0.5*shapes[temp_shape].height)-1,shapes[temp_shape].y-(0.5*shapes[temp_shape].height)-1,shapes[temp_shape].width+2,shapes[temp_shape].height+2);
+            break;
+          default:
+            canvasGlobal.clearRect(shapes[temp_shape].x-1,shapes[temp_shape].y-1,shapes[temp_shape].width+2,shapes[temp_shape].height+2);
+            break;
+        }
         shapes[temp_shape].x = e.offsetX;
         shapes[temp_shape].y = e.offsetY;
         shapes[temp_shape].draw(canvasGlobal)
       }
     });
-   
+
   }
 
   resize(){
 
   }
-  
+
 
 }
