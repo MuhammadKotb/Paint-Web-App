@@ -135,7 +135,6 @@ export class AppComponent {
   }
   create_rect(){
     var boardGlobal = (<HTMLCanvasElement>document.getElementById("board"));
-   
     var canvasGlobal = boardGlobal.getContext("2d")!;
     var rect: shape = this.factory.create("rect");
     rect.draw(canvasGlobal);
@@ -153,7 +152,6 @@ export class AppComponent {
 
 
   remove(){
-   
     var boardGlobal = (<HTMLCanvasElement>document.getElementById("board"));
     var canvasGlobal = boardGlobal.getContext("2d")!;
     remove_flag = !(remove_flag);
@@ -164,10 +162,11 @@ export class AppComponent {
             switch(shape.type){
               case "circle":
                 canvasGlobal.clearRect(shape.x-(0.5*shape.height)-1,shape.y-(0.5*shape.height)-1,shape.width+2,shape.height+2);
+                shapes = shapes.filter(obj => obj !== shape)
                 break;
               default:
                 canvasGlobal.clearRect(shape.x-1,shape.y-1,shape.width+2,shape.height+2);
-
+                shapes = shapes.filter(obj => obj !== shape)
                 break;
             }
           }
@@ -182,12 +181,8 @@ export class AppComponent {
       document.getElementById("remove")!.style.backgroundColor = "rgb(246, 129, 60)"
 
     }
-
-
   }
   move(){
-   
-
     var temp_shape : number = 0;
     var is_selected :boolean = false;
     var boardGlobal = (<HTMLCanvasElement>document.getElementById("board"));
@@ -210,6 +205,7 @@ export class AppComponent {
         switch(shapes[temp_shape].type){
           case "circle":
             canvasGlobal.clearRect(shapes[temp_shape].x-(0.5*shapes[temp_shape].height)-1,shapes[temp_shape].y-(0.5*shapes[temp_shape].height)-1,shapes[temp_shape].width+2,shapes[temp_shape].height+2);
+
             break;
           default:
             canvasGlobal.clearRect(shapes[temp_shape].x-1,shapes[temp_shape].y-1,shapes[temp_shape].width+2,shapes[temp_shape].height+2);
@@ -237,8 +233,6 @@ export class AppComponent {
   }
 
   resize(){
-   
-    
 
     var temp_shape : number = 0;
     var is_selected :boolean = false;
@@ -258,8 +252,8 @@ export class AppComponent {
     });
 
     boardGlobal.addEventListener("mousemove", e => {
-      
-    
+
+
 
       if(resize_flag && is_selected){
         switch(shapes[temp_shape].type){
@@ -275,11 +269,7 @@ export class AppComponent {
         shapes[temp_shape].draw(canvasGlobal);
         console.log(e.offsetX);
         console.log(e.offsetY);
-      
-       
 
-
-        
       }
     });
 
