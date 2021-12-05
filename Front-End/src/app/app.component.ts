@@ -24,7 +24,6 @@ interface shape{
   y:number;
   width:number;
   height:number;
-  color:String;
   fiCo:String;
   stCo:String;
   stWi:Number;
