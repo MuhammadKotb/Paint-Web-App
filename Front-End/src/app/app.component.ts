@@ -1,19 +1,28 @@
 import { Component } from '@angular/core';
 
+
+ //container to hold all different shapes on it
+var shapes:shape[] = []
+//flag to activate remove button
+var remove_flag :boolean = false;
+
+//randomizer function :pick  a random value between two edges
 function getRandomInt(min:number, max:number) {
 	min = Math.ceil(min);
 	max = Math.floor(max);
 	return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-
 //shape interface to cover all shapes under restricted contract
 interface shape{
   x:number;
   y:number;
+  width:number;
+  height:number;
   color:String;
+  area:Path2D;
+  type:String;
   draw(canvasGlobal:CanvasRenderingContext2D):void;
-  getDim(n : number) : number;
 
 }
 
@@ -43,20 +52,18 @@ class factory{
 class circle implements shape{
 	x = getRandomInt(108,1300);
 	y = getRandomInt(4,614);
-	radius = 40;
+  width = 80;
+	height = 80;
 	color = "black";
-  
-	getDim(n : number){
-		var res : number = 0;
-		if(n == 1){
-			res = this.radius;
-		}
-		return res;
-	}
+  type = "circle";
+  area: Path2D = new Path2D;
+
+
 	draw(canvasGlobal:CanvasRenderingContext2D) {
 
+    this.area.arc(this.x, this.y, 0.5*this.width, 0, 2*Math.PI);
     canvasGlobal.beginPath();
-    canvasGlobal.arc(this.x, this.y, this.radius, 0, 2*Math.PI);
+    canvasGlobal.arc(this.x, this.y, 0.5*this.width, 0, 2*Math.PI);
     canvasGlobal.stroke();
 
 	}
@@ -70,18 +77,13 @@ class rect implements shape{
   width = 120;
   height = 60;
   color = "black";
-  getDim(n : number){
-	var res : number = 0;
-	if(n == 1){
-		res = this.width;
-	}
-	else if(n == 2){
-		res = this.height;
-	}
-	return res;
-}
+  type = "rect";
+  area: Path2D = new Path2D;
+
+
   draw(canvasGlobal:CanvasRenderingContext2D) {
 
+    this.area.rect(this.x,this.y,this.width,this.height);
     canvasGlobal.beginPath();
     canvasGlobal.rect(this.x,this.y,this.width,this.height);
     canvasGlobal.stroke();
@@ -94,16 +96,14 @@ class square implements shape{
 	x = getRandomInt(108,1386);
 	y = getRandomInt(4,614);
 	width = 60;
+  height = 60;
   color = "black"
-	getDim(n : number){
-		var res : number = 0;
-		if(n == 1){
-			res = this.width;
-		}
-		return res;
-	}
+  type = "square";
+  area: Path2D = new Path2D;
+
 	draw(canvasGlobal:CanvasRenderingContext2D) {
 
+    this.area.rect(this.x,this.y,this.width, this.width);
     canvasGlobal.beginPath();
     canvasGlobal.rect(this.x,this.y,this.width, this.width);
     canvasGlobal.stroke();
@@ -119,22 +119,20 @@ class square implements shape{
 })
 export class AppComponent {
   factory :factory = new factory();
-  shapes:shape[] = []
-
   title = 'Front-End';
   create_circle() {
     var boardGlobal = (<HTMLCanvasElement>document.getElementById("board"));
     var canvasGlobal = boardGlobal.getContext("2d")!;
     var circle: shape = this.factory.create("circle");
     circle.draw(canvasGlobal);
-    this.shapes.push(circle);
+    shapes.push(circle);
   }
   create_rect(){
     var boardGlobal = (<HTMLCanvasElement>document.getElementById("board"));
     var canvasGlobal = boardGlobal.getContext("2d")!;
     var rect: shape = this.factory.create("rect");
     rect.draw(canvasGlobal);
-    this.shapes.push(rect);
+    shapes.push(rect);
 
   }
   create_square(){
@@ -142,13 +140,32 @@ export class AppComponent {
     var canvasGlobal = boardGlobal.getContext("2d")!;
     var square: shape = this.factory.create("square");
     square.draw(canvasGlobal);
-    this.shapes.push(square);
+    shapes.push(square);
 
   }
   remove(){
-    
-    
-    
+    var boardGlobal = (<HTMLCanvasElement>document.getElementById("board"));
+    var canvasGlobal = boardGlobal.getContext("2d")!;
+    remove_flag = !(remove_flag);
+    boardGlobal.addEventListener("mousedown",function (event) {
+      if(remove_flag){
+        for (var shape of shapes){
+          if(canvasGlobal.isPointInPath(shape.area, event.offsetX, event.offsetY)){
+            switch(shape.type){
+              case "circle":
+                canvasGlobal.clearRect(shape.x-(0.5*shape.height)-1,shape.y-(0.5*shape.height)-1,shape.width+2,shape.height+2);
+                break;
+              default:
+                canvasGlobal.clearRect(shape.x-1,shape.y-1,shape.width+2,shape.height+2);
+
+                break;
+            }
+          }
+        }
+      }
+    })
+
+
   }
   resize(){
 
