@@ -19,7 +19,7 @@ button{
   height: 65px;
   border-radius: 20px;
   background-color: rgb(246, 129, 60);
-  transition-duration: 0.3s;
+  transition-duration: 0.1s;
   color: rgb(251, 251, 251);
   font-family:cursive;
   font-size: 20px;

@@ -6,6 +6,7 @@ var shapes:shape[] = []
 //flag to activate buttons
 var remove_flag :boolean = false;
 var move_flag :boolean = false;
+var resize_flag :boolean = false;
 
 //randomizer function :pick  a random value between two edges
 function getRandomInt(min:number, max:number) {
@@ -67,6 +68,7 @@ class circle implements shape{
     canvasGlobal.arc(this.x, this.y, 0.5*this.width, 0, 2*Math.PI);
     canvasGlobal.stroke();
 
+
 	}
 }
 
@@ -88,6 +90,7 @@ class rect implements shape{
     canvasGlobal.beginPath();
     canvasGlobal.rect(this.x,this.y,this.width,this.height);
     canvasGlobal.stroke();
+
   }
 }
 
@@ -124,12 +127,15 @@ export class AppComponent {
   create_circle() {
     var boardGlobal = (<HTMLCanvasElement>document.getElementById("board"));
     var canvasGlobal = boardGlobal.getContext("2d")!;
+
+
     var circle: shape = this.factory.create("circle");
     circle.draw(canvasGlobal);
     shapes.push(circle);
   }
   create_rect(){
     var boardGlobal = (<HTMLCanvasElement>document.getElementById("board"));
+   
     var canvasGlobal = boardGlobal.getContext("2d")!;
     var rect: shape = this.factory.create("rect");
     rect.draw(canvasGlobal);
@@ -144,7 +150,10 @@ export class AppComponent {
     shapes.push(square);
 
   }
+
+
   remove(){
+   
     var boardGlobal = (<HTMLCanvasElement>document.getElementById("board"));
     var canvasGlobal = boardGlobal.getContext("2d")!;
     remove_flag = !(remove_flag);
@@ -165,10 +174,19 @@ export class AppComponent {
         }
       }
     });
+    if(remove_flag){
+      document.getElementById("remove")!.style.backgroundColor = "rgb(0, 0, 0)"
+
+    }
+    else{
+      document.getElementById("remove")!.style.backgroundColor = "rgb(246, 129, 60)"
+
+    }
 
 
   }
   move(){
+   
 
     var temp_shape : number = 0;
     var is_selected :boolean = false;
@@ -207,10 +225,76 @@ export class AppComponent {
       is_selected = false;
 
     });
+    if(move_flag){
+      document.getElementById("move")!.style.backgroundColor = "rgb(0, 0, 0)"
+
+    }
+    else{
+      document.getElementById("move")!.style.backgroundColor = "rgb(246, 129, 60)"
+
+    }
 
   }
 
   resize(){
+   
+    
+
+    var temp_shape : number = 0;
+    var is_selected :boolean = false;
+    var boardGlobal = (<HTMLCanvasElement>document.getElementById("board"));
+    var canvasGlobal = boardGlobal.getContext("2d")!;
+    resize_flag = !resize_flag;
+
+    boardGlobal.addEventListener("mousedown",  e => {
+      if(resize_flag){
+        for (var i = 0; i < shapes.length; i++){
+          if(canvasGlobal.isPointInPath(shapes[i].area, e.offsetX, e.offsetY)) {
+            temp_shape = i;
+            is_selected = true;
+          }
+        }
+      }
+    });
+
+    boardGlobal.addEventListener("mousemove", e => {
+      
+    
+
+      if(resize_flag && is_selected){
+        switch(shapes[temp_shape].type){
+          case "circle":
+            canvasGlobal.clearRect(shapes[temp_shape].x-(0.5*shapes[temp_shape].height)-1,shapes[temp_shape].y-(0.5*shapes[temp_shape].height)-1,shapes[temp_shape].width+2,shapes[temp_shape].height+2);
+            break;
+          default:
+            canvasGlobal.clearRect(shapes[temp_shape].x-1,shapes[temp_shape].y-1,shapes[temp_shape].width+2,shapes[temp_shape].height+2);
+            break;
+        }
+        shapes[temp_shape].width += 2;
+        shapes[temp_shape].height += 2;
+        shapes[temp_shape].draw(canvasGlobal);
+        console.log(e.offsetX);
+        console.log(e.offsetY);
+      
+       
+
+
+        
+      }
+    });
+
+    boardGlobal.addEventListener("mouseup", e => {
+      is_selected = false;
+
+    });
+    if(resize_flag){
+      document.getElementById("resize")!.style.backgroundColor = "rgb(0, 0, 0)"
+
+    }
+    else{
+      document.getElementById("resize")!.style.backgroundColor = "rgb(246, 129, 60)"
+
+    }
 
 
   }
