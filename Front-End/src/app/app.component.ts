@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
 
-/*function getRandomInt(min:number, max:number) {
+function getRandomInt(min:number, max:number) {
 	min = Math.ceil(min);
 	max = Math.floor(max);
 	return Math.floor(Math.random() * (max - min + 1)) + min;
-}*/
+}
 
 
 
@@ -13,7 +13,9 @@ interface shape{
   x:number;
   y:number;
   color:String;
-  draw(canvas:CanvasRenderingContext2D):void;
+  board:HTMLCanvasElement | undefined;
+  canvas:CanvasRenderingContext2D | undefined;
+  draw(canvas:CanvasRenderingContext2D,board:HTMLCanvasElement):void;
   getDim(n : number) : number;
 
 }
@@ -38,57 +40,70 @@ class factory{
   }
 }
 
+//---------------------------------------------------------------------------//
+
 class circle implements shape{
-	//x = getRandomInt(108,1300);
-	//y = getRandomInt(4,614);
-	x = 70; 
-  	y = 70; 
+	x = getRandomInt(108,1300);
+	y = getRandomInt(4,614);
 	radius = 40;
 	color = "black";
+  board: HTMLCanvasElement | undefined;
+  canvas: CanvasRenderingContext2D | undefined;
 	getDim(n : number){
 		var res : number = 0;
 		if(n == 1){
-			res = this.radius;  
+			res = this.radius;
 		}
 		return res;
 	}
-	draw(canvas:CanvasRenderingContext2D) {
+	draw(canvas:CanvasRenderingContext2D,board:HTMLCanvasElement) {
+    this.canvas=canvas;
+    this.board=board;
 		canvas.beginPath();
 		canvas.arc(this.x,this.y,this.radius,0,2*Math.PI);
 		canvas.stroke();
 	}
 }
+
+//---------------------------------------------------------------------------//
+
 class rect implements shape{
-  //x = getRandomInt(108,1260);
-  //y = getRandomInt(4,614);
-  x = 70; 
-  y = 70; 
+  x = getRandomInt(108,1260);
+  y = getRandomInt(4,614);
   width = 120;
   height = 60;
   color = "black";
+  board: HTMLCanvasElement | undefined;
+  canvas: CanvasRenderingContext2D | undefined;
   getDim(n : number){
 	var res : number = 0;
 	if(n == 1){
-		res = this.width;  
+		res = this.width;
 	}
 	else if(n == 2){
 		res = this.height;
 	}
 	return res;
 }
-  draw(canvas:CanvasRenderingContext2D) {
+  draw(canvas:CanvasRenderingContext2D,board:HTMLCanvasElement) {
+    this.canvas=canvas;
+    this.board=board;
     canvas.beginPath();
     canvas.rect(this.x,this.y,this.width,this.height);
     canvas.stroke();
   }
 }
+
+//---------------------------------------------------------------------------//
+
 class square implements shape{
-	//x = getRandomInt(108,1386);
-	//y = getRandomInt(4,614);
+	x = getRandomInt(108,1386);
+	y = getRandomInt(4,614);
 	width = 60;
 	color = "black";
-	x = 70;
-	y = 70;
+  board: HTMLCanvasElement | undefined;
+  canvas: CanvasRenderingContext2D | undefined;
+
 	getDim(n : number){
 		var res : number = 0;
 		if(n == 1){
@@ -96,12 +111,17 @@ class square implements shape{
 		}
 		return res;
 	}
-	draw(canvas:CanvasRenderingContext2D) {
+	draw(canvas:CanvasRenderingContext2D,board:HTMLCanvasElement) {
+    this.canvas=canvas;
+    this.board=board;
 		canvas.beginPath();
 		canvas.rect(this.x,this.y,this.width,this.width);
 		canvas.stroke();
 	}
 }
+
+//---------------------------------------------------------------------------//
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -113,22 +133,30 @@ export class AppComponent {
   create_circle() {
     var boardGlobal = (<HTMLCanvasElement>document.getElementById("board"));
     var canvasGlobal = boardGlobal.getContext("2d")!;
-	var board = document.createElement('canvas');
-	var canvas = board.getContext('2d')!;
+	  var board = document.createElement('canvas');
+	  var canvas = board.getContext('2d')!;
     var circle: shape = this.factory.create("circle");
-    circle.draw(canvas)
-	canvasGlobal.drawImage(board, circle.x, circle.y);
+    circle.draw(canvas,board);
+	  canvasGlobal.drawImage(board, circle.x, circle.y);
   }
   create_rect(){
-    var board = (<HTMLCanvasElement>document.getElementById("board"));
-    var canvas = board.getContext("2d")!;
+    var boardGlobal = (<HTMLCanvasElement>document.getElementById("board"));
+    var canvasGlobal = boardGlobal.getContext("2d")!;
+    var board = document.createElement('canvas');
+	  var canvas = board.getContext('2d')!;
     var rect: shape = this.factory.create("rect");
-    rect.draw(canvas)
+    rect.draw(canvas,board);
+    canvasGlobal.drawImage(board, rect.x, rect.y);
+
   }
   create_square(){
-    var board = (<HTMLCanvasElement>document.getElementById("board"));
-    var canvas = board.getContext("2d")!;
+    var boardGlobal = (<HTMLCanvasElement>document.getElementById("board"));
+    var canvasGlobal = boardGlobal.getContext("2d")!;
+    var board = document.createElement('canvas');
+	  var canvas = board.getContext('2d')!;
     var square: shape = this.factory.create("square");
-    square.draw(canvas)
+    square.draw(canvas,board);
+    canvasGlobal.drawImage(board, square.x, square.y);
+
   }
 }
