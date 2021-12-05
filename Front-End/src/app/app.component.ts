@@ -1,4 +1,7 @@
 import { Component } from '@angular/core';
+import { range } from 'rxjs';
+
+var serial =range(1,100000000)
 
 function getRandomInt(min:number, max:number) {
   min = Math.ceil(min);
