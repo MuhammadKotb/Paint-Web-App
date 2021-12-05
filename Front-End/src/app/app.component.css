@@ -20,7 +20,9 @@ button{
   border-radius: 20px;
   background-color: rgb(246, 129, 60);
   transition-duration: 0.3s;
-  color: rgb(197, 190, 190);
+  color: rgb(251, 251, 251);
+  font-family:cursive;
+  font-size: 20px;
 
 }
 button:active{

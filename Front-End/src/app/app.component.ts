@@ -7,7 +7,6 @@ function getRandomInt(min:number, max:number) {
 }
 
 
-
 //shape interface to cover all shapes under restricted contract
 interface shape{
   x:number;
@@ -19,6 +18,7 @@ interface shape{
   getDim(n : number) : number;
 
 }
+
 //factory class to produce all kinds of shapes according to the given string
 class factory{
   create(shape_name:String):shape{
@@ -145,18 +145,22 @@ class square implements shape{
 })
 export class AppComponent {
   factory :factory = new factory();
+  shapes:shape[] =[]
+
   title = 'Front-End';
   create_circle() {
     var boardGlobal = (<HTMLCanvasElement>document.getElementById("board"));
     var canvasGlobal = boardGlobal.getContext("2d")!;
     var circle: shape = this.factory.create("circle");
     circle.draw(canvasGlobal);
+    this.shapes.push(circle);
   }
   create_rect(){
     var boardGlobal = (<HTMLCanvasElement>document.getElementById("board"));
     var canvasGlobal = boardGlobal.getContext("2d")!;
     var rect: shape = this.factory.create("rect");
     rect.draw(canvasGlobal);
+    this.shapes.push(rect);
 
   }
   create_square(){
@@ -164,6 +168,13 @@ export class AppComponent {
     var canvasGlobal = boardGlobal.getContext("2d")!;
     var square: shape = this.factory.create("square");
     square.draw(canvasGlobal);
+    this.shapes.push(square);
+
+  }
+  remove(){
+
+  }
+  resize(){
 
   }
 }

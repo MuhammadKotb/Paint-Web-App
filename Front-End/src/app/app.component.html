@@ -1,12 +1,18 @@
 <div class="tool_bar">
   <div>
-    <button id="circle" value="circle" (click)="create_circle()"></button>
+    <button id="circle" value="circle" (click)="create_circle()">circle</button>
   </div>
   <div>
-    <button id="rect" value="rect" (click)="create_rect()"></button>
+    <button id="rect" value="rect" (click)="create_rect()">rect</button>
   </div>
   <div>
-    <button id="square" value="square" (click)="create_square()"></button>
+    <button id="square" value="square" (click)="create_square()">square</button>
+  </div>
+  <div>
+    <button id="remove" value="remove" (click)="remove()">remove</button>
+  </div>
+  <div>
+    <button id="resize" value="resize" (click)="resize()">resize</button>
   </div>
 </div>
 <canvas id="board" width="1380" height="675" style="border:3px solid #f09621"></canvas>
