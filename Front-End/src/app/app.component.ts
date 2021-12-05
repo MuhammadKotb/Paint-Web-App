@@ -7,6 +7,9 @@ var shapes:shape[] = []
 var remove_flag :boolean = false;
 var move_flag :boolean = false;
 var resize_flag :boolean = false;
+var fillColor:string = 'white';
+var strokeColor:string = 'black';
+var strokeWidth:number = 3;
 
 //randomizer function :pick  a random value between two edges
 function getRandomInt(min:number, max:number) {
@@ -22,6 +25,9 @@ interface shape{
   width:number;
   height:number;
   color:String;
+  fiCo:String;
+  stCo:String;
+  stWi:Number;
   area:Path2D;
   type:String;
   draw(canvasGlobal:CanvasRenderingContext2D):void;
@@ -56,18 +62,24 @@ class circle implements shape{
 	y = getRandomInt(4,614);
   width = 80;
 	height = 80;
-	color = "black";
   type = "circle";
+  fiCo = fillColor;
+  stCo = strokeColor;
+  stWi = strokeWidth;
   area: Path2D = new Path2D;
 
 
 	draw(canvasGlobal:CanvasRenderingContext2D) {
+
     this.area = new Path2D
     this.area.arc(this.x, this.y, 0.5*this.width, 0, 2*Math.PI);
     canvasGlobal.beginPath();
+    canvasGlobal.fillStyle = this.fiCo;
+    canvasGlobal.strokeStyle = this.stCo;
+    canvasGlobal.lineWidth = this.stWi;
     canvasGlobal.arc(this.x, this.y, 0.5*this.width, 0, 2*Math.PI);
+    canvasGlobal.fill();
     canvasGlobal.stroke();
-
 
 	}
 }
@@ -79,18 +91,23 @@ class rect implements shape{
   y = getRandomInt(4,614);
   width = 120;
   height = 60;
-  color = "black";
   type = "rect";
+  fiCo = fillColor;
+  stCo = strokeColor;
+  stWi = strokeWidth;
   area: Path2D = new Path2D;
 
 
   draw(canvasGlobal:CanvasRenderingContext2D) {
+
     this.area = new Path2D
     this.area.rect(this.x,this.y,this.width,this.height);
+    canvasGlobal.fillStyle = this.fiCo;
+    canvasGlobal.strokeStyle = this.stCo;
     canvasGlobal.beginPath();
     canvasGlobal.rect(this.x,this.y,this.width,this.height);
+    canvasGlobal.fill();
     canvasGlobal.stroke();
-
   }
 }
 
@@ -101,15 +118,22 @@ class square implements shape{
 	y = getRandomInt(4,614);
 	width = 60;
   height = 60;
-  color = "black"
   type = "square";
+  fiCo = fillColor;
+  stCo = strokeColor;
+  stWi = strokeWidth;
   area: Path2D = new Path2D;
 
 	draw(canvasGlobal:CanvasRenderingContext2D) {
+
     this.area = new Path2D
+
     this.area.rect(this.x,this.y,this.width, this.width);
+    canvasGlobal.fillStyle = this.fiCo;
+    canvasGlobal.strokeStyle = this.stCo;
     canvasGlobal.beginPath();
     canvasGlobal.rect(this.x,this.y,this.width, this.width);
+    canvasGlobal.fill();
     canvasGlobal.stroke();
 	}
 }
@@ -122,13 +146,24 @@ class square implements shape{
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
+
+
   factory :factory = new factory();
   title = 'Front-End';
+  
+  Pick_Color() {
+    var fc = <HTMLInputElement>document.getElementById("fill_color");
+    fillColor = fc.value;
+    var sc = <HTMLInputElement>document.getElementById("stroke_color");
+    strokeColor = sc.value;
+    var sw = <HTMLInputElement>document.getElementById("stroke_width");
+    var strwid : number = parseInt(sw.value);
+    strokeWidth = strwid;
+  }
+
   create_circle() {
     var boardGlobal = (<HTMLCanvasElement>document.getElementById("board"));
     var canvasGlobal = boardGlobal.getContext("2d")!;
-
-
     var circle: shape = this.factory.create("circle");
     circle.draw(canvasGlobal);
     shapes.push(circle);
@@ -149,8 +184,6 @@ export class AppComponent {
     shapes.push(square);
 
   }
-
-
   remove(){
     var boardGlobal = (<HTMLCanvasElement>document.getElementById("board"));
     var canvasGlobal = boardGlobal.getContext("2d")!;

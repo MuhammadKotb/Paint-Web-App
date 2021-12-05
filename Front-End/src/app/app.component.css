@@ -6,10 +6,10 @@
   justify-content: space-around;
   align-items: center;
   background-color: rgb(45, 52, 59);
-  width: 98px;
-  height: 655px;
+  width: 110px;
+  height: 570px;
   left: 0px;
-  top: 15px;
+  top: 120px;
   border-radius: 10px;
   border-color: rgb(246, 129, 60);
   border-style:groove
@@ -25,7 +25,22 @@ button{
   font-size: 20px;
 
 }
-button:active{
+
+
+
+
+.tool_bar button{
+  width: 76px;
+  height: 47px;
+  border-radius: 10px;
+  background-color: rgb(187, 159, 36);
+  transition-duration: 0.3s;
+  color: rgb(227, 231, 224);
+
+}
+
+
+.tool_bar button:active{
   background-color: rgba(211, 101, 37, 0.856);
   box-shadow: 0 3px #666;
 
@@ -33,9 +48,44 @@ button:active{
 
 
 }
+
+.color_bar{
+
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  display: flex;
+  flex-direction: column;
+  justify-content:space-between;
+  align-items: center;
+  width:120px;
+  height:120px;
+  background-color: rgb(58, 69, 78);
+  border-radius: 4px;
+  border-color: rgb(196, 179, 169);
+  border-style:groove
+}
+
+input[type = "color"] {
+  left: 1px;
+  width: 30px;
+}
+
+input[type = "number"] {
+  left: 1px;
+  width: 35px;
+}
+
+label{
+  font-size: 13px;
+  color:azure;
+}
+
+
+
 canvas{
   position: absolute;
   background-color: blanchedalmond;
   top: 0px;
-  left: 104px;
+  left: 120px;
 }
