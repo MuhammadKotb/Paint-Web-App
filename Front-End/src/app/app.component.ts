@@ -13,8 +13,8 @@ interface shape{
   x:number;
   y:number;
   color:String;
-  board:HTMLCanvasElement | undefined;
-  canvas:CanvasRenderingContext2D | undefined;
+  board:HTMLCanvasElement ;
+  canvas:CanvasRenderingContext2D ;
   draw(canvasGlobal:CanvasRenderingContext2D):void;
   getDim(n : number) : number;
 
@@ -49,6 +49,11 @@ class circle implements shape{
 	color = "black";
   board: HTMLCanvasElement = document.createElement("canvas");
   canvas: CanvasRenderingContext2D = this.board.getContext("2d")!;
+  constructor (){
+    this.board.width= 1380;
+    this.board.height= 675;
+
+  }
 	getDim(n : number){
 		var res : number = 0;
 		if(n == 1){
@@ -61,7 +66,7 @@ class circle implements shape{
 		this.canvas.beginPath();
 		this.canvas.arc(this.x,this.y,this.radius,0,2*Math.PI);
 		this.canvas.stroke();
-    canvasGlobal.drawImage(this.board, this.x, this.y);
+    canvasGlobal.drawImage(this.board,0, 0);
 
 	}
 }
@@ -76,6 +81,12 @@ class rect implements shape{
   color = "black";
   board: HTMLCanvasElement = document.createElement("canvas");
   canvas: CanvasRenderingContext2D = this.board.getContext("2d")!;
+  constructor(){
+    this.board.width= 1380;
+    this.board.height= 687;
+
+
+  }
   getDim(n : number){
 	var res : number = 0;
 	if(n == 1){
@@ -91,7 +102,7 @@ class rect implements shape{
     this.canvas.beginPath();
     this.canvas.rect(this.x,this.y,this.width,this.height);
     this.canvas.stroke();
-    canvasGlobal.drawImage(this.board, this.x, this.y);
+    canvasGlobal.drawImage(this.board, 0, 0);
   }
 }
 
@@ -104,6 +115,11 @@ class square implements shape{
 	color = "black";
   board: HTMLCanvasElement = document.createElement("canvas");
   canvas: CanvasRenderingContext2D = this.board.getContext("2d")!;
+  constructor(){
+    this.board.width= 1380;
+    this.board.height= 675;
+
+  }
 	getDim(n : number){
 		var res : number = 0;
 		if(n == 1){
@@ -116,7 +132,7 @@ class square implements shape{
 		this.canvas.beginPath();
 		this.canvas.rect(this.x,this.y,this.width,this.width);
 		this.canvas.stroke();
-    canvasGlobal.drawImage(this.board, this.x, this.y);
+    canvasGlobal.drawImage(this.board, 0, 0);
 	}
 }
 
