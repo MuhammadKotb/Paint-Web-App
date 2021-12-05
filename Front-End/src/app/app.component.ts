@@ -215,10 +215,16 @@ export class AppComponent {
         shapes[temp_shape].y = e.offsetY;
         shapes[temp_shape].draw(canvasGlobal)
       }
+      for(var i = 0; i < shapes.length; i++){
+        shapes[i].draw(canvasGlobal);
+      }
     });
 
     boardGlobal.addEventListener("mouseup", e => {
       is_selected = false;
+      for(var i = 0; i < shapes.length; i++){
+        shapes[i].draw(canvasGlobal);
+      }
     });
 
     if(move_flag){
@@ -268,10 +274,16 @@ export class AppComponent {
         console.log(e.offsetY);
 
       }
+      for(var i = 0; i < shapes.length; i++){
+        shapes[i].draw(canvasGlobal);
+      }
     });
 
     boardGlobal.addEventListener("mouseup", e => {
       is_selected = false;
+      for(var i = 0; i < shapes.length; i++){
+        shapes[i].draw(canvasGlobal);
+      }
 
     });
     if(resize_flag){
