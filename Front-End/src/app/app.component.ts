@@ -62,7 +62,7 @@ class circle implements shape{
 
 
 	draw(canvasGlobal:CanvasRenderingContext2D) {
-
+    this.area = new Path2D
     this.area.arc(this.x, this.y, 0.5*this.width, 0, 2*Math.PI);
     canvasGlobal.beginPath();
     canvasGlobal.arc(this.x, this.y, 0.5*this.width, 0, 2*Math.PI);
@@ -85,7 +85,7 @@ class rect implements shape{
 
 
   draw(canvasGlobal:CanvasRenderingContext2D) {
-
+    this.area = new Path2D
     this.area.rect(this.x,this.y,this.width,this.height);
     canvasGlobal.beginPath();
     canvasGlobal.rect(this.x,this.y,this.width,this.height);
@@ -106,7 +106,7 @@ class square implements shape{
   area: Path2D = new Path2D;
 
 	draw(canvasGlobal:CanvasRenderingContext2D) {
-
+    this.area = new Path2D
     this.area.rect(this.x,this.y,this.width, this.width);
     canvasGlobal.beginPath();
     canvasGlobal.rect(this.x,this.y,this.width, this.width);
@@ -219,8 +219,8 @@ export class AppComponent {
 
     boardGlobal.addEventListener("mouseup", e => {
       is_selected = false;
-
     });
+
     if(move_flag){
       document.getElementById("move")!.style.backgroundColor = "rgb(0, 0, 0)"
 
@@ -252,9 +252,6 @@ export class AppComponent {
     });
 
     boardGlobal.addEventListener("mousemove", e => {
-
-
-
       if(resize_flag && is_selected){
         switch(shapes[temp_shape].type){
           case "circle":
