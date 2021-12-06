@@ -58,8 +58,8 @@ class factory{
 //---------------------------------------------------------------------------//
 
 class circle implements shape{
-	x = getRandomInt(108,1300);
-	y = getRandomInt(4,614);
+	x = getRandomInt(124,1380);
+	y = getRandomInt(70,580);
   width = 80;
 	height = 80;
   type = "circle";
@@ -86,8 +86,8 @@ class circle implements shape{
 //---------------------------------------------------------------------------//
 
 class rect implements shape{
-  x = getRandomInt(108,1260);
-  y = getRandomInt(4,614);
+  x = getRandomInt(124,1340);
+  y = getRandomInt(70,580);
   width = 120;
   height = 60;
   fiCo = fillColor;
@@ -113,8 +113,8 @@ class rect implements shape{
 //---------------------------------------------------------------------------//
 
 class square implements shape{
-	x = getRandomInt(108,1386);
-	y = getRandomInt(4,614);
+	x = getRandomInt(124,1340);
+	y = getRandomInt(70,580);
 	width = 60;
   height = 60;
   fiCo = fillColor;
@@ -206,7 +206,7 @@ export class AppComponent {
       }
     });
     if(remove_flag){
-      document.getElementById("remove")!.style.backgroundColor = "rgb(0, 0, 0)"
+      document.getElementById("remove")!.style.backgroundColor = "rgba(47, 24, 10, 0.856)"
 
     }
     else{
@@ -260,7 +260,7 @@ export class AppComponent {
     });
 
     if(move_flag){
-      document.getElementById("move")!.style.backgroundColor = "rgb(0, 0, 0)"
+      document.getElementById("move")!.style.backgroundColor = "rgba(47, 24, 10, 0.856)"
 
     }
     else{
@@ -292,10 +292,9 @@ export class AppComponent {
       oldx = e.offsetX;
       oldy = e.offsetY;
     });
-   
+
 
     boardGlobal.addEventListener("mousemove", e => {
-     
       if(resize_flag && is_selected){
         switch(shapes[temp_shape].type){
           case "circle":
@@ -306,26 +305,25 @@ export class AppComponent {
             break;
         }
         if(shapes[temp_shape].type == 'circle'){
-          if(e.offsetX > oldx && e.offsetX > oldy){
-            
+          if(e.offsetX > oldx && e.offsetY > oldy){
+
             shapes[temp_shape].width += 2;
             shapes[temp_shape].height += 2;
-           
           }
           else if(e.offsetX < oldx && e.offsetY < oldy){
-          
+
             shapes[temp_shape].width -= 2;
             shapes[temp_shape].height -= 2;
-            
-            
+
+
           }
           oldx = e.offsetX;
           oldy = e.offsetY;
           shapes[temp_shape].draw(canvasGlobal);
-          
+
         }
         if(shapes[temp_shape].type == 'square'){
-          if(e.offsetX > oldx && e.offsetX > oldy){
+          if(e.offsetX > oldx && e.offsetY > oldy){
             shapes[temp_shape].width +=2;
             shapes[temp_shape].height += 2;
           }
@@ -338,7 +336,7 @@ export class AppComponent {
           shapes[temp_shape].draw(canvasGlobal);
         }
         if(shapes[temp_shape].type == 'rect'){
-          if(e.offsetX > oldx && e.offsetX > oldy){
+          if(e.offsetX > oldx && e.offsetY > oldy){
             shapes[temp_shape].width +=2;
             shapes[temp_shape].height += 2;
           }
@@ -350,10 +348,6 @@ export class AppComponent {
           oldy = e.offsetY;
           shapes[temp_shape].draw(canvasGlobal);
         }
-
-       
-
-
       }
       for(var i = 0; i < shapes.length; i++){
         shapes[i].draw(canvasGlobal);
@@ -368,7 +362,7 @@ export class AppComponent {
 
     });
     if(resize_flag){
-      document.getElementById("resize")!.style.backgroundColor = "rgb(0, 0, 0)"
+      document.getElementById("resize")!.style.backgroundColor = "rgba(47, 24, 10, 0.856)"
 
     }
     else{

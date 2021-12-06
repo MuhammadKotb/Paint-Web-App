@@ -1,4 +1,4 @@
-<div class="tool_bar">
+<div class="vtool_bar">
   <div>
     <button id="circle" value="circle" (click)="create_circle()"> <img src= "assets/icons/circle-icon.png" width = 45px length = 45px /></button>
   </div>
@@ -30,9 +30,7 @@
     <button id="move" value="move" (click)="move()">move</button>
   </div>
 </div>
-
-<div class = "color_bar">
-
+<div class="htool_bar">
   <div>
     <input type = "color" id="fill_color" name="Fill Color" value = "#e66465">
     <label for="fill_color" >Fill Color</label>
@@ -46,9 +44,12 @@
     <label for="stroke_width">Stroke Width</label>
   </div>
   <div>
-    <button id="pick_color" value="pick_color" (click)="Pick_Color()">OK</button>
+    <input type="button" id="pick_color" value="pick_color" (click)="Pick_Color()">
   </div>
 
 </div>
 
-<canvas id="board" width="1380" height="675" style="border:3px solid #f09623"></canvas>
+
+
+
+<canvas id="board" width="1355" height="600" style="border:3px solid #f09623"></canvas>
