@@ -313,7 +313,6 @@ export class AppComponent {
     shapes.push(ellipse);
 
 
-    console.log(shapes);
   }
 
   remove(){
@@ -323,7 +322,9 @@ export class AppComponent {
     boardGlobal.addEventListener("mousedown",event => {
       if(remove_flag){
         for (var shape of shapes){
+
           if(canvasGlobal.isPointInPath(shape.area, event.offsetX, event.offsetY)){
+
             console.log(event.offsetX);
             console.log(event.offsetY);
             switch(shape.type){
@@ -428,20 +429,22 @@ export class AppComponent {
     var boardGlobal = (<HTMLCanvasElement>document.getElementById("board"));
     var canvasGlobal = boardGlobal.getContext("2d")!;
     copy_flag = !copy_flag;
-    var copy_shape : shape;
+    var copy_shape : shape ;
+    var found = false
 
     boardGlobal.addEventListener("mousedown",  e => {
       if(copy_flag){
-        for (var i = 0; i < shapes.length; i++){
-          if(canvasGlobal.isPointInPath(shapes[i].area, e.offsetX, e.offsetY)){
-            copy_shape = this.factory.create(shapes[i].type);
+        for (var shape of shapes){
+          if(canvasGlobal.isPointInPath(shape.area, e.offsetX, e.offsetY ) && !found ){
+            console.log("down lol")
+
+            copy_shape = this.factory.create(shape.type);
+            copy_shape.x = shape.x
+            copy_shape.y = shape.y
             shapes.push(copy_shape);
-
             is_selected = true;
-
             temp_shape = shapes.length - 1;
-
-
+            found = true;
           }
         }
       }
@@ -474,6 +477,8 @@ export class AppComponent {
     });
 
     boardGlobal.addEventListener("mouseup", e => {
+      console.log("up lol")
+
       is_selected = false;
       for(var i = 0; i < shapes.length; i++){
         shapes[i].draw(canvasGlobal,"");
