@@ -397,6 +397,7 @@ export class AppComponent {
         shapes[temp_shape].x = e.offsetX;
         shapes[temp_shape].y = e.offsetY;
         shapes[temp_shape].draw(canvasGlobal,"")
+
       }
 
       for(var i = 0; i < shapes.length; i++){
@@ -589,6 +590,7 @@ export class AppComponent {
           oldx = e.offsetX;
           oldy = e.offsetY;
           shapes[temp_shape].draw(canvasGlobal,"");
+          canvasGlobal.clearRect(65,120,1355,600);
         }
       }
       for(var i = 0; i < shapes.length; i++){
