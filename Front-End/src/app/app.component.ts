@@ -13,6 +13,7 @@ var move_flag :boolean = false;
 var resize_flag :boolean = false;
 var fill_flag :boolean = false;
 var copy_flag : boolean = false;
+var found : boolean = false;
 
 var strokeColor:string = 'black';
 var strokeWidth:number = 3;
@@ -375,6 +376,7 @@ export class AppComponent {
           if(canvasGlobal.isPointInPath(shapes[i].area, e.offsetX, e.offsetY)){
             temp_shape = i;
             is_selected = true;
+            console.log(shapes);
           }
         }
       }
@@ -428,23 +430,24 @@ export class AppComponent {
     var is_selected :boolean = false;
     var boardGlobal = (<HTMLCanvasElement>document.getElementById("board"));
     var canvasGlobal = boardGlobal.getContext("2d")!;
-    copy_flag = !copy_flag;
-    var copy_shape : shape ;
-    var found = false
+    copy_flag = true;
+    found = true;
+    var copy_shape : shape;
+
 
     boardGlobal.addEventListener("mousedown",  e => {
-      if(copy_flag){
-        for (var shape of shapes){
-          if(canvasGlobal.isPointInPath(shape.area, e.offsetX, e.offsetY ) && !found ){
-            console.log("down lol")
 
-            copy_shape = this.factory.create(shape.type);
-            copy_shape.x = shape.x
-            copy_shape.y = shape.y
+      if(found){
+        for (var i = 0; i < shapes.length; i++){
+          if(canvasGlobal.isPointInPath(shapes[i].area, e.offsetX, e.offsetY)){
+            copy_shape = this.factory.create(shapes[i].type);
+            copy_shape.x = shapes[i].x;
+            copy_shape.y = shapes[i].y;
             shapes.push(copy_shape);
             is_selected = true;
             temp_shape = shapes.length - 1;
-            found = true;
+            found = false;
+            break;
           }
         }
       }
@@ -476,23 +479,29 @@ export class AppComponent {
       }
     });
 
+
     boardGlobal.addEventListener("mouseup", e => {
       console.log("up lol")
 
       is_selected = false;
+      found = false;
       for(var i = 0; i < shapes.length; i++){
         shapes[i].draw(canvasGlobal,"");
       }
+
+      document.getElementById("copy")!.style.backgroundColor = "rgb(246, 129, 60)"
+
+
     });
 
     if(copy_flag){
       document.getElementById("copy")!.style.backgroundColor = "rgba(47, 24, 10, 0.856)"
 
     }
-    else{
-      document.getElementById("copy")!.style.backgroundColor = "rgb(246, 129, 60)"
 
-    }
+
+
+
 
   }
 
