@@ -6,9 +6,9 @@
   align-items: center;
   background-color: rgb(45, 52, 59);
   width: 110px;
-  height: 600px;
+  height: 605px;
   left: 0px;
-  top: 60px;
+  top: 62px;
   border-radius: 10px;
   border-color: rgb(246, 129, 60);
   border-style:groove
@@ -40,9 +40,9 @@
   justify-content:space-around;
   align-items: center;
   background-color: rgb(45, 52, 59);
-  width: 1350px;
-  height: 60px;
-  left: 120px;
+  width: 1480px;
+  height: 55px;
+  left: 0;
   top: 0;
   border-radius: 10px;
   border-color: rgb(246, 129, 60);
@@ -61,7 +61,9 @@
   width: 60px;
   height: 30px;
   border-radius: 4px;
-  background-color: rgb(246, 129, 60);
+  background-color: rgb(11, 19, 54);
+  border-color: rgb(246, 129, 60);
+
   transition-duration: 0.3s;
   color: rgb(227, 231, 224);
   font-size: 14px;
