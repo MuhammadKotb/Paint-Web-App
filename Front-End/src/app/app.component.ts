@@ -278,6 +278,9 @@ export class AppComponent {
                 shapes = shapes.filter(obj => obj !== shape)
                 break;
             }
+            for(var i = 0; i < shapes.length; i++){
+              shapes[i].draw(canvasGlobal,"");
+            }
           }
         }
       }
@@ -388,9 +391,11 @@ export class AppComponent {
             shapes[temp_shape].height += 2;
           }
           else if(e.offsetX < oldx && e.offsetY < oldy){
+            if(shapes[temp_shape].width > 2 ||shapes[temp_shape].height > 2 ){
+              shapes[temp_shape].width -= 2;
+              shapes[temp_shape].height -= 2;
+            }
 
-            shapes[temp_shape].width -= 2;
-            shapes[temp_shape].height -= 2;
 
 
           }
@@ -401,12 +406,15 @@ export class AppComponent {
         }
         if(shapes[temp_shape].type == 'square'){
           if(e.offsetX > oldx && e.offsetY > oldy){
-            shapes[temp_shape].width +=2;
+            shapes[temp_shape].width += 2;
             shapes[temp_shape].height += 2;
+
           }
           else if(e.offsetX < oldx && e.offsetY < oldy){
-            shapes[temp_shape].width -=2;
-            shapes[temp_shape].height -= 2;
+            if(shapes[temp_shape].width > 2 || shapes[temp_shape].height > 2 ){
+              shapes[temp_shape].width -= 2;
+              shapes[temp_shape].height -= 2;
+            }
           }
           oldx = e.offsetX;
           oldy = e.offsetY;
@@ -414,12 +422,14 @@ export class AppComponent {
         }
         if(shapes[temp_shape].type == 'rect'){
           if(e.offsetX > oldx && e.offsetY > oldy){
-            shapes[temp_shape].width +=2;
+            shapes[temp_shape].width += 2;
             shapes[temp_shape].height += 2;
           }
           else if(e.offsetX < oldx && e.offsetY < oldy){
-            shapes[temp_shape].width -=2;
-            shapes[temp_shape].height -= 2;
+            if(shapes[temp_shape].width > 2 && shapes[temp_shape].height > 2 ){
+              shapes[temp_shape].width -= 2;
+              shapes[temp_shape].height -= 2;
+            }
           }
           oldx = e.offsetX;
           oldy = e.offsetY;
