@@ -63,6 +63,9 @@ class factory{
       case "line":
         shape = new line();
         break;
+      case "ellipse":
+        shape = new ellipse();
+        break;
       default:
         throw new Error;
     }
@@ -427,7 +430,7 @@ export class AppComponent {
     boardGlobal.addEventListener("mousedown",event => {
       if(remove_flag){
         for (var shape of shapes){
-          if(canvasGlobal.isPointInPath(shape.area, event.offsetX, event.offsetY)){
+          if(canvasGlobal.isPointInPath(shape.area, event.offsetX, event.offsetY) || (canvasGlobal.isPointInStroke(shape.area, event.offsetX, event.offsetY))){
             console.log(event.offsetX);
             console.log(event.offsetY);
             switch(shape.type){
@@ -484,7 +487,7 @@ export class AppComponent {
     boardGlobal.addEventListener("mousedown",  e => {
       if(move_flag){
         for (var i = 0; i < shapes.length; i++){
-          if(canvasGlobal.isPointInPath(shapes[i].area, e.offsetX, e.offsetY)){
+          if(canvasGlobal.isPointInPath(shapes[i].area, e.offsetX, e.offsetY) || (canvasGlobal.isPointInStroke(shapes[i].area, e.offsetX, e.offsetY))){
             temp_shape = i;
             is_selected = true;
             console.log(shapes);
@@ -555,7 +558,7 @@ export class AppComponent {
 
       if(found){
         for (var i = 0; i < shapes.length; i++){
-          if(canvasGlobal.isPointInPath(shapes[i].area, e.offsetX, e.offsetY)){
+          if(canvasGlobal.isPointInPath(shapes[i].area, e.offsetX, e.offsetY) || (canvasGlobal.isPointInStroke(shapes[i].area, e.offsetX, e.offsetY))){
             copy_shape = this.factory.create(shapes[i].type);
             copy_shape.x = shapes[i].x;
             copy_shape.y = shapes[i].y;
@@ -649,7 +652,7 @@ export class AppComponent {
     boardGlobal.addEventListener("mousedown",  e => {
       if(resize_flag){
         for (var i = 0; i < shapes.length; i++){
-          if(canvasGlobal.isPointInPath(shapes[i].area, e.offsetX, e.offsetY)) {
+          if(canvasGlobal.isPointInPath(shapes[i].area, e.offsetX, e.offsetY) || (canvasGlobal.isPointInStroke(shapes[i].area, e.offsetX, e.offsetY))) {
             temp_shape = i;
             is_selected = true;
           }
