@@ -9,7 +9,6 @@ var move_flag :boolean = false;
 var resize_flag :boolean = false;
 var fill_flag :boolean = false;
 
-var fillcolor :string="";
 var strokeColor:string = 'black';
 var strokeWidth:number = 3;
 
@@ -33,7 +32,7 @@ interface shape{
   type:String;
   is_filled:boolean;
 
-  draw(canvasGlobal:CanvasRenderingContext2D):void;
+  draw(canvasGlobal:CanvasRenderingContext2D,fillcolor:string):void;
 
 }
 
@@ -66,15 +65,18 @@ class circle implements shape{
   width = 80;
 	height = 80;
   type = "circle";
-  fiCo = fillcolor;
+  fiCo = "";
   stCo = strokeColor;
   stWi = strokeWidth;
   area: Path2D = new Path2D;
   is_filled = false
 
-	draw(canvasGlobal:CanvasRenderingContext2D) {
+	draw(canvasGlobal:CanvasRenderingContext2D,fillcolor:string) {
     if(this.is_filled){
-      this.fiCo = fillcolor;
+      if(fillcolor != ""){
+        this.fiCo = fillcolor
+
+      }
       this.area = new Path2D
       this.area.arc(this.x, this.y, 0.5*this.width, 0, 2*Math.PI);
       canvasGlobal.beginPath();
@@ -106,21 +108,23 @@ class rect implements shape{
   y = getRandomInt(70,580);
   width = 120;
   height = 60;
-  fiCo = fillcolor;
+  fiCo = "";
   stCo = strokeColor;
   stWi = strokeWidth;
   type = "rect";
   area: Path2D = new Path2D;
   is_filled = false
 
-  draw(canvasGlobal:CanvasRenderingContext2D) {
+  draw(canvasGlobal:CanvasRenderingContext2D,fillcolor:string) {
     if(this.is_filled){
-      this.fiCo = fillcolor;
+      if(fillcolor != ""){
+        this.fiCo = fillcolor
+
+      }
       this.area = new Path2D
       this.area.rect(this.x,this.y,this.width, this.height);
       canvasGlobal.strokeStyle = this.stCo;
       canvasGlobal.lineWidth = this.stWi;
-      this.fiCo = fillcolor;
       canvasGlobal.fillStyle = this.fiCo;
       canvasGlobal.beginPath();
       canvasGlobal.rect(this.x,this.y,this.width, this.height);
@@ -131,10 +135,8 @@ class rect implements shape{
       this.area.rect(this.x,this.y,this.width, this.height);
       canvasGlobal.strokeStyle = this.stCo;
       canvasGlobal.lineWidth = this.stWi;
-      canvasGlobal.fillStyle = this.fiCo;
       canvasGlobal.beginPath();
       canvasGlobal.rect(this.x,this.y,this.width, this.height);
-      canvasGlobal.fill()
       canvasGlobal.stroke();
     }
 
@@ -148,21 +150,23 @@ class square implements shape{
 	y = getRandomInt(70,580);
 	width = 60;
   height = 60;
-  fiCo = fillcolor;
+  fiCo = "";
   stCo = strokeColor;
   stWi = strokeWidth;
   type = "square";
   area: Path2D = new Path2D;
   is_filled = false
 
-	draw(canvasGlobal:CanvasRenderingContext2D) {
+	draw(canvasGlobal:CanvasRenderingContext2D,fillcolor:string) {
     if(this.is_filled){
-      this.fiCo = fillcolor;
+      if(fillcolor != ""){
+        this.fiCo = fillcolor
+
+      }
       this.area = new Path2D
       this.area.rect(this.x,this.y,this.width, this.width);
       canvasGlobal.strokeStyle = this.stCo;
       canvasGlobal.lineWidth = this.stWi;
-      this.fiCo = fillcolor;
       canvasGlobal.fillStyle = this.fiCo;
       canvasGlobal.beginPath();
       canvasGlobal.rect(this.x,this.y,this.width, this.width);
@@ -173,10 +177,8 @@ class square implements shape{
       this.area.rect(this.x,this.y,this.width, this.width);
       canvasGlobal.strokeStyle = this.stCo;
       canvasGlobal.lineWidth = this.stWi;
-      canvasGlobal.fillStyle = this.fiCo;
       canvasGlobal.beginPath();
       canvasGlobal.rect(this.x,this.y,this.width, this.width);
-      canvasGlobal.fill()
       canvasGlobal.stroke();
     }
 
@@ -205,24 +207,16 @@ export class AppComponent {
     var canvasGlobal = boardGlobal.getContext("2d")!;
 
     var fc = <HTMLInputElement>document.getElementById("fill_color");
-    fillcolor = fc.value;
+    var fillcolor = fc.value;
 
     fill_flag = !fill_flag;
     boardGlobal.addEventListener("mousedown",e =>{
       if(fill_flag){
         for (var shape of shapes){
           if(canvasGlobal.isPointInPath(shape.area, e.offsetX, e.offsetY)){
-            switch(shape.type){
-              case "circle":
-                canvasGlobal.clearRect(shape.x-(0.5*shape.height)-1 - shape.stWi,shape.y-(0.5*shape.height)-1 - shape.stWi,shape.width+2 + 2*shape.stWi,shape.height+2 + 2*shape.stWi);
 
-                break;
-              default:
-                canvasGlobal.clearRect(shape.x-1 - shape.stWi,shape.y-1 - shape.stWi,shape.width+2 +2*shape.stWi,shape.height+2 + 2*shape.stWi);
-                break;
-            }
             shape.is_filled = true;
-            shape.draw(canvasGlobal);
+            shape.draw(canvasGlobal,fillcolor);
 
 
           }
@@ -245,14 +239,14 @@ export class AppComponent {
 
 
     var circle: shape = this.factory.create("circle");
-    circle.draw(canvasGlobal);
+    circle.draw(canvasGlobal,"");
     shapes.push(circle);
   }
   create_rect(){
     var boardGlobal = (<HTMLCanvasElement>document.getElementById("board"));
     var canvasGlobal = boardGlobal.getContext("2d")!;
     var rect: shape = this.factory.create("rect");
-    rect.draw(canvasGlobal);
+    rect.draw(canvasGlobal,"");
     shapes.push(rect);
 
   }
@@ -260,7 +254,7 @@ export class AppComponent {
     var boardGlobal = (<HTMLCanvasElement>document.getElementById("board"));
     var canvasGlobal = boardGlobal.getContext("2d")!;
     var square: shape = this.factory.create("square");
-    square.draw(canvasGlobal);
+    square.draw(canvasGlobal,"");
     shapes.push(square);
 
   }
@@ -328,17 +322,17 @@ export class AppComponent {
         }
         shapes[temp_shape].x = e.offsetX;
         shapes[temp_shape].y = e.offsetY;
-        shapes[temp_shape].draw(canvasGlobal)
+        shapes[temp_shape].draw(canvasGlobal,"")
       }
       for(var i = 0; i < shapes.length; i++){
-        shapes[i].draw(canvasGlobal);
+        shapes[i].draw(canvasGlobal,"");
       }
     });
 
     boardGlobal.addEventListener("mouseup", e => {
       is_selected = false;
       for(var i = 0; i < shapes.length; i++){
-        shapes[i].draw(canvasGlobal);
+        shapes[i].draw(canvasGlobal,"");
       }
     });
 
@@ -402,7 +396,7 @@ export class AppComponent {
           }
           oldx = e.offsetX;
           oldy = e.offsetY;
-          shapes[temp_shape].draw(canvasGlobal);
+          shapes[temp_shape].draw(canvasGlobal,"");
 
         }
         if(shapes[temp_shape].type == 'square'){
@@ -416,7 +410,7 @@ export class AppComponent {
           }
           oldx = e.offsetX;
           oldy = e.offsetY;
-          shapes[temp_shape].draw(canvasGlobal);
+          shapes[temp_shape].draw(canvasGlobal,"");
         }
         if(shapes[temp_shape].type == 'rect'){
           if(e.offsetX > oldx && e.offsetY > oldy){
@@ -429,18 +423,18 @@ export class AppComponent {
           }
           oldx = e.offsetX;
           oldy = e.offsetY;
-          shapes[temp_shape].draw(canvasGlobal);
+          shapes[temp_shape].draw(canvasGlobal,"");
         }
       }
       for(var i = 0; i < shapes.length; i++){
-        shapes[i].draw(canvasGlobal);
+        shapes[i].draw(canvasGlobal,"");
       }
     });
 
     boardGlobal.addEventListener("mouseup", e => {
       is_selected = false;
       for(var i = 0; i < shapes.length; i++){
-        shapes[i].draw(canvasGlobal);
+        shapes[i].draw(canvasGlobal,"");
       }
 
     });
