@@ -1,4 +1,7 @@
 import { Component } from '@angular/core';
+import { range } from 'rxjs';
+
+var serial =range(1,100000000)
 
 
  //container to hold all different shapes on it
