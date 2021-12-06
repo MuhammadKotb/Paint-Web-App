@@ -1,4 +1,7 @@
 import { Component } from '@angular/core';
+import { range } from 'rxjs';
+
+var serial =range(1,100000000)
 
 
  //container to hold all different shapes on it
@@ -8,6 +11,7 @@ var remove_flag :boolean = false;
 var move_flag :boolean = false;
 var resize_flag :boolean = false;
 var fill_flag :boolean = false;
+var create_circle_sqaure : boolean = false
 
 var strokeColor:string = 'black';
 var strokeWidth:number = 3;
@@ -32,7 +36,7 @@ interface shape{
   type:String;
   is_filled:boolean;
 
-  draw(canvasGlobal:CanvasRenderingContext2D,fillcolor:string):void;
+  draw(canvasGlobal:CanvasRenderingContext2D,fillcolor:string, x:number, y:number):void;
 
 }
 
@@ -49,6 +53,9 @@ class factory{
         break;
       case "square":
         shape = new square();
+        break;
+      case "ellipse":
+        shape = new ellipse();
         break;
       default:
         throw new Error;
@@ -71,28 +78,28 @@ class circle implements shape{
   area: Path2D = new Path2D;
   is_filled = false
 
-	draw(canvasGlobal:CanvasRenderingContext2D,fillcolor:string) {
+	draw(canvasGlobal:CanvasRenderingContext2D,fillcolor:string, x:number, y:number) {
     if(this.is_filled){
       if(fillcolor != ""){
         this.fiCo = fillcolor
 
       }
       this.area = new Path2D
-      this.area.arc(this.x, this.y, 0.5*this.width, 0, 2*Math.PI);
+      this.area.arc(x, y, 0.5*this.width, 0, 2*Math.PI);
       canvasGlobal.beginPath();
       canvasGlobal.strokeStyle = this.stCo;
       canvasGlobal.lineWidth = this.stWi;
       canvasGlobal.fillStyle = this.fiCo;
-      canvasGlobal.arc(this.x, this.y, 0.5*this.width, 0, 2*Math.PI);
+      canvasGlobal.arc(x, y, 0.5*this.width, 0, 2*Math.PI);
       canvasGlobal.fill();
       canvasGlobal.stroke();
     }else{
       this.area = new Path2D
-      this.area.arc(this.x, this.y, 0.5*this.width, 0, 2*Math.PI);
+      this.area.arc(x, y, 0.5*this.width, 0, 2*Math.PI);
       canvasGlobal.beginPath();
       canvasGlobal.strokeStyle = this.stCo;
       canvasGlobal.lineWidth = this.stWi;
-      canvasGlobal.arc(this.x, this.y, 0.5*this.width, 0, 2*Math.PI);
+      canvasGlobal.arc(x, y, 0.5*this.width, 0, 2*Math.PI);
       canvasGlobal.stroke();
     }
 
@@ -115,28 +122,28 @@ class rect implements shape{
   area: Path2D = new Path2D;
   is_filled = false
 
-  draw(canvasGlobal:CanvasRenderingContext2D,fillcolor:string) {
+  draw(canvasGlobal:CanvasRenderingContext2D,fillcolor:string, x:number, y:number) {
     if(this.is_filled){
       if(fillcolor != ""){
         this.fiCo = fillcolor
 
       }
       this.area = new Path2D
-      this.area.rect(this.x,this.y,this.width, this.height);
+      this.area.rect(x, y,this.width, this.height);
       canvasGlobal.strokeStyle = this.stCo;
       canvasGlobal.lineWidth = this.stWi;
       canvasGlobal.fillStyle = this.fiCo;
       canvasGlobal.beginPath();
-      canvasGlobal.rect(this.x,this.y,this.width, this.height);
+      canvasGlobal.rect(x, y,this.width, this.height);
       canvasGlobal.fill()
       canvasGlobal.stroke();
     }else{
       this.area = new Path2D
-      this.area.rect(this.x,this.y,this.width, this.height);
+      this.area.rect(x, y,this.width, this.height);
       canvasGlobal.strokeStyle = this.stCo;
       canvasGlobal.lineWidth = this.stWi;
       canvasGlobal.beginPath();
-      canvasGlobal.rect(this.x,this.y,this.width, this.height);
+      canvasGlobal.rect(x, y,this.width, this.height);
       canvasGlobal.stroke();
     }
 
@@ -157,28 +164,67 @@ class square implements shape{
   area: Path2D = new Path2D;
   is_filled = false
 
-	draw(canvasGlobal:CanvasRenderingContext2D,fillcolor:string) {
+	draw(canvasGlobal:CanvasRenderingContext2D,fillcolor:string, x:number, y:number) {
     if(this.is_filled){
       if(fillcolor != ""){
         this.fiCo = fillcolor
 
       }
       this.area = new Path2D
-      this.area.rect(this.x,this.y,this.width, this.width);
+      this.area.rect(x, y,this.width, this.width);
       canvasGlobal.strokeStyle = this.stCo;
       canvasGlobal.lineWidth = this.stWi;
       canvasGlobal.fillStyle = this.fiCo;
       canvasGlobal.beginPath();
-      canvasGlobal.rect(this.x,this.y,this.width, this.width);
+      canvasGlobal.rect(x, y,this.width, this.width);
       canvasGlobal.fill()
       canvasGlobal.stroke();
     }else{
       this.area = new Path2D
-      this.area.rect(this.x,this.y,this.width, this.width);
+      this.area.rect(x, y,this.width, this.width);
       canvasGlobal.strokeStyle = this.stCo;
       canvasGlobal.lineWidth = this.stWi;
       canvasGlobal.beginPath();
-      canvasGlobal.rect(this.x,this.y,this.width, this.width);
+      canvasGlobal.rect(x, y,this.width, this.width);
+      canvasGlobal.stroke();
+    }
+
+	}
+}
+class ellipse implements shape{
+	x = getRandomInt(124,1340);
+	y = getRandomInt(70,580);
+	width = 100;
+  height = 70;
+  fiCo = "";
+  stCo = strokeColor;
+  stWi = strokeWidth;
+  type = "ellipse";
+  area: Path2D = new Path2D;
+  is_filled = false
+
+	draw(canvasGlobal:CanvasRenderingContext2D,fillcolor:string, x:number, y:number) {
+    if(this.is_filled){
+      if(fillcolor != ""){
+        this.fiCo = fillcolor
+
+      }
+      this.area = new Path2D
+      this.area.ellipse(x, y,this.width/2, this.height/2, 0, 0, 2*Math.PI);
+      canvasGlobal.strokeStyle = this.stCo;
+      canvasGlobal.lineWidth = this.stWi;
+      canvasGlobal.fillStyle = this.fiCo;
+      canvasGlobal.beginPath();
+      canvasGlobal.ellipse(x, y,this.width/2, this.height/2, 0, 0, 2*Math.PI);
+      canvasGlobal.fill()
+      canvasGlobal.stroke();
+    }else{
+      this.area = new Path2D
+      this.area.ellipse(x, y,this.width/2, this.height/2, 0, 0, 2*Math.PI);
+      canvasGlobal.strokeStyle = this.stCo;
+      canvasGlobal.lineWidth = this.stWi;
+      canvasGlobal.beginPath();
+      canvasGlobal.ellipse(x, y,this.width/2, this.height/2, 0, 0, 2*Math.PI);
       canvasGlobal.stroke();
     }
 
@@ -195,6 +241,7 @@ class square implements shape{
 export class AppComponent {
   factory :factory = new factory();
   title = 'Front-End';
+
   confirm_stroke() {
     var sc = <HTMLInputElement>document.getElementById("stroke_color");
     strokeColor = sc.value;
@@ -216,7 +263,7 @@ export class AppComponent {
           if(canvasGlobal.isPointInPath(shape.area, e.offsetX, e.offsetY)){
 
             shape.is_filled = true;
-            shape.draw(canvasGlobal,fillcolor);
+            shape.draw(canvasGlobal,fillcolor, shape.x, shape.y);
 
 
           }
@@ -233,20 +280,36 @@ export class AppComponent {
     }
   }
 
+
   create_circle() {
     var boardGlobal = (<HTMLCanvasElement>document.getElementById("board"));
     var canvasGlobal = boardGlobal.getContext("2d")!;
 
 
     var circle: shape = this.factory.create("circle");
-    circle.draw(canvasGlobal,"");
-    shapes.push(circle);
+
+
+    boardGlobal.addEventListener("mousedown", e=>{
+      circle.x = e.offsetX;
+      circle.y = e.offsetY;
+      circle.draw(canvasGlobal, "", circle.x, circle.y);
+      boardGlobal.addEventListener("mousedown", w=>{
+        return;
+      })
+      return;
+
+    });
+
+
+
+
+
   }
   create_rect(){
     var boardGlobal = (<HTMLCanvasElement>document.getElementById("board"));
     var canvasGlobal = boardGlobal.getContext("2d")!;
     var rect: shape = this.factory.create("rect");
-    rect.draw(canvasGlobal,"");
+    rect.draw(canvasGlobal,"", rect.x, rect.y);
     shapes.push(rect);
 
   }
@@ -254,9 +317,19 @@ export class AppComponent {
     var boardGlobal = (<HTMLCanvasElement>document.getElementById("board"));
     var canvasGlobal = boardGlobal.getContext("2d")!;
     var square: shape = this.factory.create("square");
-    square.draw(canvasGlobal,"");
+    square.draw(canvasGlobal,"", square.x, square.y);
     shapes.push(square);
 
+  }
+  create_ellipse(){
+    var boardGlobal = (<HTMLCanvasElement>document.getElementById("board"));
+    var canvasGlobal = boardGlobal.getContext("2d")!;
+    var ellipse: shape = this.factory.create("ellipse");
+    ellipse.draw(canvasGlobal,"", ellipse.x, ellipse.y);
+    shapes.push(ellipse);
+
+
+    console.log(shapes);
   }
 
   remove(){
@@ -267,9 +340,16 @@ export class AppComponent {
       if(remove_flag){
         for (var shape of shapes){
           if(canvasGlobal.isPointInPath(shape.area, event.offsetX, event.offsetY)){
+            console.log(event.offsetX);
+            console.log(event.offsetY);
             switch(shape.type){
               case "circle":
                 canvasGlobal.clearRect(shape.x-(0.5*shape.height)-1 - shape.stWi,shape.y-(0.5*shape.height)-1 - shape.stWi,shape.width+2 + 2*shape.stWi,shape.height+2 + 2*shape.stWi);
+                shapes = shapes.filter(obj => obj !== shape)
+
+                break;
+              case "ellipse":
+                canvasGlobal.clearRect(shape.x-(0.5*shape.width)-1 - shape.stWi,shape.y-(0.5*shape.height)-1 - shape.stWi,shape.width+2 + 2*shape.stWi,shape.height+2 + 2*shape.stWi);
                 shapes = shapes.filter(obj => obj !== shape)
 
                 break;
@@ -279,10 +359,13 @@ export class AppComponent {
                 break;
             }
             for(var i = 0; i < shapes.length; i++){
-              shapes[i].draw(canvasGlobal,"");
+              shapes[i].draw(canvasGlobal,"",shapes[i].x,shapes[i].y);
             }
           }
         }
+      }
+      for(var i = 0; i < shapes.length; i++){
+        shapes[i].draw(canvasGlobal,"", shapes[i].x, shapes[i].y);
       }
     });
     if(remove_flag){
@@ -319,23 +402,27 @@ export class AppComponent {
             canvasGlobal.clearRect(shapes[temp_shape].x-(0.5*shapes[temp_shape].height)-1 - shapes[temp_shape].stWi,shapes[temp_shape].y-(0.5*shapes[temp_shape].height)-1 - shapes[temp_shape].stWi,shapes[temp_shape].width+2 +2*shapes[temp_shape].stWi,shapes[temp_shape].height+2 + 2*shapes[temp_shape].stWi);
 
             break;
+          case "ellipse":
+            canvasGlobal.clearRect(shapes[temp_shape].x-(0.5*shapes[temp_shape].width)-1 - shapes[temp_shape].stWi,shapes[temp_shape].y-(0.5*shapes[temp_shape].height)-1 - shapes[temp_shape].stWi,shapes[temp_shape].width+2 +2*shapes[temp_shape].stWi,shapes[temp_shape].height+2 + 2*shapes[temp_shape].stWi);
+            break;
           default:
             canvasGlobal.clearRect(shapes[temp_shape].x-1 - shapes[temp_shape].stWi,shapes[temp_shape].y-1 - shapes[temp_shape].stWi,shapes[temp_shape].width+2 + 2*shapes[temp_shape].stWi,shapes[temp_shape].height+2 + 2*shapes[temp_shape].stWi);
             break;
         }
+
         shapes[temp_shape].x = e.offsetX;
         shapes[temp_shape].y = e.offsetY;
-        shapes[temp_shape].draw(canvasGlobal,"")
+        shapes[temp_shape].draw(canvasGlobal,"", shapes[temp_shape].x,  shapes[temp_shape].y)
       }
       for(var i = 0; i < shapes.length; i++){
-        shapes[i].draw(canvasGlobal,"");
+        shapes[i].draw(canvasGlobal,"", shapes[i].x, shapes[i].y);
       }
     });
 
     boardGlobal.addEventListener("mouseup", e => {
       is_selected = false;
       for(var i = 0; i < shapes.length; i++){
-        shapes[i].draw(canvasGlobal,"");
+        shapes[i].draw(canvasGlobal,"",  shapes[i].x, shapes[i].y);
       }
     });
 
@@ -380,6 +467,9 @@ export class AppComponent {
           case "circle":
             canvasGlobal.clearRect(shapes[temp_shape].x-(0.5*shapes[temp_shape].height)-1 - shapes[temp_shape].stWi ,shapes[temp_shape].y-(0.5*shapes[temp_shape].height)-1 - shapes[temp_shape].stWi,shapes[temp_shape].width+2 + 2*shapes[temp_shape].stWi,shapes[temp_shape].height+2 + 2*shapes[temp_shape].stWi);
             break;
+          case "ellipse":
+            canvasGlobal.clearRect(shapes[temp_shape].x-(0.5*shapes[temp_shape].height)-1 - shapes[temp_shape].stWi ,shapes[temp_shape].y-(0.5*shapes[temp_shape].height)-1 - shapes[temp_shape].stWi,shapes[temp_shape].width+2 + 2*shapes[temp_shape].stWi,shapes[temp_shape].height+2 + 2*shapes[temp_shape].stWi);
+            break;
           default:
             canvasGlobal.clearRect(shapes[temp_shape].x-1 - shapes[temp_shape].stWi,shapes[temp_shape].y-1 - shapes[temp_shape].stWi,shapes[temp_shape].width+2 + 2*shapes[temp_shape].stWi,shapes[temp_shape].height+2 + 2*shapes[temp_shape].stWi);
             break;
@@ -390,18 +480,15 @@ export class AppComponent {
             shapes[temp_shape].width += 2;
             shapes[temp_shape].height += 2;
           }
-          else if(e.offsetX < oldx && e.offsetY < oldy){
-            if(shapes[temp_shape].width > 2 ||shapes[temp_shape].height > 2 ){
+          else if(e.offsetX < oldx || e.offsetY < oldy){
+            if(shapes[temp_shape].width > 2 && shapes[temp_shape].height > 2 ){
               shapes[temp_shape].width -= 2;
               shapes[temp_shape].height -= 2;
             }
-
-
-
           }
           oldx = e.offsetX;
           oldy = e.offsetY;
-          shapes[temp_shape].draw(canvasGlobal,"");
+          shapes[temp_shape].draw(canvasGlobal,"", shapes[temp_shape].x, shapes[temp_shape].y);
 
         }
         if(shapes[temp_shape].type == 'square'){
@@ -410,15 +497,15 @@ export class AppComponent {
             shapes[temp_shape].height += 2;
 
           }
-          else if(e.offsetX < oldx && e.offsetY < oldy){
-            if(shapes[temp_shape].width > 2 || shapes[temp_shape].height > 2 ){
+          else if(e.offsetX < oldx || e.offsetY < oldy){
+            if(shapes[temp_shape].width > 2 && shapes[temp_shape].height > 2 ){
               shapes[temp_shape].width -= 2;
               shapes[temp_shape].height -= 2;
             }
           }
           oldx = e.offsetX;
           oldy = e.offsetY;
-          shapes[temp_shape].draw(canvasGlobal,"");
+          shapes[temp_shape].draw(canvasGlobal,"", shapes[temp_shape].x, shapes[temp_shape].y);
         }
         if(shapes[temp_shape].type == 'rect'){
           if(e.offsetX > oldx && e.offsetY > oldy){
@@ -433,18 +520,33 @@ export class AppComponent {
           }
           oldx = e.offsetX;
           oldy = e.offsetY;
-          shapes[temp_shape].draw(canvasGlobal,"");
+          shapes[temp_shape].draw(canvasGlobal,"", shapes[temp_shape].x, shapes[temp_shape].y);
+        }
+        if(shapes[temp_shape].type == 'ellipse'){
+          if(e.offsetX > oldx && e.offsetY > oldy){
+            shapes[temp_shape].width +=2;
+            shapes[temp_shape].height += 2;
+          }
+          else if(e.offsetX < oldx && e.offsetY < oldy){
+            if(shapes[temp_shape].width > 2 && shapes[temp_shape].height > 2 ){
+              shapes[temp_shape].width -= 2;
+              shapes[temp_shape].height -= 2;
+            }
+          }
+          oldx = e.offsetX;
+          oldy = e.offsetY;
+          shapes[temp_shape].draw(canvasGlobal,"", shapes[temp_shape].x, shapes[temp_shape].y);
         }
       }
       for(var i = 0; i < shapes.length; i++){
-        shapes[i].draw(canvasGlobal,"");
+        shapes[i].draw(canvasGlobal,"", shapes[i].x, shapes[i].y);
       }
     });
 
     boardGlobal.addEventListener("mouseup", e => {
       is_selected = false;
       for(var i = 0; i < shapes.length; i++){
-        shapes[i].draw(canvasGlobal,"");
+        shapes[i].draw(canvasGlobal,"", shapes[i].x, shapes[i].y);
       }
 
     });
