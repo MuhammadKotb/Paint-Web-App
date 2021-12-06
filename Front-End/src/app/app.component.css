@@ -18,6 +18,7 @@
   height: 47px;
   border-radius: 10px;
   background-color: rgb(246, 129, 60);
+  border-color: rgb(238, 234, 232);
   transition-duration: 0.3s;
   color: rgb(227, 231, 224);
   font-size: 18px;
@@ -58,11 +59,11 @@
   width: 35px;
 }
 .htool_bar input[type = "button"]{
-  width: 60px;
+  width: 120px;
   height: 30px;
   border-radius: 4px;
-  background-color: rgb(11, 19, 54);
-  border-color: rgb(246, 129, 60);
+  background-color: rgb(246, 129, 60);
+  border-color: rgb(238, 234, 232);
 
   transition-duration: 0.3s;
   color: rgb(227, 231, 224);
