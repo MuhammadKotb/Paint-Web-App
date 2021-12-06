@@ -14,6 +14,7 @@ var resize_flag :boolean = false;
 var fill_flag :boolean = false;
 var copy_flag : boolean = false;
 var found : boolean = false;
+var create_circle_flag : boolean = false;
 
 var strokeColor:string = 'black';
 var strokeWidth:number = 3;
@@ -56,8 +57,11 @@ class factory{
       case "square":
         shape = new square();
         break;
-      case "ellipse":
-        shape = new ellipse();
+      case "triangle":
+        shape = new triangle();
+        break;
+      case "line":
+        shape = new line();
         break;
       default:
         throw new Error;
@@ -66,7 +70,37 @@ class factory{
   }
 }
 
+
 //---------------------------------------------------------------------------//
+
+class line implements shape{
+  x = getRandomInt(124,1380);
+	y = getRandomInt(70,580);
+  width = 60;
+	height = 2;
+  type = "line";
+  fiCo = "";
+  stCo = strokeColor;
+  stWi = strokeWidth;
+  area: Path2D = new Path2D;
+  is_filled = false
+
+  draw(canvasGlobal:CanvasRenderingContext2D,fillcolor:string) {
+    
+      this.area = new Path2D
+      this.area.moveTo(this.x, this.y);
+      this.area.lineTo(this.x + this.width, this.y);
+      this.area.closePath;
+      canvasGlobal.beginPath();
+      canvasGlobal.strokeStyle = this.stCo;
+      canvasGlobal.lineWidth = this.stWi;
+      canvasGlobal.moveTo(this.x, this.y);
+      canvasGlobal.lineTo(this.x + this.width, this.y);
+      canvasGlobal.closePath;
+      canvasGlobal.stroke();
+    
+  }
+}
 
 class circle implements shape{
 	x = getRandomInt(124,1380);
@@ -232,6 +266,57 @@ class ellipse implements shape{
 
 	}
 }
+class triangle implements shape {
+  x = getRandomInt(124,1340);
+	y = getRandomInt(70,580);
+  width = 60;
+  height = (Math.sqrt(3)/2) * this.width;
+  fiCo = "";
+  stCo = strokeColor;
+  stWi = strokeWidth;
+  area: Path2D = new Path2D;
+  type = "triangle";
+  is_filled = false
+  draw(canvasGlobal: CanvasRenderingContext2D, fillcolor: string): void {
+    if(this.is_filled){
+      if(fillcolor != ""){
+        this.fiCo = fillcolor
+
+      }
+      this.area = new Path2D
+      this.area.moveTo(this.x, this.y);
+      this.area.lineTo(this.x - this.width/2, this.y + this.height);
+      this.area.lineTo(this.x + this.width/2, this.y + this.height);
+      this.area.lineTo(this.x,this.y);
+      canvasGlobal.strokeStyle = this.stCo;
+      canvasGlobal.lineWidth = this.stWi;
+      canvasGlobal.fillStyle = this.fiCo;
+      canvasGlobal.beginPath();
+      canvasGlobal.moveTo(this.x, this.y);
+      canvasGlobal.lineTo(this.x - this.width/2, this.y + this.height);
+      canvasGlobal.lineTo(this.x + this.width/2, this.y + this.height);
+      canvasGlobal.lineTo(this.x,this.y);
+      canvasGlobal.fill()
+      canvasGlobal.stroke();
+    }else{
+      this.area = new Path2D
+      this.area.moveTo(this.x, this.y);
+      this.area.lineTo(this.x - this.width/2, this.y + this.height);
+      this.area.lineTo(this.x + this.width/2, this.y + this.height);
+      this.area.lineTo(this.x,this.y);
+      canvasGlobal.strokeStyle = this.stCo;
+      canvasGlobal.lineWidth = this.stWi;
+      canvasGlobal.beginPath();
+      canvasGlobal.moveTo(this.x, this.y);
+      canvasGlobal.lineTo(this.x - this.width/2, this.y + this.height);
+      canvasGlobal.lineTo(this.x + this.width/2, this.y + this.height);
+      canvasGlobal.lineTo(this.x,this.y);
+      canvasGlobal.stroke();
+    }
+  
+    
+  }
+}
 
 //---------------------------------------------------------------------------//
 
@@ -282,11 +367,29 @@ export class AppComponent {
     }
   }
 
+  create_line(){
+    var boardGlobal = (<HTMLCanvasElement>document.getElementById("board"));
+    var canvasGlobal = boardGlobal.getContext("2d")!;
+    var line: shape = this.factory.create("line");
+    line.draw(canvasGlobal,"");
+    shapes.push(line);
+  }
+  create_triangle(){
+    var boardGlobal = (<HTMLCanvasElement>document.getElementById("board"));
+    var canvasGlobal = boardGlobal.getContext("2d")!;
+    var triangle: shape = this.factory.create("triangle");
+    triangle.draw(canvasGlobal,"");
+    shapes.push(triangle);
+
+  }
+
 
   create_circle() {
     var boardGlobal = (<HTMLCanvasElement>document.getElementById("board"));
     var canvasGlobal = boardGlobal.getContext("2d")!;
     var circle: shape = this.factory.create("circle");
+    
+
     circle.draw(canvasGlobal, "");
     shapes.push(circle);
   }
@@ -338,6 +441,15 @@ export class AppComponent {
                 shapes = shapes.filter(obj => obj !== shape)
 
                 break;
+              case "triangle":
+                canvasGlobal.clearRect(shape.x-(shape.width/2) - shape.stWi, shape.y - shape.stWi, shape.width + shape.stWi*2, shape.height + shape.stWi*2);
+                shapes = shapes.filter(obj => obj !== shape)
+                break;
+              case "line":
+                console.log(shape.type);
+                canvasGlobal.clearRect(shape.x-shape.stWi*2, shape.y - shape.stWi*2, shape.width + shape.stWi*2, shape.height + shape.stWi*3);
+                shapes = shapes.filter(obj => obj !== shape);
+                break;
               default:
                 canvasGlobal.clearRect(shape.x-1 - shape.stWi,shape.y-1 - shape.stWi,shape.width+2 +2*shape.stWi,shape.height+2 + 2*shape.stWi);
                 shapes = shapes.filter(obj => obj !== shape)
@@ -384,9 +496,14 @@ export class AppComponent {
     boardGlobal.addEventListener("mousemove", e => {
       if(move_flag && is_selected){
         switch(shapes[temp_shape].type){
+          case "line":
+            canvasGlobal.clearRect(shapes[temp_shape].x-shapes[temp_shape].stWi*2, shapes[temp_shape].y - shapes[temp_shape].stWi*2, shapes[temp_shape].width + shapes[temp_shape].stWi*2, shapes[temp_shape].height + shapes[temp_shape].stWi*3);
+            break;
           case "circle":
             canvasGlobal.clearRect(shapes[temp_shape].x-(0.5*shapes[temp_shape].height)-1 - shapes[temp_shape].stWi,shapes[temp_shape].y-(0.5*shapes[temp_shape].height)-1 - shapes[temp_shape].stWi,shapes[temp_shape].width+2 +2*shapes[temp_shape].stWi,shapes[temp_shape].height+2 + 2*shapes[temp_shape].stWi);
-
+            break;
+          case "triangle":
+            canvasGlobal.clearRect(shapes[temp_shape].x-(shapes[temp_shape].width/2) - shapes[temp_shape].stWi, shapes[temp_shape].y - shapes[temp_shape].stWi, shapes[temp_shape].width + shapes[temp_shape].stWi*2, shapes[temp_shape].height + shapes[temp_shape].stWi*2);
             break;
           case "ellipse":
             canvasGlobal.clearRect(shapes[temp_shape].x-(0.5*shapes[temp_shape].width)-1 - shapes[temp_shape].stWi,shapes[temp_shape].y-(0.5*shapes[temp_shape].height)-1 - shapes[temp_shape].stWi,shapes[temp_shape].width+2 +2*shapes[temp_shape].stWi,shapes[temp_shape].height+2 + 2*shapes[temp_shape].stWi);
@@ -468,10 +585,16 @@ export class AppComponent {
 
         switch(shapes[temp_shape].type){
 
+          case "line":
+            canvasGlobal.clearRect(shapes[temp_shape].x-shapes[temp_shape].stWi*2, shapes[temp_shape].y - shapes[temp_shape].stWi*2, shapes[temp_shape].width + shapes[temp_shape].stWi*2, shapes[temp_shape].height + shapes[temp_shape].stWi*3);
+            break;
           case "circle":
             canvasGlobal.clearRect(shapes[temp_shape].x-(0.5*shapes[temp_shape].height)-1 - shapes[temp_shape].stWi,shapes[temp_shape].y-(0.5*shapes[temp_shape].height)-1 - shapes[temp_shape].stWi,shapes[temp_shape].width+2 +2*shapes[temp_shape].stWi,shapes[temp_shape].height+2 + 2*shapes[temp_shape].stWi);
-
             break;
+          case "triangle":
+            canvasGlobal.clearRect(shapes[temp_shape].x-(shapes[temp_shape].width/2) - shapes[temp_shape].stWi, shapes[temp_shape].y - shapes[temp_shape].stWi, shapes[temp_shape].width + shapes[temp_shape].stWi*2, shapes[temp_shape].height + shapes[temp_shape].stWi*2);
+            break;
+       
           case "ellipse":
             canvasGlobal.clearRect(shapes[temp_shape].x-(0.5*shapes[temp_shape].width)-1 - shapes[temp_shape].stWi,shapes[temp_shape].y-(0.5*shapes[temp_shape].height)-1 - shapes[temp_shape].stWi,shapes[temp_shape].width+2 +2*shapes[temp_shape].stWi,shapes[temp_shape].height+2 + 2*shapes[temp_shape].stWi);
             break;
@@ -540,15 +663,32 @@ export class AppComponent {
     boardGlobal.addEventListener("mousemove", e => {
       if(resize_flag && is_selected){
         switch(shapes[temp_shape].type){
+          case "line":
+            canvasGlobal.clearRect(shapes[temp_shape].x-shapes[temp_shape].stWi*2, shapes[temp_shape].y - shapes[temp_shape].stWi*2, shapes[temp_shape].width + shapes[temp_shape].stWi*2, shapes[temp_shape].height + shapes[temp_shape].stWi*3);
+            break;
           case "circle":
             canvasGlobal.clearRect(shapes[temp_shape].x-(0.5*shapes[temp_shape].height)-1 - shapes[temp_shape].stWi ,shapes[temp_shape].y-(0.5*shapes[temp_shape].height)-1 - shapes[temp_shape].stWi,shapes[temp_shape].width+2 + 2*shapes[temp_shape].stWi,shapes[temp_shape].height+2 + 2*shapes[temp_shape].stWi);
             break;
+          case "triangle":
+          canvasGlobal.clearRect(shapes[temp_shape].x-(shapes[temp_shape].width/2) - shapes[temp_shape].stWi, shapes[temp_shape].y - shapes[temp_shape].stWi, shapes[temp_shape].width + shapes[temp_shape].stWi*2, shapes[temp_shape].height + shapes[temp_shape].stWi*2);
+          break;
           case "ellipse":
             canvasGlobal.clearRect(shapes[temp_shape].x-(0.5*shapes[temp_shape].height)-1 - shapes[temp_shape].stWi ,shapes[temp_shape].y-(0.5*shapes[temp_shape].height)-1 - shapes[temp_shape].stWi,shapes[temp_shape].width+2 + 2*shapes[temp_shape].stWi,shapes[temp_shape].height+2 + 2*shapes[temp_shape].stWi);
             break;
           default:
             canvasGlobal.clearRect(shapes[temp_shape].x-1 - shapes[temp_shape].stWi,shapes[temp_shape].y-1 - shapes[temp_shape].stWi,shapes[temp_shape].width+2 + 2*shapes[temp_shape].stWi,shapes[temp_shape].height+2 + 2*shapes[temp_shape].stWi);
             break;
+        }
+        if(shapes[temp_shape].type == 'line'){
+          if(e.offsetX > oldx){
+            shapes[temp_shape].width +=2;
+          }
+          else if(e.offsetX < oldx ){
+            shapes[temp_shape].width -=2;
+          }
+          oldx = e.offsetX;
+          oldy = e.offsetY;
+          shapes[temp_shape].draw(canvasGlobal,"");
         }
         if(shapes[temp_shape].type == 'circle'){
           if(e.offsetX > oldx && e.offsetY > oldy){
@@ -598,6 +738,23 @@ export class AppComponent {
           oldy = e.offsetY;
           shapes[temp_shape].draw(canvasGlobal,"");
         }
+        if(shapes[temp_shape].type == 'triangle'){
+          if(e.offsetX > oldx && e.offsetY > oldy){
+
+            shapes[temp_shape].width += 2;
+            shapes[temp_shape].height += 2;
+          }
+          else if(e.offsetX < oldx && e.offsetY < oldy){
+
+            shapes[temp_shape].width -= 2;
+            shapes[temp_shape].height -= 2;
+
+
+          }
+          oldx = e.offsetX;
+          oldy = e.offsetY;
+          shapes[temp_shape].draw(canvasGlobal,"");
+        }
         if(shapes[temp_shape].type == 'ellipse'){
           if(e.offsetX > oldx && e.offsetY > oldy){
             shapes[temp_shape].width +=2;
@@ -612,7 +769,7 @@ export class AppComponent {
           oldx = e.offsetX;
           oldy = e.offsetY;
           shapes[temp_shape].draw(canvasGlobal,"");
-          canvasGlobal.clearRect(65,120,1355,600);
+          canvasGlobal.clearRect(0,0,1380,675);
         }
       }
       for(var i = 0; i < shapes.length; i++){
