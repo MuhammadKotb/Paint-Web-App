@@ -32,6 +32,9 @@
 </div>
 <div class="htool_bar">
   <div>
+    <input type="button" id="pick_color" value="confirm" (click)="Pick_Color()">
+  </div>
+  <div>
     <input type = "color" id="fill_color" name="Fill Color" value = "#e66465">
     <label for="fill_color" >Fill Color</label>
   </div>
@@ -43,9 +46,7 @@
     <input type="number" id="stroke_width" name="Stroke Width" value = "3" min="0" max="100">
     <label for="stroke_width">Stroke Width</label>
   </div>
-  <div>
-    <input type="button" id="pick_color" value="pick_color" (click)="Pick_Color()">
-  </div>
+
 
 </div>
 
