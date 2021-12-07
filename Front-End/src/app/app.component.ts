@@ -441,7 +441,6 @@ export class AppComponent {
         shapes.push(line);
 
       }
-      console.log(shapes)
       line = null;
 
       document.getElementById("line")!.style.backgroundColor = "rgb(246, 129, 60)"
