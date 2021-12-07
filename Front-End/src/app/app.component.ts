@@ -1,4 +1,3 @@
-import { identifierModuleUrl, sharedStylesheetJitUrl } from '@angular/compiler';
 import { Component, OnInit } from '@angular/core';
 import { range } from 'rxjs';
 
