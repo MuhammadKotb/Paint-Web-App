@@ -1,0 +1,58 @@
+.btn-line button {
+    background-color: #F3F3F3; /* Green background */
+    border: 1px solid #BFBDBD; /* Green border */
+    color: black; /* White text */
+    cursor: pointer; /* Pointer/hand icon */
+    float: left; /* Float the buttons side by side */
+    font-size: 1em;
+    width: 5%;
+    height: 50px;
+    
+  }
+
+  /* Add a background color on hover */
+  .btn-line button:hover {
+    background-color: #BFBDBD;
+  }
+
+  .res{
+    background-color: #BFBDBD; 
+    color: black; 
+    cursor: pointer; 
+    font-size: 3em;
+    width: 20%;
+    height: 50px;
+    margin-left:40%;
+    text-align: right;
+  }
+
+  #mod,#CE,#C,#bs,#inv,#sq,#sqrt,#times,#div,#imes,#minus,#plus {
+    background-color: #E6D9D9; 
+  }
+
+  #mod:hover,#CE:hover,#C:hover,#bs:hover,#inv:hover,#sq:hover,#sqrt:hover,#times:hover,#div:hover,#imes:hover,#eq:hover,#minus:hover,#plus:hover {
+    background-color: #BFBDBD; 
+  }
+
+  #mod,#inv,#seven,#four,#three,#ai {
+    margin-left:40%;
+  }
+
+  #eq {
+    background-color: #1089F7; 
+  }
+
+  
+  .btn-line button:not(:last-child) {
+    border-right: none; /* Prevent double borders */
+  }
+  
+  /* Clear floats (clearfix hack) */
+  .btn-line:after {
+    content: "";
+    clear: both;
+    display: table;
+  }
+  
+  
+

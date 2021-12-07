@@ -1,0 +1,9 @@
+import java.util.ArrayList;
+
+public class BookShop {
+	private String shopName;
+	List <Book> books = new ArrayList<>();
+
+	
+	
+}

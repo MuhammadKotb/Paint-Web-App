@@ -1,0 +1,40 @@
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<div class="res">{{scrNo}}</div>
+<div class="btn-line">
+    <button (click)="op2Pressed('mod')" id="mod">%</button>
+    <button (click)="op1Pressed('bs')" id="CE">CE</button>
+    <button (click)="clear()" id="C">C</button>
+    <button (click)="bs()" id="bs"> <i class="material-icons">backspace</i></button>
+</div>
+<div class="btn-line">
+    <button (click)="op1Pressed('inv')" id="inv">^(-1)</button>
+    <button (click)="op1Pressed('sq')" id="sq">^2</button>
+    <button (click)="op1Pressed('sqrt')" id="sqrt">^(1/2)</button>
+    <button (click)="op2Pressed('/')" id="div">/</button>
+</div>
+<div class="btn-line">
+    <button (click)="numPressed('7')" id="seven">7</button>
+    <button (click)="numPressed('8')" id="eight">8</button>
+    <button (click)="numPressed('9')" id="nine">9</button>
+    <button (click)="op2Pressed('*')" id="times">*</button>
+</div>
+<div class="btn-line">
+    <button (click)="numPressed('4')" id="four">4</button>
+    <button (click)="numPressed('5')" id="five">5</button>
+    <button (click)="numPressed('6')" id="six">6</button>
+    <button (click)="op2Pressed('-')" id="minus">-</button>
+</div>
+<div class="btn-line">
+    <button (click)="numPressed('3')" id="three">3</button>
+    <button (click)="numPressed('2')" id="two">2</button>
+    <button (click)="numPressed('1')" id="one">1</button>
+    <button (click)="op2Pressed('plus')" id="plus">+</button>
+</div>
+<div class="btn-line">
+    <button (click)="op1Pressed('ai')" id="ai">-/+</button>
+    <button (click)="numPressed('0')" id="zero">0</button>
+    <button (click)="numPressed('.')" id="pt">.</button>
+    <button (click)="equal()" id="eq">=</button>
+</div>
+
+)

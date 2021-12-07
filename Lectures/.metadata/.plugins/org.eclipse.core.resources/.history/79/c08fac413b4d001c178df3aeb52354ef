@@ -1,0 +1,6 @@
+package Filter;
+import java.util.List;
+//build your criteria interface
+public interface Criteria {
+	public List<Person> meetCriteria (List<Person> people);
+}

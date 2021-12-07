@@ -1,0 +1,18 @@
+
+public class main {
+	public static void main(String args[]) throws CloneNotSupportedException{
+		BookShop bs = new BookShop();
+		bs.setShopName("Novelty");
+		bs.loadData();
+		bs.getBooks().remove(2);
+		
+		BookShop bs1 =/* used in shallow (BookShop)*/ bs.clone(); 
+
+		bs1.setShopName("Novelty2");
+		//bs1.loadData(); the long way without using prototype pattern
+		
+		System.out.println(bs);
+		System.out.println(bs1);
+
+	}
+}

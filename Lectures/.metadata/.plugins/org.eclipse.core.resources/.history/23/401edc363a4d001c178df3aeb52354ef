@@ -1,0 +1,28 @@
+package Filter;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class OrCriteria implements Criteria{
+	private Criteria criteria;
+	private Criteria criteria2;
+	
+	public OrCriteria(Criteria criteria, Criteria criteria2) {
+		super();
+		this.criteria = criteria;
+		this.criteria2 = criteria2;
+	}
+	
+	public List<Person> meetCriteria (List<Person> people){
+		List <Person> CriteriaPeople = criteria.meetCriteria(people);
+		List <Person> Criteria2People = criteria.meetCriteria(people);
+		for (Person p : people) {
+			if (!CriteriaPeople.contains(p) && Criteria2People.contains(p)) {
+				CriteriaPeople.add(p);
+			}
+		}
+		return CriteriaPeople;
+		
+	}
+
+}

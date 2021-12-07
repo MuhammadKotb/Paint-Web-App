@@ -1,0 +1,11 @@
+
+public interface Book extends Cloneable {
+	public String getName() ;
+	public void setName(String name) ;
+	
+	public Image getImage() ;
+	public void setImage(Image image) ;
+	
+	public int getStrength() ;
+	public void setStrength(int strength) ;
+} // class CharacterIF

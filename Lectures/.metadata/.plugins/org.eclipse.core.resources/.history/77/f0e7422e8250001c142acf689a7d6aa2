@@ -1,0 +1,9 @@
+import java.lang.String;
+//STEP 3: CREATE FACTORY TO SPECIFY DESIRED CLASS
+public class AbstractFactory {
+	//this class is a factory class that chooses which class we should return according to shape
+	public Shape getShape(String shapeType) {
+		
+		return null;
+	}
+}

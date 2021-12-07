@@ -1,0 +1,5 @@
+package delgationInterfaceTest;
+
+public interface ISoundBehaiviour {
+
+}

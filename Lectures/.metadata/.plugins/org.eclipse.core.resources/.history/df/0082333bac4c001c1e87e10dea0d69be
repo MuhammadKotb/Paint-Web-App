@@ -1,0 +1,9 @@
+
+public class Shop {
+	public static  void  main(String args[]) {
+		Phone p = new  Phone("IOS","lol",5.5,8,3100);
+		System.out.println(p);
+	}
+	
+	
+}

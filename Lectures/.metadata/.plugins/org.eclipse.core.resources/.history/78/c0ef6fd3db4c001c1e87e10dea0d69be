@@ -1,0 +1,9 @@
+
+public interface Book extends Cloneable {
+	private int bid;
+	private String bname;
+	public int getBid() {
+		return bid;
+	}
+	
+}

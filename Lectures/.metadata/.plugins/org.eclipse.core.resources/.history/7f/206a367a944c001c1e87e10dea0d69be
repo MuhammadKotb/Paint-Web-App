@@ -1,0 +1,8 @@
+
+public class Phone {
+	private String os;
+	private String processor;
+	private double screenSize;
+	private int battery;
+	private int camera;
+}

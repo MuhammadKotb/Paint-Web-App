@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename type &apos;Filter.AbdCriteria&apos; to &apos;AndCriteria&apos;&#x0D;&#x0A;- Original project: &apos;PartitioningTest&apos;&#x0D;&#x0A;- Original element: &apos;Filter.AbdCriteria&apos;&#x0D;&#x0A;- Renamed element: &apos;Filter.AndCriteria&apos;&#x0D;&#x0A;- Update references to refactored element&#x0D;&#x0A;- Update textual occurrences in comments and strings" description="Rename type &apos;AbdCriteria&apos;" flags="589830" id="org.eclipse.jdt.ui.rename.type" input="/src&lt;Filter{AbdCriteria.java[AbdCriteria" matchStrategy="1" name="AndCriteria" qualified="false" references="true" similarDeclarations="false" stamp="1637763959724" textual="false" version="1.0"/>
+</session>

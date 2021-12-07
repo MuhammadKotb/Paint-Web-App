@@ -1,0 +1,9 @@
+
+public class main {
+	public static void main(String args[]) {
+		BookShop bs = new BookShop();
+		bs.setShopName("Novelty");
+		bs.loadData();
+		System.out.println(bs);
+	}
+}

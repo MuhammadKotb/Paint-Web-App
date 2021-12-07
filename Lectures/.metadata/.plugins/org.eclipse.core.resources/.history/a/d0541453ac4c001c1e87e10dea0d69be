@@ -1,0 +1,9 @@
+
+public class Shop {
+	public static  void  main(String args[]) {
+		Phone p = new  PhoneBuilder().setOs("IOS").setRam(8);
+		System.out.println(p);
+	}
+	
+	
+}
