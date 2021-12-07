@@ -13,6 +13,25 @@ var move_flag :boolean = false;
 var resize_flag :boolean = false;
 var fill_flag :boolean = false;
 var copy_flag : boolean = false;
+var create_line_flag : boolean = false;
+var created_line : boolean = false;
+
+var create_circle_flag : boolean = false;
+var created_circle : boolean = false;
+
+var create_rect_flag : boolean = false;
+var created_rect : boolean = false;
+
+var create_square_flag : boolean = false;
+var created_square : boolean = false;
+
+var create_ellipse_flag : boolean = false;
+var created_ellipse : boolean = false;
+
+var create_triangle_flag : boolean = false;
+var created_triangle : boolean = false;
+
+
 var found : boolean = false;
 
 var strokeColor:string = 'black';
@@ -91,14 +110,14 @@ class line implements shape{
 
       this.area = new Path2D
       this.area.moveTo(this.x, this.y);
-      this.area.lineTo(this.x + this.width, this.y);
+      this.area.lineTo(this.width,  this.height);
       this.area.closePath;
       canvasGlobal.beginPath();
       canvasGlobal.strokeStyle = this.stCo;
       canvasGlobal.lineWidth = this.stWi;
       canvasGlobal.moveTo(this.x, this.y);
-      canvasGlobal.lineTo(this.x + this.width, this.y);
-      canvasGlobal.closePath;
+      canvasGlobal.lineTo(this.width, this.height);
+      canvasGlobal.closePath();
       canvasGlobal.stroke();
 
   }
@@ -370,55 +389,224 @@ export class AppComponent {
   }
 
   create_line(){
+    
+   
     var boardGlobal = (<HTMLCanvasElement>document.getElementById("board"));
     var canvasGlobal = boardGlobal.getContext("2d")!;
-    var line: shape = this.factory.create("line");
-    line.draw(canvasGlobal,"");
-    shapes.push(line);
+    var line :any= this.factory.create("line");
+    create_line_flag = true;
+    created_line = false;
+    var selectLine = false;
+    boardGlobal.addEventListener("mousedown",e=>{
+      
+      if(!created_line){
+
+        line.x = e.offsetX;
+        line.y = e.offsetY;
+        selectLine = true;
+        
+
+      }
+      for(var i = 0; i < shapes.length; i++){
+        shapes[i].draw(canvasGlobal,"");
+      }
+      console.log(shapes);
+    
+
+    });
+
+    boardGlobal.addEventListener("mousemove", e => {
+      if(!created_line && selectLine){
+        canvasGlobal.clearRect(line.x-line.stWi*2, line.y - line.stWi*2, line.width + line.stWi*3 - line.x, line.height + line.stWi*3 - line.y);
+        canvasGlobal.clearRect(0,0,1380,675);
+
+        line.width = e.offsetX;
+        line.height = e.offsetY;
+        line.draw(canvasGlobal,"");
+       
+      }
+      for(var i = 0; i < shapes.length; i++){
+        shapes[i].draw(canvasGlobal,"");
+      }
+     
+
+    
+    });
+    boardGlobal.addEventListener("mouseup", e => {
+      create_line_flag =false; 
+      created_line = true;
+      selectLine = false;
+      shapes.push(line);
+
+      line = null;
+
+      for(var i = 0; i < shapes.length; i++){
+        shapes[i].draw(canvasGlobal,"");
+      }
+
+
+     
+
+
+    });
+    if(create_line_flag){
+      document.getElementById("line")!.style.backgroundColor = "rgba(47, 24, 10, 0.856)"
+
+    }
   }
   create_triangle(){
     var boardGlobal = (<HTMLCanvasElement>document.getElementById("board"));
     var canvasGlobal = boardGlobal.getContext("2d")!;
-    var triangle: shape = this.factory.create("triangle");
-    triangle.draw(canvasGlobal,"");
-    shapes.push(triangle);
+    var triangle :any= this.factory.create("triangle");
+    create_triangle_flag = true;
+    created_triangle = false;
+    boardGlobal.addEventListener("mousedown",e=>{
+      if(!created_triangle){
+        triangle.x = e.offsetX;
+        triangle.y = e.offsetY;
+        triangle.draw(canvasGlobal,"");
+        shapes.push(triangle);
+        triangle = null;
+        created_triangle = true;
 
+      }
+    })
+    boardGlobal.addEventListener("mouseup",e=>{
+      create_triangle_flag =false;
+      created_triangle = true;
+
+
+      document.getElementById("triangle")!.style.backgroundColor = "rgb(246, 129, 60)"
+
+    })
+    if(create_triangle_flag){
+      document.getElementById("triangle")!.style.backgroundColor = "rgba(47, 24, 10, 0.856)"
+
+    }
   }
 
 
   create_circle() {
     var boardGlobal = (<HTMLCanvasElement>document.getElementById("board"));
     var canvasGlobal = boardGlobal.getContext("2d")!;
-    var circle: shape = this.factory.create("circle");
+    var circle :any= this.factory.create("circle");
+    create_circle_flag = true;
+    created_circle = false;
+    boardGlobal.addEventListener("mousedown",e=>{
+      if(!created_circle){
+        circle.x = e.offsetX;
+        circle.y = e.offsetY;
+        circle.draw(canvasGlobal,"");
+        shapes.push(circle);
+        circle = null;
+        created_circle = true;
+
+      }
+    })
+    boardGlobal.addEventListener("mouseup",e=>{
+      create_circle_flag =false;
+      created_circle = true;
 
 
-    circle.draw(canvasGlobal, "");
-    shapes.push(circle);
+      document.getElementById("circle")!.style.backgroundColor = "rgb(246, 129, 60)"
+
+    })
+    if(create_circle_flag){
+      document.getElementById("circle")!.style.backgroundColor = "rgba(47, 24, 10, 0.856)"
+
+    }
   }
   create_rect(){
     var boardGlobal = (<HTMLCanvasElement>document.getElementById("board"));
     var canvasGlobal = boardGlobal.getContext("2d")!;
-    var rect: shape = this.factory.create("rect");
-    rect.draw(canvasGlobal,"");
-    shapes.push(rect);
+    var rect :any= this.factory.create("rect");
+    create_rect_flag = true;
+    created_rect = false;
+    boardGlobal.addEventListener("mousedown",e=>{
+      if(!created_rect){
+        rect.x = e.offsetX;
+        rect.y = e.offsetY;
+        rect.draw(canvasGlobal,"");
+        shapes.push(rect);
+        rect = null;
+        created_rect = true;
 
+      }
+    })
+    boardGlobal.addEventListener("mouseup",e=>{
+      create_rect_flag =false;
+      created_rect = true;
+
+
+      document.getElementById("rect")!.style.backgroundColor = "rgb(246, 129, 60)"
+
+    })
+    if(create_rect_flag){
+      document.getElementById("rect")!.style.backgroundColor = "rgba(47, 24, 10, 0.856)"
+
+    }
+    console.log(shapes)
   }
   create_square(){
     var boardGlobal = (<HTMLCanvasElement>document.getElementById("board"));
     var canvasGlobal = boardGlobal.getContext("2d")!;
-    var square: shape = this.factory.create("square");
-    square.draw(canvasGlobal,"");
-    shapes.push(square);
+    var square :any= this.factory.create("square");
+    create_square_flag = true;
+    created_square = false;
+    boardGlobal.addEventListener("mousedown",e=>{
+      if(!created_square){
+        square.x = e.offsetX;
+        square.y = e.offsetY;
+        square.draw(canvasGlobal,"");
+        shapes.push(square);
+        square = null;
+        created_square = true;
+
+      }
+    })
+    boardGlobal.addEventListener("mouseup",e=>{
+      create_square_flag =false;
+      created_square = true;
+
+
+      document.getElementById("square")!.style.backgroundColor = "rgb(246, 129, 60)"
+
+    })
+    if(create_square_flag){
+      document.getElementById("square")!.style.backgroundColor = "rgba(47, 24, 10, 0.856)"
+
+    }
 
   }
   create_ellipse(){
     var boardGlobal = (<HTMLCanvasElement>document.getElementById("board"));
     var canvasGlobal = boardGlobal.getContext("2d")!;
-    var ellipse: shape = this.factory.create("ellipse");
-    ellipse.draw(canvasGlobal,"");
-    shapes.push(ellipse);
+    var ellipse :any= this.factory.create("ellipse");
+    create_ellipse_flag = true;
+    created_ellipse = false;
+    boardGlobal.addEventListener("mousedown",e=>{
+      if(!created_ellipse){
+        ellipse.x = e.offsetX;
+        ellipse.y = e.offsetY;
+        ellipse.draw(canvasGlobal,"");
+        shapes.push(ellipse);
+        ellipse = null;
+        created_ellipse = true;
+
+      }
+    })
+    boardGlobal.addEventListener("mouseup",e=>{
+      create_ellipse_flag =false;
+      created_ellipse = true;
 
 
+      document.getElementById("ellipse")!.style.backgroundColor = "rgb(246, 129, 60)"
+
+    })
+    if(create_ellipse_flag){
+      document.getElementById("ellipse")!.style.backgroundColor = "rgba(47, 24, 10, 0.856)"
+
+    }
   }
 
   remove(){
