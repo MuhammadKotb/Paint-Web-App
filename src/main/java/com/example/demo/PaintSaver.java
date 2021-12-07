@@ -49,7 +49,15 @@ public class PaintSaver {
         }
     }
 
-    //fillerfoo missing
+    void fillerFoo(Shape o){
+        for ( Shape s : objOnScreen){
+            if (s.equalsWithoutFill(o)) {
+                s.setFill(true);
+                s.setFlCo(o.getFlCo());
+                break;
+            }
+        }
+    }
 
     //undo missing
 

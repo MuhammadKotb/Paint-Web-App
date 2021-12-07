@@ -123,8 +123,12 @@ public class Shape {
         return getX() == shape.getX() && getY() == shape.getY() && getWidth() == shape.getWidth() && getHeight() == shape.getHeight() && getStWi() == shape.getStWi() && isFill() == shape.isFill() && getFlCo().equals(shape.getFlCo()) && getStCo().equals(shape.getStCo()) && getType().equals(shape.getType());
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(getX(), getY(), getWidth(), getHeight(), getFlCo(), getStCo(), getStWi(), getType(), isFill());
+    public boolean equalsWithoutFill(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Shape)) return false;
+        Shape shape = (Shape) o;
+        return getX() == shape.getX() && getY() == shape.getY() && getWidth() == shape.getWidth() && getHeight() == shape.getHeight() && getStWi() == shape.getStWi() && getStCo().equals(shape.getStCo()) && getType().equals(shape.getType());
     }
+
+
 }

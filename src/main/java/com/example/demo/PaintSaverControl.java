@@ -16,7 +16,7 @@ public class PaintSaverControl {
     public void save(@RequestParam (value="oa", required=false, defaultValue = "none") String objAdded
                    , @RequestParam (value="or",      defaultValue = "none") String objRem
                    , @RequestParam (value="of",  defaultValue = "none") String objFilled
-                   , @RequestParam (value="foo",  defaultValue = "none") String function{
+                   , @RequestParam (value="foo",  defaultValue = "none") String foo){
                     //last param represents undo/redo/load/save/none (still havent been handled)
 
         PaintSaver c = new PaintSaver(objAdded,objRem,objFilled);
