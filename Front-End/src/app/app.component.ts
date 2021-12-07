@@ -1,4 +1,4 @@
-import { sharedStylesheetJitUrl } from '@angular/compiler';
+import { identifierModuleUrl, sharedStylesheetJitUrl } from '@angular/compiler';
 import { Component, OnInit } from '@angular/core';
 import { range } from 'rxjs';
 
@@ -13,6 +13,7 @@ var move_flag :boolean = false;
 var resize_flag :boolean = false;
 var fill_flag :boolean = false;
 var copy_flag : boolean = false;
+
 var create_line_flag : boolean = false;
 var created_line : boolean = false;
 
@@ -30,6 +31,13 @@ var created_ellipse : boolean = false;
 
 var create_triangle_flag : boolean = false;
 var created_triangle : boolean = false;
+
+var circleButtonFlag : boolean = false;
+var squareButtonFlag : boolean = false;
+var rectButtonFlag : boolean = false;
+var lineButtonFlag : boolean = false;
+var triangleButtonFlag : boolean = false;
+var ellipseButtonFlag : boolean = false;
 
 
 var found : boolean = false;
@@ -397,9 +405,22 @@ export class AppComponent {
     }
   }
 
+  
+
   create_line(){
+    create_circle_flag = false;
+    create_square_flag = false;
+    create_rect_flag = false;
+    create_triangle_flag = false;
+    create_ellipse_flag = false;
 
 
+    created_circle = false;
+    created_square = false;
+    created_rect = false;
+    created_triangle = false;
+    created_ellipse = false;
+    
     var boardGlobal = (<HTMLCanvasElement>document.getElementById("board"));
     var canvasGlobal = boardGlobal.getContext("2d")!;
     var line :any= this.factory.create("line");
@@ -408,7 +429,7 @@ export class AppComponent {
     var selectLine = false;
     boardGlobal.addEventListener("mousedown",e=>{
 
-      if(!created_line && (line != null)){
+      if(!created_line && (line != null) && lineButtonFlag){
 
         line.x = e.offsetX;
         line.y = e.offsetY;
@@ -421,7 +442,7 @@ export class AppComponent {
     });
 
     boardGlobal.addEventListener("mousemove", e => {
-      if(create_line_flag && selectLine && (line != null)){
+      if(create_line_flag && selectLine && (line != null) && lineButtonFlag){
         canvasGlobal.clearRect(line.x-line.stWi*2, line.y - line.stWi*2, line.width + line.stWi*3 - line.x, line.height + line.stWi*3 - line.y);
         canvasGlobal.clearRect(0,0,1380,675);
 
@@ -435,64 +456,99 @@ export class AppComponent {
 
     });
     boardGlobal.addEventListener("mouseup", e => {
-      create_line_flag =false;
-      created_line = true;
-      selectLine = false;
-      if(line != null && (line.width != 0 && line.height != 0)){
-        shapes.push(line);
+      if(lineButtonFlag){
+        create_line_flag =false;
+        created_line = true;
+        selectLine = false;
+        if(line != null && (line.width != 0 && line.height != 0)){
+          shapes.push(line);
 
+        }
+        console.log(shapes)
+        line = null;
+
+        document.getElementById("line")!.style.backgroundColor = "rgb(246, 129, 60)"
       }
-      console.log(shapes)
-      line = null;
-
-      document.getElementById("line")!.style.backgroundColor = "rgb(246, 129, 60)"
+      
     });
 
     if(create_line_flag){
       document.getElementById("line")!.style.backgroundColor = "rgba(47, 24, 10, 0.856)"
 
     }
+    
+    
   }
   create_triangle(){
-    var boardGlobal = (<HTMLCanvasElement>document.getElementById("board"));
-    var canvasGlobal = boardGlobal.getContext("2d")!;
-    var triangle :any= this.factory.create("triangle");
-    create_triangle_flag = true;
-    created_triangle = false;
-    boardGlobal.addEventListener("mousedown",e=>{
-      if(!created_triangle && (triangle != null)){
-        triangle.x = e.offsetX;
-        triangle.y = e.offsetY;
-        triangle.draw(canvasGlobal,"");
-        shapes.push(triangle);
-        triangle = null;
-        created_triangle = true;
+   
+    create_square_flag = false;
+    create_line_flag = false;
+    create_circle_flag = false;
+    create_rect_flag = false;
+    create_ellipse_flag = false;
 
+    created_square = false;
+    created_line = false;
+    created_circle = false;
+    created_rect = false;
+    created_ellipse = false;
+      var boardGlobal = (<HTMLCanvasElement>document.getElementById("board"));
+      var canvasGlobal = boardGlobal.getContext("2d")!;
+      var triangle :any= this.factory.create("triangle");
+      create_triangle_flag = true;
+      created_triangle = false;
+      boardGlobal.addEventListener("mousedown",e=>{
+        if(!created_triangle && (triangle != null) && triangleButtonFlag){
+          triangle.x = e.offsetX;
+          triangle.y = e.offsetY;
+          triangle.draw(canvasGlobal,"");
+          shapes.push(triangle);
+          triangle = null;
+          created_triangle = true;
+  
+        }
+      })
+      boardGlobal.addEventListener("mouseup",e=>{
+        if(triangleButtonFlag){
+          create_triangle_flag =false;
+          created_triangle = true;
+  
+  
+          document.getElementById("triangle")!.style.backgroundColor = "rgb(246, 129, 60)"
+        }
+        
+  
+      })
+      if(create_triangle_flag){
+        document.getElementById("triangle")!.style.backgroundColor = "rgba(47, 24, 10, 0.856)"
+  
       }
-    })
-    boardGlobal.addEventListener("mouseup",e=>{
-      create_triangle_flag =false;
-      created_triangle = true;
-
-
-      document.getElementById("triangle")!.style.backgroundColor = "rgb(246, 129, 60)"
-
-    })
-    if(create_triangle_flag){
-      document.getElementById("triangle")!.style.backgroundColor = "rgba(47, 24, 10, 0.856)"
-
-    }
+    
   }
-
-
+  
+  
   create_circle() {
+     
+    create_square_flag = false;
+    create_line_flag = false;
+    create_rect_flag = false;
+    create_triangle_flag = false;
+    create_ellipse_flag = false;
+
+    created_square = false;
+    created_line = false;
+    created_rect = false;
+    created_triangle = false;
+    created_ellipse = false;
+    
+    
     var boardGlobal = (<HTMLCanvasElement>document.getElementById("board"));
     var canvasGlobal = boardGlobal.getContext("2d")!;
     var circle :any= this.factory.create("circle");
     create_circle_flag = true;
     created_circle = false;
     boardGlobal.addEventListener("mousedown",e=>{
-      if(!created_circle && (circle != null)){
+      if(!created_circle && (circle != null) && circleButtonFlag){
         circle.x = e.offsetX;
         circle.y = e.offsetY;
         circle.draw(canvasGlobal,"");
@@ -503,26 +559,45 @@ export class AppComponent {
       }
     });
     boardGlobal.addEventListener("mouseup",e=>{
-      create_circle_flag =false;
-      created_circle = true;
+      if(circleButtonFlag){
+        create_circle_flag =false;
+        created_circle = true;
 
 
-      document.getElementById("circle")!.style.backgroundColor = "rgb(246, 129, 60)"
+        document.getElementById("circle")!.style.backgroundColor = "rgb(246, 129, 60)"
+      }
+      
 
     })
     if(create_circle_flag){
       document.getElementById("circle")!.style.backgroundColor = "rgba(47, 24, 10, 0.856)"
 
     }
+    
   }
+       
+  
+
   create_rect(){
+  
+    create_square_flag = false;
+    create_line_flag = false;
+    create_circle_flag = false;
+    create_triangle_flag = false;
+    create_ellipse_flag = false;
+
+    created_square = false;
+    created_line = false;
+    created_circle = false;
+    created_triangle = false;
+    created_ellipse = false;
     var boardGlobal = (<HTMLCanvasElement>document.getElementById("board"));
     var canvasGlobal = boardGlobal.getContext("2d")!;
     var rect :any= this.factory.create("rect");
     create_rect_flag = true;
     created_rect = false;
     boardGlobal.addEventListener("mousedown",e=>{
-      if(!created_rect && (rect != null)){
+      if(!created_rect && (rect != null) && rectButtonFlag){
         rect.x = e.offsetX;
         rect.y = e.offsetY;
         rect.draw(canvasGlobal,"");
@@ -533,11 +608,14 @@ export class AppComponent {
       }
     })
     boardGlobal.addEventListener("mouseup",e=>{
-      create_rect_flag =false;
-      created_rect = true;
+      if(rectButtonFlag){
+        create_rect_flag =false;
+        created_rect = true;
 
 
-      document.getElementById("rect")!.style.backgroundColor = "rgb(246, 129, 60)"
+        document.getElementById("rect")!.style.backgroundColor = "rgb(246, 129, 60)"
+      }
+      
 
     })
     if(create_rect_flag){
@@ -545,15 +623,28 @@ export class AppComponent {
 
     }
     console.log(shapes)
+    
   }
   create_square(){
+   
+    create_circle_flag = false;
+    create_line_flag = false;
+    create_rect_flag = false;
+    create_triangle_flag = false;
+    create_ellipse_flag = false;
+
+    created_circle = false;
+    created_line = false;
+    created_rect = false;
+    created_triangle = false;
+    created_ellipse = false;
     var boardGlobal = (<HTMLCanvasElement>document.getElementById("board"));
     var canvasGlobal = boardGlobal.getContext("2d")!;
     var square :any= this.factory.create("square");
     create_square_flag = true;
     created_square = false;
     boardGlobal.addEventListener("mousedown",e=>{
-      if(!created_square && (square != null)){
+      if(!created_square && (square != null) && squareButtonFlag){
         square.x = e.offsetX;
         square.y = e.offsetY;
         square.draw(canvasGlobal,"");
@@ -564,27 +655,44 @@ export class AppComponent {
       }
     })
     boardGlobal.addEventListener("mouseup",e=>{
-      create_square_flag =false;
-      created_square = true;
+      if(squareButtonFlag){
+        create_square_flag =false;
+        created_square = true;
 
 
-      document.getElementById("square")!.style.backgroundColor = "rgb(246, 129, 60)"
+        document.getElementById("square")!.style.backgroundColor = "rgb(246, 129, 60)"
+      }
+      
 
     })
     if(create_square_flag){
       document.getElementById("square")!.style.backgroundColor = "rgba(47, 24, 10, 0.856)"
 
     }
-
-  }
+    
+    }
+   
+    
   create_ellipse(){
+    create_square_flag = false;
+    create_line_flag = false;
+    create_circle_flag = false;
+    create_rect_flag = false;
+    create_triangle_flag = false;
+
+    created_square = false;
+    created_line = false;
+    created_circle = false;
+    created_rect = false;
+    created_triangle = false;
+   
     var boardGlobal = (<HTMLCanvasElement>document.getElementById("board"));
     var canvasGlobal = boardGlobal.getContext("2d")!;
     var ellipse :any= this.factory.create("ellipse");
     create_ellipse_flag = true;
     created_ellipse = false;
     boardGlobal.addEventListener("mousedown",e=>{
-      if(!created_ellipse && (ellipse != null)){
+      if(!created_ellipse && (ellipse != null) && ellipseButtonFlag){
         ellipse.x = e.offsetX;
         ellipse.y = e.offsetY;
         ellipse.draw(canvasGlobal,"");
@@ -595,17 +703,22 @@ export class AppComponent {
       }
     })
     boardGlobal.addEventListener("mouseup",e=>{
-      create_ellipse_flag =false;
-      created_ellipse = true;
+      if(ellipseButtonFlag){
+        create_ellipse_flag =false;
+        created_ellipse = true;
 
 
-      document.getElementById("ellipse")!.style.backgroundColor = "rgb(246, 129, 60)"
+        document.getElementById("ellipse")!.style.backgroundColor = "rgb(246, 129, 60)"
+      }
+      
 
     })
     if(create_ellipse_flag){
       document.getElementById("ellipse")!.style.backgroundColor = "rgba(47, 24, 10, 0.856)"
 
     }
+    
+    
   }
 
   remove(){
@@ -936,7 +1049,108 @@ export class AppComponent {
 
   }
 
-  
+  disableButtons(){
+    if(create_line_flag){  
+
+      circleButtonFlag = false;
+      squareButtonFlag  = false;
+      rectButtonFlag  = false;
+      triangleButtonFlag  = false;
+      ellipseButtonFlag  = false;
+
+      lineButtonFlag = true;
+
+    }
+    if(create_square_flag){
+      
+      circleButtonFlag = false;
+      rectButtonFlag  = false;
+      lineButtonFlag  = false;
+      triangleButtonFlag  = false;
+      ellipseButtonFlag  = false;
+
+      squareButtonFlag = true;
+
+
+    }
+    if(create_circle_flag){
+     
+      
+
+      squareButtonFlag = false;
+      rectButtonFlag = false;
+      lineButtonFlag = false;
+      triangleButtonFlag = false;
+      ellipseButtonFlag = false;
+
+      circleButtonFlag = true;
+
+    }
+    if(create_rect_flag){
+
+      circleButtonFlag  = false;
+      squareButtonFlag = false;
+      lineButtonFlag = false;
+      triangleButtonFlag = false;
+      ellipseButtonFlag = false;
+
+      rectButtonFlag = true;
+
+    }
+    if(create_triangle_flag){
+      
+      circleButtonFlag = false;
+      squareButtonFlag = false;
+      rectButtonFlag  = false;
+      lineButtonFlag = false;
+      ellipseButtonFlag = false;
+
+      triangleButtonFlag = true;
+
+    }
+    if(create_ellipse_flag){
+      
+
+      circleButtonFlag = false;
+      squareButtonFlag = false;
+      rectButtonFlag = false;
+      lineButtonFlag = false;
+      triangleButtonFlag = false;
+
+      ellipseButtonFlag = true;
+
+    }
+
+    if(!create_square_flag){
+      document.getElementById("square")!.style.backgroundColor = "rgb(246, 129, 60)"
+      
+    }
+    if(!create_rect_flag){
+      document.getElementById("rect")!.style.backgroundColor = "rgb(246, 129, 60)"
+
+    }
+    if(!create_circle_flag){
+      document.getElementById("circle")!.style.backgroundColor = "rgb(246, 129, 60)"
+
+    }
+    if(!create_line_flag){
+      document.getElementById("line")!.style.backgroundColor = "rgb(246, 129, 60)"
+
+    }
+    if(!create_ellipse_flag){
+      document.getElementById("ellipse")!.style.backgroundColor = "rgb(246, 129, 60)"
+
+    }
+    if(!create_triangle_flag){
+      document.getElementById("triangle")!.style.backgroundColor = "rgb(246, 129, 60)"
+
+    }
+    
+  }
+
 
 
 }
+
+
+
