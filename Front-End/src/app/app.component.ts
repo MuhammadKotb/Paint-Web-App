@@ -97,8 +97,8 @@ class factory{
 class line implements shape{
   x = getRandomInt(124,1380);
 	y = getRandomInt(70,580);
-  width = 60;
-	height = 2;
+  width = 0;
+	height = 0;
   type = "line";
   fiCo = "";
   stCo = strokeColor;
@@ -122,6 +122,8 @@ class line implements shape{
 
   }
 }
+
+//---------------------------------------------------------------------------//
 
 class circle implements shape{
 	x = getRandomInt(124,1380);
@@ -248,6 +250,9 @@ class square implements shape{
 
 	}
 }
+
+//---------------------------------------------------------------------------//
+
 class ellipse implements shape{
 	x = getRandomInt(124,1340);
 	y = getRandomInt(70,580);
@@ -287,6 +292,9 @@ class ellipse implements shape{
 
 	}
 }
+
+//---------------------------------------------------------------------------//
+
 class triangle implements shape {
   x = getRandomInt(124,1340);
 	y = getRandomInt(70,580);
@@ -389,8 +397,8 @@ export class AppComponent {
   }
 
   create_line(){
-    
-   
+
+
     var boardGlobal = (<HTMLCanvasElement>document.getElementById("board"));
     var canvasGlobal = boardGlobal.getContext("2d")!;
     var line :any= this.factory.create("line");
@@ -398,57 +406,47 @@ export class AppComponent {
     created_line = false;
     var selectLine = false;
     boardGlobal.addEventListener("mousedown",e=>{
-      
-      if(!created_line){
+
+      if(!created_line && (line != null)){
 
         line.x = e.offsetX;
         line.y = e.offsetY;
         selectLine = true;
-        
+        created_line = true;
 
       }
-      for(var i = 0; i < shapes.length; i++){
-        shapes[i].draw(canvasGlobal,"");
-      }
-      console.log(shapes);
-    
+
 
     });
 
     boardGlobal.addEventListener("mousemove", e => {
-      if(!created_line && selectLine){
+      if(create_line_flag && selectLine && (line != null)){
         canvasGlobal.clearRect(line.x-line.stWi*2, line.y - line.stWi*2, line.width + line.stWi*3 - line.x, line.height + line.stWi*3 - line.y);
         canvasGlobal.clearRect(0,0,1380,675);
 
         line.width = e.offsetX;
         line.height = e.offsetY;
         line.draw(canvasGlobal,"");
-       
+        for(var i = 0; i < shapes.length; i++){
+          shapes[i].draw(canvasGlobal,"");
+        }
       }
-      for(var i = 0; i < shapes.length; i++){
-        shapes[i].draw(canvasGlobal,"");
-      }
-     
 
-    
     });
     boardGlobal.addEventListener("mouseup", e => {
-      create_line_flag =false; 
+      create_line_flag =false;
       created_line = true;
       selectLine = false;
-      shapes.push(line);
+      if(line != null && (line.width != 0 && line.height != 0)){
+        shapes.push(line);
 
+      }
+      console.log(shapes)
       line = null;
 
-      for(var i = 0; i < shapes.length; i++){
-        shapes[i].draw(canvasGlobal,"");
-      }
-
-
-     
-
-
+      document.getElementById("line")!.style.backgroundColor = "rgb(246, 129, 60)"
     });
+
     if(create_line_flag){
       document.getElementById("line")!.style.backgroundColor = "rgba(47, 24, 10, 0.856)"
 
@@ -461,7 +459,7 @@ export class AppComponent {
     create_triangle_flag = true;
     created_triangle = false;
     boardGlobal.addEventListener("mousedown",e=>{
-      if(!created_triangle){
+      if(!created_triangle && (triangle != null)){
         triangle.x = e.offsetX;
         triangle.y = e.offsetY;
         triangle.draw(canvasGlobal,"");
@@ -493,7 +491,7 @@ export class AppComponent {
     create_circle_flag = true;
     created_circle = false;
     boardGlobal.addEventListener("mousedown",e=>{
-      if(!created_circle){
+      if(!created_circle && (circle != null)){
         circle.x = e.offsetX;
         circle.y = e.offsetY;
         circle.draw(canvasGlobal,"");
@@ -523,7 +521,7 @@ export class AppComponent {
     create_rect_flag = true;
     created_rect = false;
     boardGlobal.addEventListener("mousedown",e=>{
-      if(!created_rect){
+      if(!created_rect && (rect != null)){
         rect.x = e.offsetX;
         rect.y = e.offsetY;
         rect.draw(canvasGlobal,"");
@@ -554,7 +552,7 @@ export class AppComponent {
     create_square_flag = true;
     created_square = false;
     boardGlobal.addEventListener("mousedown",e=>{
-      if(!created_square){
+      if(!created_square && (square != null)){
         square.x = e.offsetX;
         square.y = e.offsetY;
         square.draw(canvasGlobal,"");
@@ -585,7 +583,7 @@ export class AppComponent {
     create_ellipse_flag = true;
     created_ellipse = false;
     boardGlobal.addEventListener("mousedown",e=>{
-      if(!created_ellipse){
+      if(!created_ellipse && (ellipse != null)){
         ellipse.x = e.offsetX;
         ellipse.y = e.offsetY;
         ellipse.draw(canvasGlobal,"");
@@ -684,7 +682,7 @@ export class AppComponent {
       if(move_flag && is_selected){
         switch(shapes[temp_shape].type){
           case "line":
-            canvasGlobal.clearRect(shapes[temp_shape].x-shapes[temp_shape].stWi*2, shapes[temp_shape].y - shapes[temp_shape].stWi*2, shapes[temp_shape].width + shapes[temp_shape].stWi*2, shapes[temp_shape].height + shapes[temp_shape].stWi*3);
+            canvasGlobal.clearRect(shapes[temp_shape].x-shapes[temp_shape].stWi*2, shapes[temp_shape].y - shapes[temp_shape].stWi*2, shapes[temp_shape].width + shapes[temp_shape].stWi*3 - shapes[temp_shape].x, shapes[temp_shape].height + shapes[temp_shape].stWi*3 - shapes[temp_shape].y);
             break;
           case "circle":
             canvasGlobal.clearRect(shapes[temp_shape].x-(0.5*shapes[temp_shape].height)-1 - shapes[temp_shape].stWi,shapes[temp_shape].y-(0.5*shapes[temp_shape].height)-1 - shapes[temp_shape].stWi,shapes[temp_shape].width+2 +2*shapes[temp_shape].stWi,shapes[temp_shape].height+2 + 2*shapes[temp_shape].stWi);
@@ -700,8 +698,18 @@ export class AppComponent {
             break;
         }
 
-        shapes[temp_shape].x = e.offsetX;
-        shapes[temp_shape].y = e.offsetY;
+        var oldRealWidth = shapes[temp_shape].width - shapes[temp_shape].x;;
+        var oldRealHeight = shapes[temp_shape].height -  shapes[temp_shape].y;
+        if(shapes[temp_shape].type == "line"){
+          shapes[temp_shape].width = e.offsetX
+          shapes[temp_shape].height = e.offsetY
+          shapes[temp_shape].x = shapes[temp_shape].width - oldRealWidth;
+          shapes[temp_shape].y = shapes[temp_shape].height - oldRealHeight;
+        }
+        else{
+          shapes[temp_shape].x = e.offsetX;
+          shapes[temp_shape].y = e.offsetY;
+        }
         shapes[temp_shape].draw(canvasGlobal,"")
 
       }
@@ -864,12 +872,16 @@ export class AppComponent {
             break;
         }
         if(shapes[temp_shape].type == 'line'){
-          if(e.offsetX > oldx){
+          if(e.offsetX > oldx && e.offsetY > oldy){
             shapes[temp_shape].width +=2;
+            shapes[temp_shape].height += 2;
+
           }
-          else if(e.offsetX < oldx ){
-            if(shapes[temp_shape].width > 2) {
+          else if(e.offsetX < oldx && e.offsetY < oldy){
+            if(shapes[temp_shape].width > 2 || shapes[temp_shape].height > 2) {
               shapes[temp_shape].width -= 2;
+              shapes[temp_shape].height -= 2;
+
             }
           }
           oldx = e.offsetX;
