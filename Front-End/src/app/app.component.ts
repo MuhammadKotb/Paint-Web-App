@@ -355,7 +355,7 @@ class triangle implements shape {
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
- 
+
   factory :factory = new factory();
   title = 'Front-End';
 
@@ -618,7 +618,7 @@ export class AppComponent {
           if(canvasGlobal.isPointInPath(shape.area, event.offsetX, event.offsetY) || canvasGlobal.isPointInStroke(shape.area, event.offsetX, event.offsetY)){
             shapes = shapes.filter(obj => obj !== shape);
             canvasGlobal.clearRect(0,0,1380,675);
-      
+
             for(var i = 0; i < shapes.length; i++){
               shapes[i].draw(canvasGlobal,"");
             }
@@ -735,7 +735,7 @@ export class AppComponent {
     boardGlobal.addEventListener("mousemove", e => {
       if(copy_flag && is_selected){
         canvasGlobal.clearRect(0,0,1380,675);
-      
+
         var oldRealWidth = shapes[temp_shape].width - shapes[temp_shape].x;;
         var oldRealHeight = shapes[temp_shape].height -  shapes[temp_shape].y;
         if(shapes[temp_shape].type == "line"){
@@ -753,32 +753,22 @@ export class AppComponent {
           shapes[i].draw(canvasGlobal,"");
         }
       }
-
-     
     });
 
 
     boardGlobal.addEventListener("mouseup", e => {
-
       is_selected = false;
       found = false;
       for(var i = 0; i < shapes.length; i++){
         shapes[i].draw(canvasGlobal,"");
       }
-
       document.getElementById("copy")!.style.backgroundColor = "rgb(246, 129, 60)"
-
-
     });
 
     if(copy_flag){
       document.getElementById("copy")!.style.backgroundColor = "rgba(47, 24, 10, 0.856)"
 
     }
-
-
-
-
 
   }
 
@@ -935,7 +925,7 @@ export class AppComponent {
 
   }
 
-  
+
 
 
 }
