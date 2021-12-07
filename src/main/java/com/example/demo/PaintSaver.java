@@ -4,27 +4,28 @@ import java.util.List;
 
 
 public class PaintSaver {
-    private ArrayList <Shape> objOfOneAction = new ArrayList();
-    private List <ArrayList <Shape> > database = new ArrayList();
-    private List <Shape> objOnScreen = new ArrayList();
+    private static List <ArrayList <Shape> > database = new ArrayList();
+    private static ArrayList <Shape> objOnScreen = new ArrayList();
+    private static int undo_count;
 
-    public PaintSaver(String objAdded, String objRem, String objFilled) {
-        Shape objAddedShape = new Shape();
-        join(objAddedShape,objAdded);
-        objOfOneAction.add(objAddedShape);
-        objOnScreen.add(objAddedShape);
+    public PaintSaver(Shape objAdded, Shape objRem, Shape objFilled) {
+        if (objAdded!=null)
+            objOnScreen.add(objAdded);
 
-        Shape objRemShape = new Shape();
-        join(objRemShape,objRem);
-        objOfOneAction.add(objRemShape);
-        remObjFromScreen(objRemShape);
+        if (objRem!=null)
+            remObjFromScreen(objRem);
 
-        Shape objFilledShape = new Shape();
-        join(objFilledShape,objFilled);
-        objOfOneAction.add(objFilledShape);
-        fillerFoo(objFilledShape);
+        if (objFilled!=null)
+            fillerFoo(objFilled);
+
+        database.add(objOnScreen);
+        undo_count = 0;
     }
 
+    public PaintSaver() {
+    }
+
+    /*
     void join (Shape o, String s){
         if (o.getType() == "none")
             o = null;
@@ -38,7 +39,7 @@ public class PaintSaver {
         o.setWidth(Integer.parseInt(splitObj[6]));
         o.setType(splitObj[7]);
         o.setFill(splitObj[8]=="true" ? true : false);
-    }
+    }*/
 
     void remObjFromScreen(Shape o){
         for ( Shape s : objOnScreen){
@@ -59,9 +60,20 @@ public class PaintSaver {
         }
     }
 
-    //undo missing
+    void undo(){
+        undo_count++;
+        ArrayList <Shape> prevScreen = database.get(database.size()-undo_count-1);
+        //send this to angular in json and let it view the objects in the array exclusively
+    }
 
-    //redo missing
+    void redo(){
+        if (undo_count!=0){
+            undo_count--;
+            ArrayList <Shape> nextScreen = database.get(database.size()-undo_count-1);
+            //send this to angular in json and let it view the objects in the array exclusively
+        }
+
+    }
 
     //save missing
 
