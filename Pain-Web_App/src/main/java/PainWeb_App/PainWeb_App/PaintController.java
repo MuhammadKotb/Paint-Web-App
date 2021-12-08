@@ -45,16 +45,24 @@ public class PaintController {
     @PostMapping("/remove")
     List<ShapeClass> removeShape(@RequestBody ShapeClass removeShape){
 
-        for(int i = 0; i < shape.getListofShapes().size(); i++){
-            if(shape.getListofShapes().get(i).getShapeID().equals(removeShape.getShapeID())){
-                System.out.println("removed");
-                shape.getListofShapes().remove(i);
+        try{
+            for(int i = 0; i < shape.getListofShapes().size(); i++){
+                if(shape.getListofShapes().get(i).getShapeID().equals(removeShape.getShapeID())){
+                    System.out.println("removed");
+                    shape.getListofShapes().remove(i);
+                    break;
+                }
             }
+            System.out.println("delte");
+            System.out.println(shape.getListofShapes().size());
+            return shape.getListofShapes();
+
         }
-        System.out.println("delte");
-        System.out.println(removeShape.getShapeID());
-        System.out.println(shape.getListofShapes().get(0).getShapeID());
-        return shape.getListofShapes();
+        catch (Exception e){
+            System.out.println("Error");
+            throw e;
+        }
+
 
     }
 
