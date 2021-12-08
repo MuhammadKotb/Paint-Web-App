@@ -35,6 +35,9 @@ public class ShapeClass implements ShapeI {
     public List<ShapeClass> getListofShapes(){
         return this.shapes;
     }
+    public void setListofShapes(List<ShapeClass> shapes){
+        this.shapes = shapes;
+    }
     public ShapeClass getShape(int index){
         return this.shapes.get(index);
     }

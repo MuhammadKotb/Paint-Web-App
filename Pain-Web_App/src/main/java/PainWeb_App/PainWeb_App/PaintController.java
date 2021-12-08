@@ -37,10 +37,14 @@ public class PaintController {
         return factory.createShape(type);
     }
 
-    @GetMapping("/canvas")
-    List<ShapeClass> canvas(){
+    @GetMapping("/getCanvas")
+    List<ShapeClass> getCanvas(){
         return shape.getListofShapes();
     }
+
+    @PostMapping("/postCanvas")
+    void postCanvas(@RequestBody List<ShapeClass> shapes){shape.setListofShapes(shapes);
+        System.out.println(shape.getListofShapes().get(0).getX());}
 
     @PostMapping("/remove")
     List<ShapeClass> removeShape(@RequestBody ShapeClass removeShape){
@@ -68,21 +72,28 @@ public class PaintController {
 
     @PostMapping("/edit")
     void editShape(@RequestBody ShapeClass newShape){
-        for(int i = 0; i < shape.getListofShapes().size(); i++) {
-            if (shape.getListofShapes().get(i).getShapeID() == newShape.getShapeID()) {
-                shape.setFiCo(newShape.getFiCo());
-                shape.setFilled(newShape.isFilled());
-                shape.setHeight(newShape.getHeight());
-                shape.setWidth(newShape.getWidth());
-                shape.setX(newShape.getX());
-                shape.setY(newShape.getY());
-                shape.setStCo(newShape.getStCo());
-                shape.setType(newShape.getType());
-                shape.setStWi(newShape.getStWi());
+        try{
+            for(int i = 0; i < shape.getListofShapes().size(); i++){
+                if (shape.getListofShapes().get(i).getShapeID().equals(newShape.getShapeID())) {
+                    System.out.println("Edit");
+                    shape.setFiCo(newShape.getFiCo());
+                    shape.setFilled(newShape.isFilled());
+                    shape.setHeight(newShape.getHeight());
+                    shape.setWidth(newShape.getWidth());
+                    shape.setX(newShape.getX());
+                    shape.setY(newShape.getY());
+                    shape.setStCo(newShape.getStCo());
+                    shape.setType(newShape.getType());
+                    shape.setStWi(newShape.getStWi());
+                    System.out.println(shape.getListofShapes().get(i).getX());
+
+                    break;
+                }
             }
+            System.out.println(newShape.getFiCo());
         }
-        System.out.println(newShape.getFiCo());
+        catch (Exception e){
+            System.out.println(e);
+        }
     }
-
-
 }
