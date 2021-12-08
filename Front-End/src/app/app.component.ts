@@ -860,36 +860,69 @@ export class AppComponent {
 
   remove(){
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 9183eec7808ebf7700a8cb936361b18c98818577
     var boardGlobal = (<HTMLCanvasElement>document.getElementById("board"));
     var canvasGlobal = boardGlobal.getContext("2d")!;
     remove_flag = !(remove_flag);
-    var  removedShape : shapeBack;
+    var  removedShape : shapeBack = null;
     boardGlobal.addEventListener("mousedown",event => {
 
       if(remove_flag){
         this.paintServ.getCanvas().subscribe((data : shapeBack[]) =>{
+<<<<<<< HEAD
           shapesBack = data;
           for (var shape of shapesBack){
+=======
+          var shapesBack = data;
+          for (var shape of shapesBack){        
+>>>>>>> 9183eec7808ebf7700a8cb936361b18c98818577
             if(canvasGlobal.isPointInPath(canvasArea.get(shape.shapeID), event.offsetX, event.offsetY) || canvasGlobal.isPointInStroke(canvasArea.get(shape.shapeID), event.offsetX, event.offsetY)){
               removedShape = shape;
 
               shapesBack = shapesBack.filter(obj => obj !== shape);
+              canvasArea.delete(shape.shapeID);
               canvasGlobal.clearRect(0,0,1380,675);
 
               for(var i = 0; i < shapesBack.length; i++){
                 this.drawShape(shapesBack[i], "");
               }
+              break;
+
             }
+<<<<<<< HEAD
 
 
+=======
+            
+>>>>>>> 9183eec7808ebf7700a8cb936361b18c98818577
           }
+        
         })
+<<<<<<< HEAD
         this.paintServ.removeShape(removedShape).subscribe();
 
 
+=======
+
+        for(var i = 0; i < shapesBack.length; i++){
+          this.drawShape(shapesBack[i], "");
+        }
+>>>>>>> 9183eec7808ebf7700a8cb936361b18c98818577
       }
 
+    });
+
+    boardGlobal.addEventListener("mouseup", e => {
+      if(removedShape != null){
+        this,this.paintServ.removeShape(removedShape).subscribe();
+        shapesBack = null;
+        removedShape = null;
+      }
+      
+      
     });
     if(remove_flag){
       document.getElementById("remove")!.style.backgroundColor = "rgba(47, 24, 10, 0.856)"
