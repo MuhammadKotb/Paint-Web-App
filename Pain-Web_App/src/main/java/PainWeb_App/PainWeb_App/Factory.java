@@ -1,10 +1,29 @@
 package PainWeb_App.PainWeb_App;
 
+import org.springframework.stereotype.Component;
+
+import java.util.Locale;
+@Component
+
 public class Factory{
 
-    ShapeClass createShape(String shape){
+    ShapeI createShape(String shape){
 
-        return new ShapeClass(shape);
-
+        switch (shape.toLowerCase()){
+            case "circle":
+                return new Circle();
+            case "square":
+                return new Square();
+            case "rect" :
+                return new Rect();
+            case "triangle":
+                return new Triangle();
+            case "line":
+                return new Line();
+            case "ellipse":
+                return new Ellipse();
+            default:
+                return null;
+        }
     }
 }

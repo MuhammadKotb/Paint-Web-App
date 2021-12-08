@@ -93,52 +93,7 @@ export interface shapeBack{
   shapeID:string;
 }
 
-//factory class to produce all kinds of shapes according to the given string
-class factory{
-  create(shape_name:String):shape{
-    var shape:shape
-    switch(shape_name.toLowerCase()){
-      case "line":
-        shape = new line();
-        break;
-      default:
-        throw new Error;
-    }
-    return shape;
-  }
-}
 
-
-//---------------------------------------------------------------------------//
-
-class line implements shape{
-  x = getRandomInt(124,1380);
-	y = getRandomInt(70,580);
-  width = 0;
-	height = 0;
-  type = "line";
-  fiCo = "";
-  stCo = strokeColor;
-  stWi = strokeWidth;
-  area: Path2D = new Path2D;
-  is_filled = false
-
-  draw(canvasGlobal:CanvasRenderingContext2D,fillcolor:string) {
-
-      this.area = new Path2D
-      this.area.moveTo(this.x, this.y);
-      this.area.lineTo(this.width,  this.height);
-      this.area.closePath;
-      canvasGlobal.beginPath();
-      canvasGlobal.strokeStyle = this.stCo;
-      canvasGlobal.lineWidth = this.stWi;
-      canvasGlobal.moveTo(this.x, this.y);
-      canvasGlobal.lineTo(this.width, this.height);
-      canvasGlobal.closePath();
-      canvasGlobal.stroke();
-
-  }
-}
 
 
 
@@ -151,7 +106,6 @@ class line implements shape{
 })
 export class AppComponent {
 
-  factory :factory = new factory();
   title = 'Front-End';
 
   constructor(private paintServ: paintServices) {}
@@ -407,6 +361,7 @@ export class AppComponent {
     var canvasGlobal = boardGlobal.getContext("2d")!;
     var line : shapeBack;
     this.paintServ.createShape("line").subscribe((data : shapeBack) => {line = data});
+    console.log(line);
 
     create_line_flag = true;
     created_line = false;
@@ -585,7 +540,7 @@ export class AppComponent {
 
 
 
-    boardGlobal.addEventListener("mousedown",e=>{
+    boardGlobal.addEventListener("mousedown", e=> {
 
       if(!created_circle && (circle != null) && circleButtonFlag){
 

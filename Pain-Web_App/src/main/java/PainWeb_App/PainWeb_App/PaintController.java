@@ -19,34 +19,28 @@ public class PaintController {
 
 
     @PostMapping("/paint")
-    ShapeClass addShapes(@RequestBody ShapeClass paintShape){
+    ShapeI addShapes(@RequestBody ShapeClass paintShape){
 
         shape.addShape(paintShape);
-        System.out.println(shape.getShape(shape.getListofShapes().size() - 1).getX());
-        System.out.println(shape.getShape(shape.getListofShapes().size() - 1).getY());
-        System.out.println(paintShape.getType());
-        System.out.println(shape.getListofShapes().size());
-        System.out.println(paintShape.getShapeID());
-        return  paintShape;
+        return paintShape;
     }
 
     @PostMapping("/create")
-    ShapeClass createShape(@RequestBody String type){
-
-
+    ShapeI createShape(@RequestBody String type){
+        System.out.println(type);
         return factory.createShape(type);
     }
 
     @GetMapping("/getCanvas")
-    List<ShapeClass> getCanvas(){
+    List<ShapeI> getCanvas(){
         return shape.getListofShapes();
     }
 
     @PostMapping("/postCanvas")
-    void postCanvas(@RequestBody List<ShapeClass> shapes){shape.setListofShapes(shapes);
-        System.out.println(shape.getListofShapes().get(0).getX());}
+    void postCanvas(@RequestBody List<ShapeI> shapes){shape.setListofShapes(shapes);
+    }
 
-    @PostMapping("/remove")
+    /*@PostMapping("/remove")
     List<ShapeClass> removeShape(@RequestBody ShapeClass removeShape){
 
         try{
@@ -95,5 +89,5 @@ public class PaintController {
         catch (Exception e){
             System.out.println(e);
         }
-    }
+    }*/
 }

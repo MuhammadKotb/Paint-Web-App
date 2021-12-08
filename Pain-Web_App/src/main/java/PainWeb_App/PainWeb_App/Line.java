@@ -1,11 +1,14 @@
 package PainWeb_App.PainWeb_App;
 
 import org.glassfish.jersey.message.internal.StringHeaderProvider;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ShapeClass implements ShapeI {
+@Component
+
+public class Line implements ShapeI {
     private int x = 0;
     private int y = 0;
     private int width = 80;
@@ -13,34 +16,21 @@ public class ShapeClass implements ShapeI {
     private String fiCo = null;
     private String stCo = null;
     private int stWi = 3;
-    private String type = null;
+    private String type = "line";
     private boolean isFilled = false;
     private String shapeID = null;
 
-    private List<ShapeI> shapes = new ArrayList<>();
-
-    public void addShape(ShapeClass shape){
-        this.shapes.add(shape);
-    }
 
 
-    public ShapeClass(){
 
-    }
 
-    public ShapeClass(String type){
+    public Line(){}
+    public Line(String type){
         this.type = type;
     }
 
-    public List<ShapeI> getListofShapes(){
-        return this.shapes;
-    }
-    public void setListofShapes(List<ShapeI> shapes){
-        this.shapes = shapes;
-    }
-    public ShapeI getShape(int index){
-        return this.shapes.get(index);
-    }
+
+
 
     public int getX() {
         return this.x;
@@ -122,10 +112,6 @@ public class ShapeClass implements ShapeI {
     public String getShapeID(){
         return this.shapeID;
     }
-
-
-
-
 
 
 }
