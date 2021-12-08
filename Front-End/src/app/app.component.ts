@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClientModule } from "@angular/common/http";
 import { paintServices } from './app.services';
 import { range } from 'rxjs';
+import { leadingComment } from '@angular/compiler';
 
 
 
@@ -365,27 +366,17 @@ export class AppComponent {
     fill_flag = !fill_flag;
     boardGlobal.addEventListener("mousedown",e =>{
       if(fill_flag){
+        for (var shape of shapesBack){
+          if(canvasGlobal.isPointInPath(canvasArea.get(shape.shapeID), e.offsetX, e.offsetY)){
+
+            shape.is_filled = true;
+            this.drawShape(shape, fillcolor);
 
 
-        this.paintServ.getCanvas().subscribe((data : shapeBack[]) =>{
-          shapesBack = data
-          for (var shape of shapesBack){
-
-            if(canvasGlobal.isPointInPath(canvasArea.get(shape.shapeID), e.offsetX, e.offsetY)){
-
-              shape.is_filled = true;
-              this.drawShape(shape,fillcolor);
-              this.paintServ.postCanvas(shapesBack)
-
-
-
-            }
           }
-        });
-
+        }
       }
     });
-
     if(fill_flag){
       document.getElementById("fill")!.style.backgroundColor = "rgba(47, 24, 10, 0.856)"
 
@@ -398,7 +389,7 @@ export class AppComponent {
 
 
 
-  create_line(){
+  createLine(){
     create_circle_flag = false;
     create_square_flag = false;
     create_rect_flag = false;
@@ -414,7 +405,9 @@ export class AppComponent {
 
     var boardGlobal = (<HTMLCanvasElement>document.getElementById("board"));
     var canvasGlobal = boardGlobal.getContext("2d")!;
-    var line :any= this.factory.create("line");
+    var line : shapeBack;
+    this.paintServ.createShape("line").subscribe((data : shapeBack) => {line = data});
+
     create_line_flag = true;
     created_line = false;
     var selectLine = false;
@@ -424,6 +417,7 @@ export class AppComponent {
 
         line.x = e.offsetX;
         line.y = e.offsetY;
+        line.shapeID = get_new_ID();
         selectLine = true;
         created_line = true;
 
@@ -435,12 +429,13 @@ export class AppComponent {
     boardGlobal.addEventListener("mousemove", e => {
       if(create_line_flag && selectLine && (line != null) && lineButtonFlag){
         canvasGlobal.clearRect(0,0,1380,675);
+        canvasArea.delete(line.shapeID);
 
         line.width = e.offsetX;
         line.height = e.offsetY;
-        line.draw(canvasGlobal,"");
-        for(var i = 0; i < shapes.length; i++){
-          shapes[i].draw(canvasGlobal,"");
+        this.drawShape(line, "");
+        for(var i = 0; i < shapesBack.length; i++){
+          this.drawShape(shapesBack[i], "");
         }
       }
 
@@ -451,9 +446,26 @@ export class AppComponent {
         created_line = true;
         selectLine = false;
         if(line != null && (line.width != 0 && line.height != 0)){
-          shapes.push(line);
+          shapesBack.push(line);
 
       }
+      this.paintServ.postShape({
+        x:line.x,
+        y:line.y,
+        width:line.width,
+        height:line.height,
+        fiCo:line.fiCo,
+        stCo:line.stCo,
+        stWi:line.stWi,
+        type:line.type,
+        is_filled:line.is_filled,
+        shapeID : line.shapeID
+
+        }).subscribe((data : shapeBack) => {
+          this.drawShape(data, "");
+          shapesBack.push(data)
+
+        })
       line = null;
 
         document.getElementById("line")!.style.backgroundColor = "rgb(246, 129, 60)"
@@ -469,28 +481,6 @@ export class AppComponent {
 
   }
 
-  createLine(){
-
-    create_circle_flag = false;
-    create_square_flag = false;
-    create_rect_flag = false;
-    create_triangle_flag = false;
-    create_ellipse_flag = false;
-
-
-    created_circle = false;
-    created_square = false;
-    created_rect = false;
-    created_triangle = false;
-    created_ellipse = false;
-
-    var boardGlobal = (<HTMLCanvasElement>document.getElementById("board"));
-    var canvasGlobal = boardGlobal.getContext("2d")!;
-    var line :any= this.factory.create("line");
-    create_line_flag = true;
-    created_line = false;
-
-  }
 
 
   createTriangle(){
@@ -558,12 +548,6 @@ export class AppComponent {
 
         created_triangle = true;
         create_triangle_flag = false;
-<<<<<<< HEAD
-        triangle = null;
-      
-=======
-
->>>>>>> 6d16ecc1f5101b351ef83a4890e76515b5a9ea35
 
         document.getElementById("triangle")!.style.backgroundColor = "rgb(246, 129, 60)"
 
@@ -614,16 +598,16 @@ export class AppComponent {
         create_circle_flag = false;
         created_circle = true;
         this.paintServ.postShape({
-          x:circle.x,
-          y:circle.y,
-          width:circle.width,
-          height:circle.height,
-          fiCo:circle.fiCo,
-          stCo:circle.stCo,
-          stWi:circle.stWi,
-          type:circle.type,
-          is_filled:circle.is_filled,
-          shapeID : get_new_ID()
+        x:circle.x,
+        y:circle.y,
+        width:circle.width,
+        height:circle.height,
+        fiCo:circle.fiCo,
+        stCo:circle.stCo,
+        stWi:circle.stWi,
+        type:circle.type,
+        is_filled:circle.is_filled,
+        shapeID : get_new_ID()
 
         }).subscribe((data : shapeBack) => {
           this.drawShape(data, "");
@@ -697,7 +681,7 @@ export class AppComponent {
             fiCo:rect.fiCo,
             stCo:rect.stCo,
             stWi:rect.stWi,
-            type:rect.type,
+            type: rect.type,
             is_filled:rect.is_filled,
             shapeID : get_new_ID()
 
@@ -893,60 +877,21 @@ export class AppComponent {
     console.log(canvasArea)
     boardGlobal.addEventListener("mousedown",event => {
       if(remove_flag){
-<<<<<<< HEAD
-        this.paintServ.getCanvas().subscribe((data : shapeBack[]) =>{
-          var shapesBack = data;
-          for (var shape of shapesBack){        
-            if(canvasGlobal.isPointInPath(canvasArea.get(shape.shapeID), event.offsetX, event.offsetY) || canvasGlobal.isPointInStroke(canvasArea.get(shape.shapeID), event.offsetX, event.offsetY)){
-             
-              removedShape = shape;
-              shapesBack = shapesBack.filter(obj => obj !== shape);
-              canvasArea.delete(shape.shapeID);
-              canvasGlobal.clearRect(0,0,1380,675);
-
-              for(var i = 0; i < shapesBack.length; i++){
-                this.drawShape(shapesBack[i], "");
-              }
-              break;
-=======
         for (var shape of shapesBack){
 
           if(canvasGlobal.isPointInPath(canvasArea.get(shape.shapeID), event.offsetX, event.offsetY) || canvasGlobal.isPointInStroke(canvasArea.get(shape.shapeID), event.offsetX, event.offsetY)){
             shapesBack = shapesBack.filter(obj => obj !== shape);
             canvasArea.delete(shape.shapeID);
             canvasGlobal.clearRect(0,0,1380,675);
->>>>>>> 6d16ecc1f5101b351ef83a4890e76515b5a9ea35
 
             for(var i = 0; i < shapesBack.length; i++){
               this.drawShape(shapesBack[i],"");
             }
-<<<<<<< HEAD
-
-          }
-          for(var i = 0; i < shapesBack.length; i++){
-            this.drawShape(shapesBack[i], "");
-          }
-        
-        })
-
-        
-      }
-     
-    });
-
-    boardGlobal.addEventListener("mouseup", e => {
-      if(removedShape != null){
-        this,this.paintServ.removeShape(removedShape).subscribe();
-        shapesBack = null;
-        removedShape = null;
-        
-=======
           }
         }
       }
       for(var i = 0; i < shapesBack.length; i++){
         this.drawShape(shapesBack[i],"");
->>>>>>> 6d16ecc1f5101b351ef83a4890e76515b5a9ea35
       }
     });
     if(remove_flag){
@@ -967,8 +912,8 @@ export class AppComponent {
 
     boardGlobal.addEventListener("mousedown",  e => {
       if(move_flag){
-        for (var i = 0; i < shapes.length; i++){
-          if(canvasGlobal.isPointInPath(shapes[i].area, e.offsetX, e.offsetY) || canvasGlobal.isPointInStroke(shapes[i].area, e.offsetX, e.offsetY)){
+        for (var i = 0; i < shapesBack.length; i++){
+          if(canvasGlobal.isPointInPath(canvasArea.get(shapesBack[i].shapeID), e.offsetX, e.offsetY) || canvasGlobal.isPointInStroke(canvasArea.get(shapesBack[i].shapeID), e.offsetX, e.offsetY)){
             temp_shape = i;
             is_selected = true;
           }
@@ -979,22 +924,23 @@ export class AppComponent {
     boardGlobal.addEventListener("mousemove", e => {
       if(move_flag && is_selected){
         canvasGlobal.clearRect(0,0,1380,675);
+        canvasArea.delete(shapesBack[temp_shape].shapeID);
 
-        var oldRealWidth = shapes[temp_shape].width - shapes[temp_shape].x;;
-        var oldRealHeight = shapes[temp_shape].height -  shapes[temp_shape].y;
-        if(shapes[temp_shape].type == "line"){
-          shapes[temp_shape].width = e.offsetX
-          shapes[temp_shape].height = e.offsetY
-          shapes[temp_shape].x = shapes[temp_shape].width - oldRealWidth;
-          shapes[temp_shape].y = shapes[temp_shape].height - oldRealHeight;
+        var oldRealWidth = shapesBack[temp_shape].width - shapesBack[temp_shape].x;;
+        var oldRealHeight = shapesBack[temp_shape].height -  shapesBack[temp_shape].y;
+        if(shapesBack[temp_shape].type == "line"){
+          shapesBack[temp_shape].width = e.offsetX
+          shapesBack[temp_shape].height = e.offsetY
+          shapesBack[temp_shape].x = shapesBack[temp_shape].width - oldRealWidth;
+          shapesBack[temp_shape].y = shapesBack[temp_shape].height - oldRealHeight;
         }
         else{
-          shapes[temp_shape].x = e.offsetX;
-          shapes[temp_shape].y = e.offsetY;
+          shapesBack[temp_shape].x = e.offsetX;
+          shapesBack[temp_shape].y = e.offsetY;
         }
-        shapes[temp_shape].draw(canvasGlobal,"");
-        for(var i = 0; i < shapes.length; i++){
-          shapes[i].draw(canvasGlobal,"");
+        this.drawShape(shapesBack[temp_shape], "");
+        for(var i = 0; i < shapesBack.length; i++){
+          this.drawShape(shapesBack[i], "");
         }
 
       }
@@ -1002,8 +948,8 @@ export class AppComponent {
 
     boardGlobal.addEventListener("mouseup", e => {
       is_selected = false;
-      for(var i = 0; i < shapes.length; i++){
-        shapes[i].draw(canvasGlobal,"");
+      for(var i = 0; i < shapesBack.length; i++){
+        this.drawShape(shapesBack[temp_shape], "");
       }
     });
 
@@ -1024,47 +970,65 @@ export class AppComponent {
     var canvasGlobal = boardGlobal.getContext("2d")!;
     copy_flag = true;
     found = true;
+    var copy_shape : shapeBack;
+    
+
+
 
 
     boardGlobal.addEventListener("mousedown",  e => {
 
       if(found){
-        this.paintServ.getCanvas().subscribe((data : shapeBack[]) =>{
-          shapesBack = data
-          for (var i = 0; i < shapesBack.length; i++){
-            if(canvasGlobal.isPointInPath(canvasArea.get(shapesBack[i].shapeID), e.offsetX, e.offsetY) || canvasGlobal.isPointInStroke(canvasArea.get(shapesBack[i].shapeID), e.offsetX, e.offsetY)){
-                this.paintServ.postShape({
-                x:shapesBack[i].x,
-                y:shapesBack[i].y,
-                width:shapesBack[i].width,
-                height:shapesBack[i].height,
-                fiCo:shapesBack[i].fiCo,
-                stCo:shapesBack[i].stCo,
-                stWi:shapesBack[i].stWi,
-                type:shapesBack[i].type,
-                is_filled:shapesBack[i].is_filled,
-                shapeID : get_new_ID()
 
-                }).subscribe((data : shapeBack) => {
-                  shapesBack.push(data)
-                })
+        for (var i = 0; i < shapesBack.length; i++){
+          if(canvasGlobal.isPointInPath(canvasArea.get(shapesBack[i].shapeID), e.offsetX, e.offsetY) || canvasGlobal.isPointInStroke(canvasArea.get(shapesBack[i].shapeID), e.offsetX, e.offsetY)){
 
-                is_selected = true;
-                temp_shape = shapesBack.length - 1;
-                found = false;
-                break;
-            }
+            this.paintServ.createShape(shapesBack[i].type).subscribe((data : shapeBack) =>{
+
+
+              copy_shape = data;
+              copy_shape.x = shapesBack[i].x;
+              copy_shape.y = shapesBack[i].y;
+              copy_shape.width = shapesBack[i].width;
+              copy_shape.height = shapesBack[i].height;
+              copy_shape.fiCo = shapesBack[i].fiCo;
+              copy_shape.stCo = shapesBack[i].stCo;
+              copy_shape.stWi = shapesBack[i].stWi;
+              copy_shape.is_filled = shapesBack[i].is_filled;
+              copy_shape.type = shapesBack[i].type;
+              copy_shape.shapeID = get_new_ID();
+  
+  
+              console.log(copy_shape);
+
+              shapesBack.push(copy_shape);
+
+  
+             
+              temp_shape = shapesBack.length - 1;
+              
+            });
+            found = false;
+
+            is_selected = true;
+            
+            break;
+
           }
-        })
+        }
       }
     });
 
     boardGlobal.addEventListener("mousemove", e => {
-      if(copy_flag && is_selected ){
-        canvasGlobal.clearRect(0,0,1380,675);
-        canvasArea.delete(shapesBack[temp_shape].shapeID)
+      if(copy_flag && is_selected){
+        console.log(canvasArea);
+        console.log(copy_shape.shapeID)
+        console.log(shapesBack[temp_shape - 1].shapeID)
 
-        var oldRealWidth = shapesBack[temp_shape].width - shapesBack[temp_shape].x;;
+        canvasGlobal.clearRect(0,0,1380,675);
+        canvasArea.delete(shapesBack[temp_shape].shapeID);
+      
+        var oldRealWidth = shapesBack[temp_shape].width - shapesBack[temp_shape].x;
         var oldRealHeight = shapesBack[temp_shape].height -  shapesBack[temp_shape].y;
         if(shapesBack[temp_shape].type == "line"){
           shapesBack[temp_shape].width = e.offsetX
@@ -1075,28 +1039,31 @@ export class AppComponent {
         else{
           shapesBack[temp_shape].x = e.offsetX;
           shapesBack[temp_shape].y = e.offsetY;
-
         }
-        for(var i = 0; i < shapesBack.length; i++){
-            this.drawShape(shapesBack[i],"");
 
+        this.drawShape(shapesBack[temp_shape], "");
+        for(var i = 0; i < shapesBack.length; i++){
+          this.drawShape(shapesBack[i], "");
         }
 
       }
+
+     
     });
 
 
     boardGlobal.addEventListener("mouseup", e => {
+
       is_selected = false;
       found = false;
       for(var i = 0; i < shapesBack.length; i++){
-        this.drawShape(shapesBack[i],"");
+        this.drawShape(shapesBack[i], "");
       }
-      console.log(shapesBack)
-
-      this.paintServ.postCanvas(shapesBack)
-
+      copy_shape = null;
+     
       document.getElementById("copy")!.style.backgroundColor = "rgb(246, 129, 60)"
+
+
     });
 
     if(copy_flag){
@@ -1118,8 +1085,8 @@ export class AppComponent {
 
     boardGlobal.addEventListener("mousedown",  e => {
       if(resize_flag){
-        for (var i = 0; i < shapes.length; i++){
-          if(canvasGlobal.isPointInPath(shapes[i].area, e.offsetX, e.offsetY) || canvasGlobal.isPointInStroke(shapes[i].area, e.offsetX, e.offsetY)) {
+        for (var i = 0; i < shapesBack.length; i++){
+          if(canvasGlobal.isPointInPath(canvasArea.get(shapesBack[i].shapeID), e.offsetX, e.offsetY) || canvasGlobal.isPointInStroke(canvasArea.get(shapesBack[i].shapeID), e.offsetX, e.offsetY)) {
             temp_shape = i;
             is_selected = true;
           }
@@ -1133,117 +1100,123 @@ export class AppComponent {
     boardGlobal.addEventListener("mousemove", e => {
       if(resize_flag && is_selected){
         canvasGlobal.clearRect(0,0,1380,675);
+        canvasArea.delete(shapesBack[temp_shape].shapeID);
 
-        if(shapes[temp_shape].type == 'line'){
+        if(shapesBack[temp_shape].type == 'line'){
           if(e.offsetX > oldx && e.offsetY > oldy){
-            shapes[temp_shape].width +=2;
-            shapes[temp_shape].height += 2;
+            shapesBack[temp_shape].width +=2;
+            shapesBack[temp_shape].height += 2;
 
           }
           else if(e.offsetX < oldx && e.offsetY < oldy){
-            if(shapes[temp_shape].width > 2 || shapes[temp_shape].height > 2) {
-              shapes[temp_shape].width -= 2;
-              shapes[temp_shape].height -= 2;
+            if(shapesBack[temp_shape].width > 2 || shapesBack[temp_shape].height > 2) {
+              shapesBack[temp_shape].width -= 2;
+              shapesBack[temp_shape].height -= 2;
 
             }
           }
           oldx = e.offsetX;
           oldy = e.offsetY;
-          shapes[temp_shape].draw(canvasGlobal,"");
+          this.drawShape(shapesBack[temp_shape], "");
+          
         }
-        if(shapes[temp_shape].type == 'circle'){
+        if(shapesBack[temp_shape].type == 'circle'){
           if(e.offsetX > oldx && e.offsetY > oldy){
 
-            shapes[temp_shape].width += 2;
-            shapes[temp_shape].height += 2;
+            shapesBack[temp_shape].width += 2;
+            shapesBack[temp_shape].height += 2;
           }
           else if(e.offsetX < oldx || e.offsetY < oldy){
-            if(shapes[temp_shape].width > 2 && shapes[temp_shape].height > 2 ){
-              shapes[temp_shape].width -= 2;
-              shapes[temp_shape].height -= 2;
+            if(shapesBack[temp_shape].width > 2 && shapesBack[temp_shape].height > 2 ){
+              shapesBack[temp_shape].width -= 2;
+              shapesBack[temp_shape].height -= 2;
             }
           }
           oldx = e.offsetX;
           oldy = e.offsetY;
-          shapes[temp_shape].draw(canvasGlobal,"");
+          this.drawShape(shapesBack[temp_shape], "");
 
         }
-        if(shapes[temp_shape].type == 'square'){
+        if(shapesBack[temp_shape].type == 'square'){
           if(e.offsetX > oldx && e.offsetY > oldy){
-            shapes[temp_shape].width += 2;
-            shapes[temp_shape].height += 2;
+            shapesBack[temp_shape].width += 2;
+            shapesBack[temp_shape].height += 2;
 
           }
           else if(e.offsetX < oldx || e.offsetY < oldy){
-            if(shapes[temp_shape].width > 2 && shapes[temp_shape].height > 2 ){
-              shapes[temp_shape].width -= 2;
-              shapes[temp_shape].height -= 2;
+            if(shapesBack[temp_shape].width > 2 && shapesBack[temp_shape].height > 2 ){
+              shapesBack[temp_shape].width -= 2;
+              shapesBack[temp_shape].height -= 2;
             }
           }
           oldx = e.offsetX;
           oldy = e.offsetY;
-          shapes[temp_shape].draw(canvasGlobal,"");
+          this.drawShape(shapesBack[temp_shape], "");
+          
         }
-        if(shapes[temp_shape].type == 'rect'){
+        if(shapesBack[temp_shape].type == 'rect'){
           if(e.offsetX > oldx && e.offsetY > oldy){
-            shapes[temp_shape].width += 2;
-            shapes[temp_shape].height += 2;
+            shapesBack[temp_shape].width += 2;
+            shapesBack[temp_shape].height += 2;
           }
           else if(e.offsetX < oldx && e.offsetY < oldy){
-            if(shapes[temp_shape].width > 2 && shapes[temp_shape].height > 2 ){
-              shapes[temp_shape].width -= 2;
-              shapes[temp_shape].height -= 2;
+            if(shapesBack[temp_shape].width > 2 && shapesBack[temp_shape].height > 2 ){
+              shapesBack[temp_shape].width -= 2;
+              shapesBack[temp_shape].height -= 2;
             }
           }
           oldx = e.offsetX;
           oldy = e.offsetY;
-          shapes[temp_shape].draw(canvasGlobal,"");
+          this.drawShape(shapesBack[temp_shape], "");
+
         }
-        if(shapes[temp_shape].type == 'triangle'){
+        if(shapesBack[temp_shape].type == 'triangle'){
           if(e.offsetX > oldx && e.offsetY > oldy){
 
-            shapes[temp_shape].width += 2;
-            shapes[temp_shape].height += 2;
+            shapesBack[temp_shape].width += 2;
+            shapesBack[temp_shape].height += 2;
           }
           else if(e.offsetX < oldx && e.offsetY < oldy){
-            if(shapes[temp_shape].width > 2 && shapes[temp_shape].height > 2 ){
-              shapes[temp_shape].width -= 2;
-              shapes[temp_shape].height -= 2;
+            if(shapesBack[temp_shape].width > 2 && shapesBack[temp_shape].height > 2 ){
+              shapesBack[temp_shape].width -= 2;
+              shapesBack[temp_shape].height -= 2;
             }
 
 
           }
           oldx = e.offsetX;
           oldy = e.offsetY;
-          shapes[temp_shape].draw(canvasGlobal,"");
+          this.drawShape(shapesBack[temp_shape], "");
+
         }
-        if(shapes[temp_shape].type == 'ellipse'){
+        if(shapesBack[temp_shape].type == 'ellipse'){
           if(e.offsetX > oldx && e.offsetY > oldy){
-            shapes[temp_shape].width +=2;
-            shapes[temp_shape].height += 2;
+            shapesBack[temp_shape].width +=2;
+            shapesBack[temp_shape].height += 2;
           }
           else if(e.offsetX < oldx && e.offsetY < oldy){
-            if(shapes[temp_shape].width > 2 && shapes[temp_shape].height > 2 ){
-              shapes[temp_shape].width -= 2;
-              shapes[temp_shape].height -= 2;
+            if(shapesBack[temp_shape].width > 2 && shapesBack[temp_shape].height > 2 ){
+              shapesBack[temp_shape].width -= 2;
+              shapesBack[temp_shape].height -= 2;
             }
           }
           oldx = e.offsetX;
           oldy = e.offsetY;
-          shapes[temp_shape].draw(canvasGlobal,"");
+          this.drawShape(shapesBack[temp_shape], "");
+
         }
         canvasGlobal.clearRect(0,0,1380,675);
 
       }
-      for(var i = 0; i < shapes.length; i++){
-        shapes[i].draw(canvasGlobal,"");
+      for(var i = 0; i < shapesBack.length; i++){
+        this.drawShape(shapesBack[i], "");
       }
     });
 
     boardGlobal.addEventListener("mouseup", e => {
       is_selected = false;
-      for(var i = 0; i < shapes.length; i++){
-        shapes[i].draw(canvasGlobal,"");
+      for(var i = 0; i < shapesBack.length; i++){
+        this.drawShape(shapesBack[i], "");
       }
 
     });
@@ -1255,6 +1228,7 @@ export class AppComponent {
       document.getElementById("resize")!.style.backgroundColor = "rgb(246, 129, 60)"
 
     }
+
 
 
   }
