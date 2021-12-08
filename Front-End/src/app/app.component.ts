@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClientModule } from "@angular/common/http";
 import { paintServices } from './app.services';
+import { range } from 'rxjs';
 
 
 
@@ -47,12 +48,19 @@ var found : boolean = false;
 
 var strokeColor:string = 'black';
 var strokeWidth:number = 3;
+var serial = Array.from(Array(1000000).keys());
 
 //randomizer function :pick  a random value between two edges
 function getRandomInt(min:number, max:number) {
 	min = Math.ceil(min);
 	max = Math.floor(max);
 	return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function get_new_ID():string {
+  var ID =   serial.pop()
+  return (ID.toString())
+
 }
 
 //shape interface to cover all shapes under restricted contract
@@ -152,9 +160,7 @@ export class AppComponent {
     this.paintServ.getCanvas().subscribe((data : shapeBack[])=> {shapesBack = data; console.log(shapesBack);console.log(canvasArea)});
   }
 
-  removeShape(shape : shapeBack){
-    this.paintServ.removeShape(shape).subscribe();
-  }
+
 
 
   drawShape(shape : shapeBack, fillcolor : string){
@@ -362,13 +368,14 @@ export class AppComponent {
 
 
         this.paintServ.getCanvas().subscribe((data : shapeBack[]) =>{
-          for (var shape of data){
+          shapesBack = data
+          for (var shape of shapesBack){
 
             if(canvasGlobal.isPointInPath(canvasArea.get(shape.shapeID), e.offsetX, e.offsetY)){
 
               shape.is_filled = true;
               this.drawShape(shape,fillcolor);
-              this.paintServ.editShape(shape).subscribe();
+              this.paintServ.postCanvas(shapesBack)
 
 
 
@@ -533,11 +540,14 @@ export class AppComponent {
         stWi:triangle.stWi,
         type:triangle.type,
         is_filled:triangle.is_filled,
-        shapeID : e.offsetX.toString().concat(e.offsetY.toString()).concat(triangle.type)
+        shapeID : get_new_ID()
 
         }).subscribe((data : shapeBack) => {
           this.drawShape(data, "");
+          shapesBack.push(data)
         })
+        triangle = null;
+
       }
 
 
@@ -546,7 +556,6 @@ export class AppComponent {
     boardGlobal.addEventListener("mouseup",e=>{
       if(triangleButtonFlag){
 
-        triangle = null;
         created_triangle = true;
         create_triangle_flag = false;
 
@@ -582,7 +591,7 @@ export class AppComponent {
     var boardGlobal = (<HTMLCanvasElement>document.getElementById("board"));
     var canvasGlobal = boardGlobal.getContext("2d")!;
 
-    var circle : shapeBack;
+    var circle : shapeBack|null;
     this.paintServ.createShape("circle").subscribe((data : shapeBack) =>{circle = data});
 
 
@@ -609,11 +618,14 @@ export class AppComponent {
           stWi:circle.stWi,
           type:circle.type,
           is_filled:circle.is_filled,
-          shapeID : e.offsetX.toString().concat(e.offsetY.toString()).concat(circle.type)
+          shapeID : get_new_ID()
 
         }).subscribe((data : shapeBack) => {
           this.drawShape(data, "");
+          shapesBack.push(data)
+
         })
+        circle = null
         }
 
     });
@@ -624,7 +636,6 @@ export class AppComponent {
 
         created_circle = true;
         create_circle_flag = false;
-
 
         document.getElementById("circle")!.style.backgroundColor = "rgb(246, 129, 60)"
 
@@ -682,11 +693,15 @@ export class AppComponent {
             stWi:rect.stWi,
             type:rect.type,
             is_filled:rect.is_filled,
-            shapeID : e.offsetX.toString().concat(e.offsetY.toString()).concat(rect.type)
+            shapeID : get_new_ID()
 
           }).subscribe((data : shapeBack) => {
             this.drawShape(data, "");
+            shapesBack.push(data)
+
           })
+          rect = null;
+
         }
 
     });
@@ -694,9 +709,9 @@ export class AppComponent {
 
     boardGlobal.addEventListener("mouseup",e=>{
       if(rectButtonFlag){
-        rect = null;
         created_rect = true;
         create_rect_flag = false;
+
 
         document.getElementById("rect")!.style.backgroundColor = "rgb(246, 129, 60)"
 
@@ -756,11 +771,15 @@ export class AppComponent {
           stWi:square.stWi,
           type:square.type,
           is_filled:square.is_filled,
-          shapeID : e.offsetX.toString().concat(e.offsetY.toString()).concat(square.type)
+          shapeID : get_new_ID()
 
           }).subscribe((data : shapeBack) => {
             this.drawShape(data, "");
+            shapesBack.push(data)
+
           })
+          square = null;
+
         }
 
     });
@@ -768,7 +787,6 @@ export class AppComponent {
 
     boardGlobal.addEventListener("mouseup",e=>{
       if(squareButtonFlag){
-        square = null;
         created_square = true;
         create_square_flag = false;
 
@@ -829,10 +847,14 @@ export class AppComponent {
         stWi:ellipse.stWi,
         type:ellipse.type,
         is_filled:ellipse.is_filled,
-        shapeID : e.offsetX.toString().concat(e.offsetY.toString()).concat(ellipse.type)
+        shapeID : get_new_ID()
         }).subscribe((data : shapeBack) => {
           this.drawShape(data, "");
+          shapesBack.push(data)
+
         })
+        ellipse = null;
+
       }
 
 
@@ -840,7 +862,6 @@ export class AppComponent {
 
     boardGlobal.addEventListener("mouseup",e=>{
       if(ellipseButtonFlag){
-        ellipse = null;
         created_ellipse = true;
         create_ellipse_flag = false;
 
@@ -860,69 +881,28 @@ export class AppComponent {
 
   remove(){
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 9183eec7808ebf7700a8cb936361b18c98818577
     var boardGlobal = (<HTMLCanvasElement>document.getElementById("board"));
     var canvasGlobal = boardGlobal.getContext("2d")!;
     remove_flag = !(remove_flag);
-    var  removedShape : shapeBack = null;
+    console.log(canvasArea)
     boardGlobal.addEventListener("mousedown",event => {
-
       if(remove_flag){
-        this.paintServ.getCanvas().subscribe((data : shapeBack[]) =>{
-<<<<<<< HEAD
-          shapesBack = data;
-          for (var shape of shapesBack){
-=======
-          var shapesBack = data;
-          for (var shape of shapesBack){        
->>>>>>> 9183eec7808ebf7700a8cb936361b18c98818577
-            if(canvasGlobal.isPointInPath(canvasArea.get(shape.shapeID), event.offsetX, event.offsetY) || canvasGlobal.isPointInStroke(canvasArea.get(shape.shapeID), event.offsetX, event.offsetY)){
-              removedShape = shape;
+        for (var shape of shapesBack){
 
-              shapesBack = shapesBack.filter(obj => obj !== shape);
-              canvasArea.delete(shape.shapeID);
-              canvasGlobal.clearRect(0,0,1380,675);
+          if(canvasGlobal.isPointInPath(canvasArea.get(shape.shapeID), event.offsetX, event.offsetY) || canvasGlobal.isPointInStroke(canvasArea.get(shape.shapeID), event.offsetX, event.offsetY)){
+            shapesBack = shapesBack.filter(obj => obj !== shape);
+            canvasArea.delete(shape.shapeID);
+            canvasGlobal.clearRect(0,0,1380,675);
 
-              for(var i = 0; i < shapesBack.length; i++){
-                this.drawShape(shapesBack[i], "");
-              }
-              break;
-
+            for(var i = 0; i < shapesBack.length; i++){
+              this.drawShape(shapesBack[i],"");
             }
-<<<<<<< HEAD
-
-
-=======
-            
->>>>>>> 9183eec7808ebf7700a8cb936361b18c98818577
           }
-        
-        })
-<<<<<<< HEAD
-        this.paintServ.removeShape(removedShape).subscribe();
-
-
-=======
-
-        for(var i = 0; i < shapesBack.length; i++){
-          this.drawShape(shapesBack[i], "");
         }
->>>>>>> 9183eec7808ebf7700a8cb936361b18c98818577
       }
-
-    });
-
-    boardGlobal.addEventListener("mouseup", e => {
-      if(removedShape != null){
-        this,this.paintServ.removeShape(removedShape).subscribe();
-        shapesBack = null;
-        removedShape = null;
+      for(var i = 0; i < shapesBack.length; i++){
+        this.drawShape(shapesBack[i],"");
       }
-      
-      
     });
     if(remove_flag){
       document.getElementById("remove")!.style.backgroundColor = "rgba(47, 24, 10, 0.856)"
@@ -999,54 +979,64 @@ export class AppComponent {
     var canvasGlobal = boardGlobal.getContext("2d")!;
     copy_flag = true;
     found = true;
-    var copy_shape : shape;
 
 
     boardGlobal.addEventListener("mousedown",  e => {
 
       if(found){
-        for (var i = 0; i < shapes.length; i++){
-          if(canvasGlobal.isPointInPath(shapes[i].area, e.offsetX, e.offsetY) || canvasGlobal.isPointInStroke(shapes[i].area, e.offsetX, e.offsetY)){
-            copy_shape = this.factory.create(shapes[i].type);
-            copy_shape.x = shapes[i].x;
-            copy_shape.y = shapes[i].y;
-            copy_shape.width = shapes[i].width;
-            copy_shape.height = shapes[i].height;
-            copy_shape.fiCo = shapes[i].fiCo;
-            copy_shape.stCo = shapes[i].stCo;
-            copy_shape.stWi = shapes[i].stWi;
-            copy_shape.is_filled = shapes[i].is_filled;
+        this.paintServ.getCanvas().subscribe((data : shapeBack[]) =>{
+          shapesBack = data
+          for (var i = 0; i < shapesBack.length; i++){
+            if(canvasGlobal.isPointInPath(canvasArea.get(shapesBack[i].shapeID), e.offsetX, e.offsetY) || canvasGlobal.isPointInStroke(canvasArea.get(shapesBack[i].shapeID), e.offsetX, e.offsetY)){
+                this.paintServ.postShape({
+                x:shapesBack[i].x,
+                y:shapesBack[i].y,
+                width:shapesBack[i].width,
+                height:shapesBack[i].height,
+                fiCo:shapesBack[i].fiCo,
+                stCo:shapesBack[i].stCo,
+                stWi:shapesBack[i].stWi,
+                type:shapesBack[i].type,
+                is_filled:shapesBack[i].is_filled,
+                shapeID : get_new_ID()
 
-            shapes.push(copy_shape);
-            is_selected = true;
-            temp_shape = shapes.length - 1;
-            found = false;
-            break;
+                }).subscribe((data : shapeBack) => {
+                  shapesBack.push(data)
+                })
+
+                is_selected = true;
+                temp_shape = shapesBack.length - 1;
+                found = false;
+                break;
+            }
           }
-        }
+        })
       }
     });
 
     boardGlobal.addEventListener("mousemove", e => {
-      if(copy_flag && is_selected){
+      if(copy_flag && is_selected ){
         canvasGlobal.clearRect(0,0,1380,675);
+        canvasArea.delete(shapesBack[temp_shape].shapeID)
 
-        var oldRealWidth = shapes[temp_shape].width - shapes[temp_shape].x;;
-        var oldRealHeight = shapes[temp_shape].height -  shapes[temp_shape].y;
-        if(shapes[temp_shape].type == "line"){
-          shapes[temp_shape].width = e.offsetX
-          shapes[temp_shape].height = e.offsetY
-          shapes[temp_shape].x = shapes[temp_shape].width - oldRealWidth;
-          shapes[temp_shape].y = shapes[temp_shape].height - oldRealHeight;
+        var oldRealWidth = shapesBack[temp_shape].width - shapesBack[temp_shape].x;;
+        var oldRealHeight = shapesBack[temp_shape].height -  shapesBack[temp_shape].y;
+        if(shapesBack[temp_shape].type == "line"){
+          shapesBack[temp_shape].width = e.offsetX
+          shapesBack[temp_shape].height = e.offsetY
+          shapesBack[temp_shape].x = shapesBack[temp_shape].width - oldRealWidth;
+          shapesBack[temp_shape].y = shapesBack[temp_shape].height - oldRealHeight;
         }
         else{
-          shapes[temp_shape].x = e.offsetX;
-          shapes[temp_shape].y = e.offsetY;
+          shapesBack[temp_shape].x = e.offsetX;
+          shapesBack[temp_shape].y = e.offsetY;
+
         }
-        shapes[temp_shape].draw(canvasGlobal,"");
-        for(var i = 0; i < shapes.length; i++){
-          shapes[i].draw(canvasGlobal,"");
+        for(var i = 0; i < shapesBack.length; i++){
+            this.drawShape(shapesBack[i],"");
+
         }
+
       }
     });
 
@@ -1054,9 +1044,13 @@ export class AppComponent {
     boardGlobal.addEventListener("mouseup", e => {
       is_selected = false;
       found = false;
-      for(var i = 0; i < shapes.length; i++){
-        shapes[i].draw(canvasGlobal,"");
+      for(var i = 0; i < shapesBack.length; i++){
+        this.drawShape(shapesBack[i],"");
       }
+      console.log(shapesBack)
+
+      this.paintServ.postCanvas(shapesBack)
+
       document.getElementById("copy")!.style.backgroundColor = "rgb(246, 129, 60)"
     });
 

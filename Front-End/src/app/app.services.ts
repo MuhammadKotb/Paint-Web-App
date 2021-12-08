@@ -16,15 +16,17 @@ export class paintServices{
     createShape(type : String) : Observable<shapeBack> {
         return this.http.post<shapeBack>("http://localhost:8080/create", type);
     }
-    editShape(shape : shapeBack){
+    /*editShape(shape : shapeBack){
         return this.http.post("http://localhost:8080/edit", shape);
-    }
+    }*/
     getCanvas() : Observable<shapeBack[]> {
-        return this.http.get<shapeBack[]>("http://localhost:8080/canvas");
+        return this.http.get<shapeBack[]>("http://localhost:8080/getCanvas");
     }
-    removeShape(shape : shapeBack) : Observable<shapeBack[]>  {
+    postCanvas(shapesBack : shapeBack[]){
+        return this.http.post("http://localhost:8080/postCanvas", shapesBack)
+    }
+    /*removeShape(shape : shapeBack) : Observable<shapeBack[]>  {
         return this.http.post<shapeBack[]>("http://localhost:8080/remove", shape);
-    }
+    }*/
 
 }
-
