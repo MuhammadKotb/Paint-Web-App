@@ -8,13 +8,14 @@ import java.util.List;
 public class ShapeClass implements ShapeI {
     private int x = 0;
     private int y = 0;
-    private int width = 0;
-    private int height = 0;
+    private int width = 80;
+    private int height = 80;
     private String fiCo = null;
     private String stCo = null;
-    private int stWi = 0;
+    private int stWi = 3;
     private String type = null;
     private boolean isFilled = false;
+    private String shapeID = null;
 
     private List<ShapeClass> shapes = new ArrayList<>();
 
@@ -26,48 +27,100 @@ public class ShapeClass implements ShapeI {
     public ShapeClass(){
 
     }
+
     public ShapeClass(String type){
         this.type = type;
     }
 
-    public int getX() {
-        return x;
+    public List<ShapeClass> getListofShapes(){
+        return this.shapes;
+    }
+    public ShapeClass getShape(int index){
+        return this.shapes.get(index);
     }
 
+    public int getX() {
+        return this.x;
+    }
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public void setY(int y) {
+        this.y = y;
+    }
+
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
+
+    public void setFiCo(String fiCo) {
+        this.fiCo = fiCo;
+    }
+
+    public void setStCo(String stCo) {
+        this.stCo = stCo;
+    }
+
+    public void setStWi(int stWi) {
+        this.stWi = stWi;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public void setFilled(boolean filled) {
+        isFilled = filled;
+    }
+
+    public void setShapeID(String shapeID) {
+        this.shapeID = shapeID;
+    }
 
     public int getY() {
-        return y;
+        return this.y;
     }
 
     public int getWidth() {
-        return width;
+        return this.width;
     }
 
     public int getHeight() {
-        return height;
+        return this.height;
     }
 
     public String getFiCo() {
-        return fiCo;
+        return this.fiCo;
     }
 
     public String getStCo() {
-        return stCo;
+        return this.stCo;
     }
 
 
     public int getStWi() {
-        return stWi;
+        return this.stWi;
     }
 
 
     public String getType() {
-        return type;
+        return this.type;
     }
 
     public boolean isFilled() {
-        return isFilled;
+        return this.isFilled;
     }
+    public String getShapeID(){
+        return this.shapeID;
+    }
+
+
 
 
 

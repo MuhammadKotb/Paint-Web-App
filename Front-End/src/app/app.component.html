@@ -1,18 +1,20 @@
 <div class="vtool_bar">
   <div>
-    <button id="circle" value="circle" (click)="create_circle();disableButtons()"> <img src= "assets/icons/circle-icon.png" width = 45px length = 45px /></button>
+    <button id="circle" value="circle" (click)="createCircle();disableButtons()"> <img src= "assets/icons/circle-icon.png" width = 45px length = 45px /></button>
   </div>
   <div>
-    <button id="rect" value="rect" (click)="create_rect();disableButtons()"><img src= "assets/icons/rectangle-icon.png" width = 45px length = 45px /></button>
+    <button id="rect" value="rect" (click)="createRect();disableButtons()"><img src= "assets/icons/rectangle-icon.png" width = 45px length = 45px /></button>
   </div>
   <div>
-    <button id="square" value="square" (click)="create_square();disableButtons()"><img src= "assets/icons/square-icon.png" width = 45px length = 45px /></button>
+    <button id="square" value="square" (click)="createSquare();disableButtons()"><img src= "assets/icons/square-icon.png" width = 45px length = 45px /></button>
   </div>
   <div>
-    <button id="triangle" value="triangle" (click)="create_triangle();disableButtons()"> <img src= "assets/icons/triangle-icon.png" width = 45px length = 45px /> </button>
+    <button id="triangle" value="triangle" (click)="createTriangle();disableButtons()"> <img src= "assets/icons/triangle-icon.png" width = 45px length = 45px /> </button>
+    
   </div>
   <div>
-    <button id="ellipse" value="ellipse" (click)="create_ellipse();disableButtons()"> <img src= "assets/icons/ellipse-icon.png" width = 45px length = 45px /> </button>
+    <button id="ellipse" value="ellipse" (click)="createEllipse();disableButtons()"> <img src= "assets/icons/ellipse-icon.png" width = 45px length = 45px /> </button>
+    
   </div>
   <div>
     <button id="line" value="line" (click) = "create_line();disableButtons()"> <img src= "assets/icons/line-icon.png" width = 45px length = 45px /> </button>
@@ -21,31 +23,31 @@
     <button id="brush" value="brush"> <img src= "assets/icons/brush-icon.png" width = 45px length = 45px /> </button>
   </div>
   <div>
-    <button id="save" value="save"> <img src= "assets/icons/save-icon.png" width = 45px length = 45px /> </button>
+    <button id="save" value="save" (click) = "getCanvas()"> <img src= "assets/icons/save-icon.png" width = 45px length = 45px /> </button>
   </div>
   <div>
-    <button id="remove" value="remove" (click)="remove()">remove</button>
+    <button id="remove" value="remove" (click)="remove()"> <img src= "assets/icons/remove-icon.png" width = 37px length = 37px /> </button>
   </div>
   <div>
-    <button id="resize" value="resize" (click)="resize()">resize</button>
+    <button id="resize" value="resize" (click)="resize()"> <img src= "assets/icons/resize-icon.png" width = 37px length = 37px /> </button>
   </div>
   <div>
-    <button id="move" value="move" (click)="move()">move</button>
+    <button id="move" value="move" (click)="move()"> <img src= "assets/icons/move-icon.png" width = 37px length = 37px /> </button>
   </div>
   <div>
-    <button id="copy" value="copy" (click)="copy()">copy</button>
+    <button id="copy" value="copy" (click)="copy()"> <img src= "assets/icons/copy-icon.png" width = 37px length = 37px /> </button>
   </div>
 </div>
 <div class="htool_bar">
   <div>
-    <input type="button" id="fill" value="Fill Color" (click)="fill_color()">
+    <input type="button" id="fill" value="fill" (click)="fill_color()">
   </div>
   <div>
     <input type = "color" id="fill_color" name="Fill Color" value = "#e66465">
     <label for="fill_color" >Fill Color</label>
   </div>
   <div>
-    <input type="button" id="confirm_stroke" value="Confirm Stroke" (click)="confirm_stroke()">
+    <input type="button" id="confirm_stroke" value="confirm_stroke" (click)="confirm_stroke()">
   </div>
   <div>
     <input type = "color" id="stroke_color" name="Stroke Color" value = "#f6b73c">

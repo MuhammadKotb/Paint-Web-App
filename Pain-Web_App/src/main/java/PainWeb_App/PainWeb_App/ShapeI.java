@@ -12,6 +12,7 @@ public interface ShapeI {
     int stWi = 0;
     String type = null;
     boolean isFilled = false;
+    String shapeID = null;
 
 
     int getX();
@@ -23,6 +24,7 @@ public interface ShapeI {
     String getType();
     String getFiCo();
     String getStCo();
+    String getShapeID();
 
 
 
