@@ -547,6 +547,7 @@ export class AppComponent {
         triangle = null;
         created_triangle = true;
         create_triangle_flag = false;
+        triangle = null;
       
 
         document.getElementById("triangle")!.style.backgroundColor = "rgb(246, 129, 60)"
@@ -620,6 +621,7 @@ export class AppComponent {
 
         created_circle = true;
         create_circle_flag = false;
+        circle = null;
 
 
         document.getElementById("circle")!.style.backgroundColor = "rgb(246, 129, 60)"
@@ -862,8 +864,8 @@ export class AppComponent {
           var shapesBack = data;
           for (var shape of shapesBack){        
             if(canvasGlobal.isPointInPath(canvasArea.get(shape.shapeID), event.offsetX, event.offsetY) || canvasGlobal.isPointInStroke(canvasArea.get(shape.shapeID), event.offsetX, event.offsetY)){
+             
               removedShape = shape;
-              
               shapesBack = shapesBack.filter(obj => obj !== shape);
               canvasArea.delete(shape.shapeID);
               canvasGlobal.clearRect(0,0,1380,675);
@@ -874,14 +876,15 @@ export class AppComponent {
               break;
 
             }
-            
+
+          }
+          for(var i = 0; i < shapesBack.length; i++){
+            this.drawShape(shapesBack[i], "");
           }
         
         })
 
-        for(var i = 0; i < shapesBack.length; i++){
-          this.drawShape(shapesBack[i], "");
-        }
+        
       }
      
     });
@@ -891,6 +894,7 @@ export class AppComponent {
         this,this.paintServ.removeShape(removedShape).subscribe();
         shapesBack = null;
         removedShape = null;
+        
       }
       
       
