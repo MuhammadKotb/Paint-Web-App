@@ -405,7 +405,7 @@ export class AppComponent {
     }
   }
 
-  
+
 
   create_line(){
     create_circle_flag = false;
@@ -420,7 +420,7 @@ export class AppComponent {
     created_rect = false;
     created_triangle = false;
     created_ellipse = false;
-    
+
     var boardGlobal = (<HTMLCanvasElement>document.getElementById("board"));
     var canvasGlobal = boardGlobal.getContext("2d")!;
     var line :any= this.factory.create("line");
@@ -463,29 +463,22 @@ export class AppComponent {
         if(line != null && (line.width != 0 && line.height != 0)){
           shapes.push(line);
 
-<<<<<<< HEAD
       }
       line = null;
-=======
-        }
-        console.log(shapes)
-        line = null;
->>>>>>> e3f86d8a7d4d43f8df4133aa3758eeacde4aacc9
 
         document.getElementById("line")!.style.backgroundColor = "rgb(246, 129, 60)"
       }
-      
+
     });
 
     if(create_line_flag){
       document.getElementById("line")!.style.backgroundColor = "rgba(47, 24, 10, 0.856)"
 
     }
-    
-    
+
+
   }
   create_triangle(){
-   
     create_square_flag = false;
     create_line_flag = false;
     create_circle_flag = false;
@@ -510,30 +503,30 @@ export class AppComponent {
           shapes.push(triangle);
           triangle = null;
           created_triangle = true;
-  
+
         }
       })
       boardGlobal.addEventListener("mouseup",e=>{
         if(triangleButtonFlag){
           create_triangle_flag =false;
           created_triangle = true;
-  
-  
+
+
           document.getElementById("triangle")!.style.backgroundColor = "rgb(246, 129, 60)"
         }
-        
-  
+
+
       })
       if(create_triangle_flag){
         document.getElementById("triangle")!.style.backgroundColor = "rgba(47, 24, 10, 0.856)"
-  
+
       }
-    
+
   }
-  
-  
+
+
   create_circle() {
-     
+
     create_square_flag = false;
     create_line_flag = false;
     create_rect_flag = false;
@@ -545,8 +538,8 @@ export class AppComponent {
     created_rect = false;
     created_triangle = false;
     created_ellipse = false;
-    
-    
+
+
     var boardGlobal = (<HTMLCanvasElement>document.getElementById("board"));
     var canvasGlobal = boardGlobal.getContext("2d")!;
     var circle :any= this.factory.create("circle");
@@ -571,20 +564,20 @@ export class AppComponent {
 
         document.getElementById("circle")!.style.backgroundColor = "rgb(246, 129, 60)"
       }
-      
+
 
     })
     if(create_circle_flag){
       document.getElementById("circle")!.style.backgroundColor = "rgba(47, 24, 10, 0.856)"
 
     }
-    
+
   }
-       
-  
+
+
 
   create_rect(){
-  
+
     create_square_flag = false;
     create_line_flag = false;
     create_circle_flag = false;
@@ -620,7 +613,7 @@ export class AppComponent {
 
         document.getElementById("rect")!.style.backgroundColor = "rgb(246, 129, 60)"
       }
-      
+
 
     })
     if(create_rect_flag){
@@ -628,10 +621,10 @@ export class AppComponent {
 
     }
     console.log(shapes)
-    
+
   }
   create_square(){
-   
+
     create_circle_flag = false;
     create_line_flag = false;
     create_rect_flag = false;
@@ -667,17 +660,17 @@ export class AppComponent {
 
         document.getElementById("square")!.style.backgroundColor = "rgb(246, 129, 60)"
       }
-      
+
 
     })
     if(create_square_flag){
       document.getElementById("square")!.style.backgroundColor = "rgba(47, 24, 10, 0.856)"
 
     }
-    
+
     }
-   
-    
+
+
   create_ellipse(){
     create_square_flag = false;
     create_line_flag = false;
@@ -690,7 +683,7 @@ export class AppComponent {
     created_circle = false;
     created_rect = false;
     created_triangle = false;
-   
+
     var boardGlobal = (<HTMLCanvasElement>document.getElementById("board"));
     var canvasGlobal = boardGlobal.getContext("2d")!;
     var ellipse :any= this.factory.create("ellipse");
@@ -715,15 +708,15 @@ export class AppComponent {
 
         document.getElementById("ellipse")!.style.backgroundColor = "rgb(246, 129, 60)"
       }
-      
+
 
     })
     if(create_ellipse_flag){
       document.getElementById("ellipse")!.style.backgroundColor = "rgba(47, 24, 10, 0.856)"
 
     }
-    
-    
+
+
   }
 
   remove(){
@@ -1044,10 +1037,8 @@ export class AppComponent {
 
   }
 
-<<<<<<< HEAD
-=======
   disableButtons(){
-    if(create_line_flag){  
+    if(create_line_flag){
 
       circleButtonFlag = false;
       squareButtonFlag  = false;
@@ -1059,7 +1050,7 @@ export class AppComponent {
 
     }
     if(create_square_flag){
-      
+
       circleButtonFlag = false;
       rectButtonFlag  = false;
       lineButtonFlag  = false;
@@ -1071,8 +1062,8 @@ export class AppComponent {
 
     }
     if(create_circle_flag){
-     
-      
+
+
 
       squareButtonFlag = false;
       rectButtonFlag = false;
@@ -1095,7 +1086,7 @@ export class AppComponent {
 
     }
     if(create_triangle_flag){
-      
+
       circleButtonFlag = false;
       squareButtonFlag = false;
       rectButtonFlag  = false;
@@ -1106,7 +1097,7 @@ export class AppComponent {
 
     }
     if(create_ellipse_flag){
-      
+
 
       circleButtonFlag = false;
       squareButtonFlag = false;
@@ -1120,7 +1111,7 @@ export class AppComponent {
 
     if(!create_square_flag){
       document.getElementById("square")!.style.backgroundColor = "rgb(246, 129, 60)"
-      
+
     }
     if(!create_rect_flag){
       document.getElementById("rect")!.style.backgroundColor = "rgb(246, 129, 60)"
@@ -1142,9 +1133,8 @@ export class AppComponent {
       document.getElementById("triangle")!.style.backgroundColor = "rgb(246, 129, 60)"
 
     }
-    
+
   }
->>>>>>> e3f86d8a7d4d43f8df4133aa3758eeacde4aacc9
 
 
 
