@@ -38,22 +38,24 @@
 
 
   <div>
-    <button type="button" id="fill" value="Coloring" (click)="fill_color()" > <img src= "assets/icons/brush-icon.png" width = 45px length = 45px /> </button>
+    <button type="button" id="fill" value="Coloring" (click)="fill_color()" > <img src= "assets/icons/brush-icon.png" width = 35px length = 35px /> </button>
+  </div>
+  <div>
     <input type = "color" id="fill_color" name="Fill Color" value = "#e66465">
     <label for="fill_color" >Fill Color</label>
   </div>
   <div>
-    <input type="button" id="confirm_stroke" value="Confirm Stroke" (click)="confirm_stroke()">
+    <button type="button" id="confirm_stroke" value="Confirm Stroke" (click)="confirm_stroke()" >Confirm</button>
     <input type = "color" id="stroke_color" name="Stroke Color" value = "#f6b73c">
     <label for="stroke_color">Stroke Color</label>
     <input type="number" id="stroke_width" name="Stroke Width" value = "3" min="0" max="100">
     <label for="stroke_width">Stroke Width</label>
   </div>
   <div>
-    <button id="save" value="save" (click) = "openSaveForm()" width="45" height="45"> <img src= "assets/icons/save-icon.png" width = 45px length = 45px /> </button>
+    <button id="save" value="save" (click) = "openSaveForm()" width="45" height="45"> <img src= "assets/icons/save-icon.png" width = 35px length = 35px /> </button>
   </div>
   <div>
-    <button id="load" value="load" (click) = "openLoadForm()" width="45" height="45" > <img src= "assets/icons/open-icon.png" width = 45px length = 45px /> </button>
+    <button id="load" value="load" (click) = "openLoadForm()" width="45" height="45" > <img src= "assets/icons/open-icon.png" width = 35px length = 35px /> </button>
   </div>
   <div>
     <button id="undo" value="undo" (click)="undo()">undo</button>

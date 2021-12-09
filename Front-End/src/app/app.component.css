@@ -58,9 +58,9 @@ button:active{
 .htool_bar input [type = "number"] {
   width: 35px;
 }
-.htool_bar input[type = "button"]{
-  width: 120px;
-  height: 30px;
+.htool_bar button{
+  width: 60px;
+  height: 40px;
   border-radius: 4px;
   background-color: rgb(246, 129, 60);
   border-color: rgb(238, 234, 232);
@@ -99,9 +99,11 @@ canvas{
 }
 
 .htool_bar button:hover {
-  background-color: #FF5100;
+  background-color: #636770;
 }
-
+.vtool_bar button:hover {
+  background-color: #636770;
+}
 
 /* The popup form - hidden by default */
 .form-popup {
@@ -143,7 +145,7 @@ canvas{
 
   /* Set a style for the submit/login button */
   .form-container .btn {
-    background-color: #df6b0d;
+    background-color: #ec710d;
     color: white;
     padding: 16px 20px;
     border: none;
@@ -186,7 +188,7 @@ canvas{
 
 /* Set a style for the submit/login button */
 .form-container .btn {
-  background-color: #db610f;
+  background-color: #36383d;
   color: white;
   padding: 16px 20px;
   border: none;
