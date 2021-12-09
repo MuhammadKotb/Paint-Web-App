@@ -1,7 +1,10 @@
 package PainWeb_App.PainWeb_App;
 
-import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+import java.util.List;
+@Component
 public interface ShapeI {
     int x = 0;
     int y = 0;

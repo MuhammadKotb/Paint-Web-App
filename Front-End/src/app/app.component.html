@@ -37,28 +37,27 @@
   </div>
 </div>
 <div class="htool_bar">
+
   <div>
     <input type="button" id="fill" value="fill" (click)="fill_color()">
-  </div>
-  <div>
     <input type = "color" id="fill_color" name="Fill Color" value = "#e66465">
     <label for="fill_color" >Fill Color</label>
   </div>
   <div>
     <input type="button" id="confirm_stroke" value="confirm_stroke" (click)="confirm_stroke()">
-  </div>
-  <div>
     <input type = "color" id="stroke_color" name="Stroke Color" value = "#f6b73c">
     <label for="stroke_color">Stroke Color</label>
-  </div>
-  <div>
     <input type="number" id="stroke_width" name="Stroke Width" value = "3" min="0" max="100">
     <label for="stroke_width">Stroke Width</label>
   </div>
-  <div>
-    <button id="save" value="save" (click) = "save()"> <img src= "assets/icons/save-icon.png" width = 40px length = 40px /> </button>
-  </div>
-
+  <form>
+    <input id="save" type ="submit" value="Save" (click) = "save()" width="40" height="40">
+    <input id="savePath" type="text" required placeholder="add the path that you want to save the file in" width="100" height="40">
+  </form>
+  <form>
+    <input id="load" type ="submit" value="load" (click) = "load()" width="40" height="40">
+    <input id="loadPath" type="text" required placeholder="add the path that you want to load the file from" width="100" height="40">
+  </form>
 </div>
 
 

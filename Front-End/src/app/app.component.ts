@@ -9,7 +9,6 @@ import { remote } from 'electron';
 
 
  //container to hold all different shapes on it
-var shapes:shape[] = [];
 var shapesBack:shapeBack[] = [];
 let canvasArea = new Map<string, Path2D>();
 
@@ -66,21 +65,6 @@ function get_new_ID():string {
 }
 
 //shape interface to cover all shapes under restricted contract
-interface shape{
-  x:number;
-  y:number;
-  width:number;
-  height:number;
-  fiCo:String;
-  stCo:String;
-  stWi:number;
-  area:Path2D;
-  type:String;
-  is_filled:boolean;
-
-  draw(canvasGlobal:CanvasRenderingContext2D,fillcolor:string):void;
-
-}
 export interface shapeBack{
   x:number;
   y:number;
@@ -94,52 +78,7 @@ export interface shapeBack{
   shapeID:string;
 }
 
-//factory class to produce all kinds of shapes according to the given string
-class factory{
-  create(shape_name:String):shape{
-    var shape:shape
-    switch(shape_name.toLowerCase()){
-      case "line":
-        shape = new line();
-        break;
-      default:
-        throw new Error;
-    }
-    return shape;
-  }
-}
 
-
-//---------------------------------------------------------------------------//
-
-class line implements shape{
-  x = getRandomInt(124,1380);
-	y = getRandomInt(70,580);
-  width = 0;
-	height = 0;
-  type = "line";
-  fiCo = "";
-  stCo = strokeColor;
-  stWi = strokeWidth;
-  area: Path2D = new Path2D;
-  is_filled = false
-
-  draw(canvasGlobal:CanvasRenderingContext2D,fillcolor:string) {
-
-      this.area = new Path2D
-      this.area.moveTo(this.x, this.y);
-      this.area.lineTo(this.width,  this.height);
-      this.area.closePath;
-      canvasGlobal.beginPath();
-      canvasGlobal.strokeStyle = this.stCo;
-      canvasGlobal.lineWidth = this.stWi;
-      canvasGlobal.moveTo(this.x, this.y);
-      canvasGlobal.lineTo(this.width, this.height);
-      canvasGlobal.closePath();
-      canvasGlobal.stroke();
-
-  }
-}
 
 
 
@@ -152,7 +91,6 @@ class line implements shape{
 })
 export class AppComponent {
 
-  factory :factory = new factory();
   title = 'Front-End';
 
   constructor(private paintServ: paintServices) {}
@@ -390,100 +328,105 @@ export class AppComponent {
 
 
 
-  createLine(){
-    create_circle_flag = false;
-    create_square_flag = false;
-    create_rect_flag = false;
-    create_triangle_flag = false;
-    create_ellipse_flag = false;
 
 
-    created_circle = false;
-    created_square = false;
-    created_rect = false;
-    created_triangle = false;
-    created_ellipse = false;
-
-    var boardGlobal = (<HTMLCanvasElement>document.getElementById("board"));
-    var canvasGlobal = boardGlobal.getContext("2d")!;
-    var line : shapeBack;
-    this.paintServ.createShape("line").subscribe((data : shapeBack) => {line = data});
-
-    create_line_flag = true;
-    created_line = false;
-    var selectLine = false;
-    boardGlobal.addEventListener("mousedown",e=>{
-
-      if(!created_line && (line != null) && lineButtonFlag){
-
-        line.x = e.offsetX;
-        line.y = e.offsetY;
-        line.stCo = strokeColor
-        line.stWi = strokeWidth
-        line.shapeID = get_new_ID();
-        selectLine = true;
-        created_line = true;
-
-      }
+    createLine(){
+      create_circle_flag = false;
+      create_square_flag = false;
+      create_rect_flag = false;
+      create_triangle_flag = false;
+      create_ellipse_flag = false;
 
 
-    });
+      created_circle = false;
+      created_square = false;
+      created_rect = false;
+      created_triangle = false;
+      created_ellipse = false;
 
-    boardGlobal.addEventListener("mousemove", e => {
-      if(create_line_flag && selectLine && (line != null) && lineButtonFlag){
-        canvasGlobal.clearRect(0,0,1380,675);
-        canvasArea.delete(line.shapeID);
+      var boardGlobal = (<HTMLCanvasElement>document.getElementById("board"));
+      var canvasGlobal = boardGlobal.getContext("2d")!;
+      var line : shapeBack;
+      this.paintServ.createShape("line").subscribe((data : shapeBack) => {line = data});
 
-        line.width = e.offsetX;
-        line.height = e.offsetY;
+      create_line_flag = true;
+      created_line = false;
+      var selectLine = false;
+      boardGlobal.addEventListener("mousedown",e=>{
 
-        this.drawShape(line, "");
-        for(var i = 0; i < shapesBack.length; i++){
-          this.drawShape(shapesBack[i], "");
+        if(!created_line && (line != null) && lineButtonFlag){
+
+          line.x = e.offsetX;
+          line.y = e.offsetY;
+          line.stCo = strokeColor
+          line.stWi = strokeWidth
+          line.shapeID = get_new_ID();
+          selectLine = true;
+          created_line = true;
+
         }
+
+
+      });
+
+      boardGlobal.addEventListener("mousemove", e => {
+        if(create_line_flag && selectLine && (line != null) && lineButtonFlag){
+          canvasGlobal.clearRect(0,0,1380,675);
+          canvasArea.delete(line.shapeID);
+
+          line.width = e.offsetX;
+          line.height = e.offsetY;
+
+          this.drawShape(line, "");
+          for(var i = 0; i < shapesBack.length; i++){
+            this.drawShape(shapesBack[i], "");
+          }
+        }
+
+      });
+      boardGlobal.addEventListener("mouseup", e => {
+        if(lineButtonFlag){
+          create_line_flag =false;
+          created_line = true;
+          selectLine = false;
+          if(line != null && (line.width != 0 && line.height != 0)){
+            shapesBack.push(line);
+
+        }
+        this.paintServ.postShape({
+          x:line.x,
+          y:line.y,
+          width:line.width,
+          height:line.height,
+          fiCo:line.fiCo,
+          stCo:line.stCo,
+          stWi:line.stWi,
+          type:line.type,
+          is_filled:line.is_filled,
+          shapeID : line.shapeID
+
+          }).subscribe((data : shapeBack) => {
+            this.drawShape(data, "");
+            shapesBack.push(data)
+
+          })
+        line = null;
+
+          document.getElementById("line")!.style.backgroundColor = "rgb(246, 129, 60)"
+        }
+
+      });
+
+      if(create_line_flag){
+        document.getElementById("line")!.style.backgroundColor = "rgba(47, 24, 10, 0.856)"
+
       }
 
-    });
-    boardGlobal.addEventListener("mouseup", e => {
-      if(lineButtonFlag){
-        create_line_flag =false;
-        created_line = true;
-        selectLine = false;
-        if(line != null && (line.width != 0 && line.height != 0)){
-          shapesBack.push(line);
-
-      }
-      this.paintServ.postShape({
-        x:line.x,
-        y:line.y,
-        width:line.width,
-        height:line.height,
-        fiCo:line.fiCo,
-        stCo:line.stCo,
-        stWi:line.stWi,
-        type:line.type,
-        is_filled:line.is_filled,
-        shapeID : line.shapeID
-
-        }).subscribe((data : shapeBack) => {
-          this.drawShape(data, "");
-          shapesBack.push(data)
-
-        })
-      line = null;
-
-        document.getElementById("line")!.style.backgroundColor = "rgb(246, 129, 60)"
-      }
-
-    });
-
-    if(create_line_flag){
-      document.getElementById("line")!.style.backgroundColor = "rgba(47, 24, 10, 0.856)"
 
     }
 
 
-  }
+
 
 
 
@@ -527,7 +470,7 @@ export class AppComponent {
         this.paintServ.postShape({
         x:triangle.x,
         y:triangle.y,
-        width:60,
+        width:triangle.width,
         height:parseInt((Math.sqrt(3/2) * 60).toString()),
         fiCo:triangle.fiCo,
         stCo:triangle.stCo,
@@ -589,7 +532,7 @@ export class AppComponent {
 
 
 
-    boardGlobal.addEventListener("mousedown",e=>{
+    boardGlobal.addEventListener("mousedown", e=> {
 
       if(!created_circle && (circle != null) && circleButtonFlag){
 
@@ -680,8 +623,8 @@ export class AppComponent {
           this.paintServ.postShape({
             x:rect.x,
             y:rect.y,
-            width:150,
-            height:90,
+            width:rect.width,
+            height:rect.height,
             fiCo:rect.fiCo,
             stCo:rect.stCo,
             stWi:rect.stWi,
@@ -834,8 +777,8 @@ export class AppComponent {
         this.paintServ.postShape({
         x:ellipse.x,
         y:ellipse.y,
-        width:120,
-        height:80,
+        width:ellipse.width,
+        height:ellipse.height,
         fiCo:ellipse.fiCo,
         stCo:ellipse.stCo,
         stWi:ellipse.stWi,
@@ -1238,24 +1181,14 @@ export class AppComponent {
 
   }
   save(){
-    var path:any;
-    var dialog = remote.dialog;
-
-    var browserWindow = remote.getCurrentWindow();
-    var options = {
-        title: "Save new file as...",
-        filters: [
-            { name: 'All Files', extensions: ['*']},
-            { name:'json File', extensions: ['json']},
-            { name: 'XML File', extensions: ['XML']}
-        ]
-    }
-
-    let saveDialog = dialog.showSaveDialog(browserWindow, options);
-    saveDialog.then( (result) => {
-        console.log(result.filePath);
-        path = result.filepath
-    })
+    var path:string;
+    path = (<HTMLInputElement>document.getElementById("savePath")).value
+    this.paintServ.saveBoard(path)
+  }
+  load(){
+    var path:string;
+    path = (<HTMLInputElement>document.getElementById("loadPath")).value
+    this.paintServ.loadBoard(path)
   }
 
   disableButtons(){

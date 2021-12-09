@@ -1,11 +1,15 @@
 package PainWeb_App.PainWeb_App;
 
-import org.glassfish.jersey.message.internal.StringHeaderProvider;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 
-import javax.ws.rs.POST;
-import javax.xml.parsers.SAXParser;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -15,85 +19,97 @@ import java.util.List;
 public class PaintController {
     ShapeClass shape = new ShapeClass();
     Factory factory = new Factory();
-
+    private int undo_count = 0;
 
 
     @PostMapping("/paint")
-    ShapeClass addShapes(@RequestBody ShapeClass paintShape){
-
+    ShapeI addShapes(@RequestBody ShapeClass paintShape) {
+        undo_count = 0;
         shape.addShape(paintShape);
-        System.out.println(shape.getShape(shape.getListofShapes().size() - 1).getX());
-        System.out.println(shape.getShape(shape.getListofShapes().size() - 1).getY());
-        System.out.println(paintShape.getType());
-        System.out.println(shape.getListofShapes().size());
-        System.out.println(paintShape.getShapeID());
-        return  paintShape;
+        shape.updateDatabase();
+        return paintShape;
     }
 
     @PostMapping("/create")
-    ShapeClass createShape(@RequestBody String type){
-
-
+    ShapeI createShape(@RequestBody String type) {
+        System.out.println(type);
+        undo_count = 0;
         return factory.createShape(type);
     }
 
     @GetMapping("/getCanvas")
-    List<ShapeClass> getCanvas(){
+    List<ShapeClass> getCanvas() {
         return shape.getListofShapes();
     }
 
     @PostMapping("/postCanvas")
-    void postCanvas(@RequestBody List<ShapeClass> shapes){shape.setListofShapes(shapes);
-        System.out.println(shape.getListofShapes().get(0).getX());}
+    void postCanvas(@RequestBody List<ShapeClass> shapes) {
+        shape.setListofShapes(shapes);
+    }
 
-    @PostMapping("/remove")
-    List<ShapeClass> removeShape(@RequestBody ShapeClass removeShape){
+    /**
+     * remove and edit should be implemented as undo, redo and database depend on them
+     **/
 
-        try{
-            for(int i = 0; i < shape.getListofShapes().size(); i++){
-                if(shape.getListofShapes().get(i).getShapeID().equals(removeShape.getShapeID())){
-                    System.out.println("removed");
-                    shape.getListofShapes().remove(i);
-                    break;
-                }
+    @GetMapping("/undo")
+    public ArrayList<ShapeClass> undo() {
+        try {
+            undo_count++;
+            System.out.println(undo_count);
+            return shape.getDatabase().get(shape.getDatabase().size() - undo_count - 1);
+        } catch (Exception e) {
+            undo_count = 0;
+            return new ArrayList();
+        }
+    }
+
+    @GetMapping("/redo")
+    public ArrayList<ShapeClass> redo() {
+        try {
+            if (undo_count != 0) {
+                undo_count--;
+                System.out.println(undo_count);
+                return shape.getDatabase().get(shape.getDatabase().size() - undo_count - 1);
+            } else {
+                return shape.getDatabase().get(shape.getDatabase().size() - 1);
             }
-            System.out.println("delte");
-            System.out.println(shape.getListofShapes().size());
+        } catch (Exception e) {
+            undo_count = 0;
+            return new ArrayList();
+        }
+    }
+
+    //XML implementation still missing in save and load
+
+    @GetMapping("/save")
+    public void save(@RequestParam(value = "path") String path) {
+        try {
+            ObjectMapper map = new ObjectMapper();
+            File file = new File(path);
+            file.createNewFile();
+            map.writeValue(file, shape.getListofShapes());
+            System.out.println("File Saved Successfully");
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @PostMapping("/load")
+    public List<ShapeClass> load(@RequestParam(value = "path") String path) {
+        try {
+            ObjectMapper map = new ObjectMapper();
+            InputStream input = new FileInputStream(new File(path));
+            TypeReference tr = new TypeReference<List<ShapeClass>>() {
+            };
+            shape.setListofShapes((ArrayList<ShapeClass>) map.readValue(input, tr));
+            for (ShapeI s : shape.getListofShapes())
+                System.out.println(s.toString());
             return shape.getListofShapes();
-
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        catch (Exception e){
-            System.out.println("Error");
-            throw e;
-        }
-
-
+        return null;
     }
 
-    @PostMapping("/edit")
-    void editShape(@RequestBody ShapeClass newShape){
-        try{
-            for(int i = 0; i < shape.getListofShapes().size(); i++){
-                if (shape.getListofShapes().get(i).getShapeID().equals(newShape.getShapeID())) {
-                    System.out.println("Edit");
-                    shape.setFiCo(newShape.getFiCo());
-                    shape.setFilled(newShape.isFilled());
-                    shape.setHeight(newShape.getHeight());
-                    shape.setWidth(newShape.getWidth());
-                    shape.setX(newShape.getX());
-                    shape.setY(newShape.getY());
-                    shape.setStCo(newShape.getStCo());
-                    shape.setType(newShape.getType());
-                    shape.setStWi(newShape.getStWi());
-                    System.out.println(shape.getListofShapes().get(i).getX());
-
-                    break;
-                }
-            }
-            System.out.println(newShape.getFiCo());
-        }
-        catch (Exception e){
-            System.out.println(e);
-        }
-    }
 }
