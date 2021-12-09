@@ -71,24 +71,12 @@ button:active{
   text-align:center;
 
 }
-.htool_bar input[type = "submit"]{
-  width: 40;
-  height: 30px;
-  border-radius: 4px;
-  background-color: rgb(246, 129, 60);
-  border-color: rgb(238, 234, 232);
 
-  transition-duration: 0.3s;
-  color: rgb(227, 231, 224);
-  font-size: 14px;
-  text-align:center;
-
-}
 .htool_bar input[type = "text"]{
   width: 160px;
   height: 30px;
   border-radius: 4px;
-  color: rgb(227, 231, 224);
+  color: rgb(5, 7, 4);
   font-size: 14px;
 
 }

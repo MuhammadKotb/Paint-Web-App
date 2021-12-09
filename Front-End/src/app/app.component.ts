@@ -3,7 +3,6 @@ import { HttpClientModule } from "@angular/common/http";
 import { paintServices } from './app.services';
 import { range } from 'rxjs';
 import { leadingComment } from '@angular/compiler';
-import { remote } from 'electron';
 
 
 
@@ -370,7 +369,7 @@ export class AppComponent {
       });
 
       boardGlobal.addEventListener("mousemove", e => {
-        if(create_line_flag && selectLine && (line != null) && lineButtonFlag){
+        if(create_line_flag && selectLine && (line != null) && lineButtonFlag && created_line){
           canvasGlobal.clearRect(0,0,1380,675);
           canvasArea.delete(line.shapeID);
 
@@ -390,26 +389,25 @@ export class AppComponent {
           created_line = true;
           selectLine = false;
           if(line != null && (line.width != 0 && line.height != 0)){
-            shapesBack.push(line);
+            this.paintServ.postShape({
+              x:line.x,
+              y:line.y,
+              width:line.width,
+              height:line.height,
+              fiCo:line.fiCo,
+              stCo:line.stCo,
+              stWi:line.stWi,
+              type:line.type,
+              is_filled:line.is_filled,
+              shapeID : line.shapeID
 
-        }
-        this.paintServ.postShape({
-          x:line.x,
-          y:line.y,
-          width:line.width,
-          height:line.height,
-          fiCo:line.fiCo,
-          stCo:line.stCo,
-          stWi:line.stWi,
-          type:line.type,
-          is_filled:line.is_filled,
-          shapeID : line.shapeID
+              }).subscribe((data : shapeBack) => {
+                this.drawShape(data, "");
+                shapesBack.push(data)
 
-          }).subscribe((data : shapeBack) => {
-            this.drawShape(data, "");
-            shapesBack.push(data)
+              })
+          }
 
-          })
         line = null;
 
           document.getElementById("line")!.style.backgroundColor = "rgb(246, 129, 60)"
@@ -1183,12 +1181,23 @@ export class AppComponent {
   save(){
     var path:string;
     path = (<HTMLInputElement>document.getElementById("savePath")).value
-    this.paintServ.saveBoard(path)
+    this.paintServ.saveBoard(path).subscribe((data)=>{},((error:any)=> alert("wrong path is entered")));
+
   }
   load(){
     var path:string;
     path = (<HTMLInputElement>document.getElementById("loadPath")).value
-    this.paintServ.loadBoard(path)
+    var boardGlobal = (<HTMLCanvasElement>document.getElementById("board"));
+    var canvasGlobal = boardGlobal.getContext("2d")!;
+    this.paintServ.loadBoard(path).subscribe((data:shapeBack[])=>{
+      canvasGlobal.clearRect(0,0,1380,675)
+      canvasArea.clear()
+      shapesBack = data
+      for(var shape of shapesBack){
+        this.drawShape(shape,"")
+      }
+
+    },(error:any)=>alert("wrong path is entered"));
   }
 
   disableButtons(){

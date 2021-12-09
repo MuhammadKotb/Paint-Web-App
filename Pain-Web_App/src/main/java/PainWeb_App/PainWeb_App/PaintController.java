@@ -81,8 +81,8 @@ public class PaintController {
 
     //XML implementation still missing in save and load
 
-    @GetMapping("/save")
-    public void save(@RequestParam(value = "path") String path) {
+    @PostMapping("/save")
+    public void save(@RequestBody String path) {
         try {
             ObjectMapper map = new ObjectMapper();
             File file = new File(path);
@@ -96,7 +96,7 @@ public class PaintController {
     }
 
     @PostMapping("/load")
-    public List<ShapeClass> load(@RequestParam(value = "path") String path) {
+    public List<ShapeClass> load(@RequestBody  String path) {
         try {
             ObjectMapper map = new ObjectMapper();
             InputStream input = new FileInputStream(new File(path));
