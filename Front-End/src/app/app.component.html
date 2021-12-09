@@ -19,9 +19,7 @@
   <div>
     <button id="line" value="line" (click) = "createLine();disableButtons()"> <img src= "assets/icons/line-icon.png" width = 45px length = 45px /> </button>
   </div>
-  <div>
-    <button id="brush" value="brush"> <img src= "assets/icons/brush-icon.png" width = 45px length = 45px /> </button>
-  </div>
+
 
   <div>
     <button id="remove" value="remove" (click)="remove()"> <img src= "assets/icons/remove-icon.png" width = 37px length = 37px /> </button>
@@ -38,8 +36,9 @@
 </div>
 <div class="htool_bar">
 
+
   <div>
-    <input type="button" id="fill" value="Coloring" (click)="fill_color()">
+    <button type="button" id="fill" value="Coloring" (click)="fill_color()" > <img src= "assets/icons/brush-icon.png" width = 45px length = 45px /> </button>
     <input type = "color" id="fill_color" name="Fill Color" value = "#e66465">
     <label for="fill_color" >Fill Color</label>
   </div>
@@ -51,16 +50,16 @@
     <label for="stroke_width">Stroke Width</label>
   </div>
   <div>
-    <button id="save" value="save" (click) = "save()" width="45" height="45"> <img src= "assets/icons/save-icon.png" width = 45px length = 45px /> </button>
+    <button id="save" value="save" (click) = "openSaveForm()" width="45" height="45"> <img src= "assets/icons/save-icon.png" width = 45px length = 45px /> </button>
   </div>
   <div>
-    <input id="savePath" type="text"  placeholder="Add the save path " >
+    <button id="load" value="load" (click) = "openLoadForm()" width="45" height="45" > <img src= "assets/icons/open-icon.png" width = 45px length = 45px /> </button>
   </div>
   <div>
-    <button id="load" value="load" (click) = "load()" width="45" height="45" >Load </button>
-  </div>
+    <button id="undo" value="undo" (click)="undo()">undo</button>
+    </div>
   <div>
-    <input id="loadPath" type="text"  placeholder="Add the load path " >
+    <button id="redo" value="redo" (click)="redo()">redo</button>
   </div>
 </div>
 
@@ -68,3 +67,29 @@
 
 
 <canvas id="board" width="1355" height="600" style="border:3px solid #f09623"></canvas>
+
+
+
+<div class="form-popup" id="loadForm">
+  <div class="form-container">
+    <label for="path"><b>File Path</b></label>
+<input type="text" id="loadHere" placeholder="Enter the file path of desired load file" name="path" required>
+    <button type="submit" class="btn" (click)="sendPathLoad() ;">Enter</button>
+  </div>
+</div>
+
+<div class="form-popup" id="saveForm">
+  <div class="form-container">
+    <label for="path"><b>File Name (".json" or ".xml"):</b></label>
+    <input type="text" id="saveHere1" placeholder="Enter the name of saved file" name="path" value="savedFile.json">
+    <label for="path"><b>File Full Path:</b></label>
+    <input type="text" id="saveHere2" placeholder="Enter file location" name="path" required>
+    <button type="submit" class="btn" (click)="sendPathSave() ;" >Enter</button>
+  </div>
+</div>
+  <div>
+  <button id="undo" value="undo" (click)="undo()">undo</button>
+  </div>
+  <div>
+    <button id="redo" value="redo" (click)="redo()">redo</button>
+  </div>

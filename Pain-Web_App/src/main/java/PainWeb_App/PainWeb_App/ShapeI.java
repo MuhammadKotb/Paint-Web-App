@@ -10,11 +10,11 @@ public interface ShapeI {
     int y = 0;
     int width = 0;
     int height = 0;
-    String fiCo = null;
-    String stCo = null;
+    String fiCo = "";
+    String stCo = "";
     int stWi = 0;
     String type = null;
-    boolean isFilled = false;
+    int is_filled = 0;
     String shapeID = null;
 
 
@@ -23,7 +23,7 @@ public interface ShapeI {
     int getWidth();
     int getHeight();
     int getStWi();
-    boolean isFilled();
+    int getIs_filled();
     String getType();
     String getFiCo();
     String getStCo();

@@ -17,6 +17,8 @@ var move_flag :boolean = false;
 var resize_flag :boolean = false;
 var fill_flag :boolean = false;
 var copy_flag : boolean = false;
+var undo_flag : boolean = false;
+var redo_flag : boolean = false;
 
 var create_line_flag : boolean = false;
 var created_line : boolean = false;
@@ -73,7 +75,7 @@ export interface shapeBack{
   stCo:string;
   stWi:number;
   type:string;
-  is_filled:boolean;
+  is_filled:number;
   shapeID:string;
 }
 
@@ -102,6 +104,8 @@ export class AppComponent {
 
 
 
+
+
   drawShape(shape : shapeBack, fillcolor : string){
     var boardGlobal = (<HTMLCanvasElement>document.getElementById("board"));
     var canvasGlobal = boardGlobal.getContext("2d")!;
@@ -124,7 +128,7 @@ export class AppComponent {
           shape.fiCo = fillcolor
           fiCo = fillcolor;
         }
-        if(isfilled){
+        if(isfilled == 1){
           area.arc(x, y, 0.5*width, 0, 2*Math.PI);
           canvasGlobal.beginPath();
           canvasGlobal.strokeStyle = stCo;
@@ -150,7 +154,7 @@ export class AppComponent {
           shape.fiCo = fillcolor
           fiCo = fillcolor;
         }
-        if(isfilled){
+        if(isfilled == 1){
           area.rect(x, y, width, width);
           canvasGlobal.strokeStyle = stCo;
           canvasGlobal.lineWidth = stWi;
@@ -176,7 +180,7 @@ export class AppComponent {
           shape.fiCo = fillcolor
           fiCo = fillcolor;
         }
-        if(isfilled){
+        if(isfilled == 1){
           area.rect(x, y, width, height);
           canvasGlobal.strokeStyle = stCo;
           canvasGlobal.lineWidth = stWi;
@@ -203,7 +207,7 @@ export class AppComponent {
             shape.fiCo = fillcolor
             fiCo = fillcolor;
           }
-          if(isfilled){
+          if(isfilled == 1){
 
             area.moveTo(x, y);
             area.lineTo(x - width/2, y + height);
@@ -243,7 +247,7 @@ export class AppComponent {
             shape.fiCo = fillcolor
             fiCo = fillcolor;
           }
-          if(isfilled){
+          if(isfilled == 1){
             area.ellipse(x, y, width/2, height/2, 0, 0, 2*Math.PI);
             canvasGlobal.strokeStyle = stCo;
             canvasGlobal.lineWidth = stWi;
@@ -301,13 +305,13 @@ export class AppComponent {
     var fc = <HTMLInputElement>document.getElementById("fill_color");
     var fillcolor = fc.value;
 
-    fill_flag = !fill_flag;
+    fill_flag = true;
     boardGlobal.addEventListener("mousedown",e =>{
       if(fill_flag){
         for (var shape of shapesBack){
           if(canvasGlobal.isPointInPath(canvasArea.get(shape.shapeID), e.offsetX, e.offsetY)){
 
-            shape.is_filled = true;
+            shape.is_filled = 1;
             this.drawShape(shape, fillcolor);
 
 
@@ -315,17 +319,22 @@ export class AppComponent {
         }
       }
     });
+    boardGlobal.addEventListener("mouseup", e => {
+      if(fill_flag){
+
+        this.paintServ.postCanvas(shapesBack).subscribe();
+        fill_flag = false;
+        document.getElementById("fill")!.style.backgroundColor = "rgb(246, 129, 60)";
+        fillcolor = null;
+
+      }
+    })
     if(fill_flag){
       document.getElementById("fill")!.style.backgroundColor = "rgba(47, 24, 10, 0.856)"
 
     }
-    else{
-      document.getElementById("fill")!.style.backgroundColor = "rgb(246, 129, 60)"
 
-    }
   }
-
-
 
 
 
@@ -388,29 +397,33 @@ export class AppComponent {
           create_line_flag =false;
           created_line = true;
           selectLine = false;
-          if(line != null && (line.width != 0 && line.height != 0)){
-            this.paintServ.postShape({
-              x:line.x,
-              y:line.y,
-              width:line.width,
-              height:line.height,
-              fiCo:line.fiCo,
-              stCo:line.stCo,
-              stWi:line.stWi,
-              type:line.type,
-              is_filled:line.is_filled,
-              shapeID : line.shapeID
+        if(line != null && (line.width != 0 && line.height != 0)){
+          this.paintServ.postShape({
+            x:line.x,
+            y:line.y,
+            width:line.width,
+            height:line.height,
+            fiCo:line.fiCo,
+            stCo:line.stCo,
+            stWi:line.stWi,
+            type:line.type,
+            is_filled:line.is_filled,
+            shapeID : line.shapeID
 
-              }).subscribe((data : shapeBack) => {
-                this.drawShape(data, "");
-                shapesBack.push(data)
+            }).subscribe((data : shapeBack) => {
+              this.drawShape(data, "");
+              shapesBack.push(data);
+              this.paintServ.postCanvas(shapesBack).subscribe();
 
-              })
-          }
+
+            })
+
+
+        }
 
         line = null;
 
-          document.getElementById("line")!.style.backgroundColor = "rgb(246, 129, 60)"
+        document.getElementById("line")!.style.backgroundColor = "rgb(246, 129, 60)"
         }
 
       });
@@ -465,6 +478,7 @@ export class AppComponent {
         console.log(triangle.y);
         create_triangle_flag =false;
         created_triangle = true;
+
         this.paintServ.postShape({
         x:triangle.x,
         y:triangle.y,
@@ -479,9 +493,10 @@ export class AppComponent {
 
         }).subscribe((data : shapeBack) => {
           this.drawShape(data, "");
-          shapesBack.push(data)
+          shapesBack.push(data);
+          this.paintServ.postCanvas(shapesBack).subscribe();
+
         })
-        triangle = null;
 
       }
 
@@ -494,9 +509,14 @@ export class AppComponent {
         created_triangle = true;
         create_triangle_flag = false;
 
+
         document.getElementById("triangle")!.style.backgroundColor = "rgb(246, 129, 60)"
+        triangle = null;
+
 
       }
+      console.log(shapesBack);
+
 
     });
     if(create_triangle_flag){
@@ -556,7 +576,9 @@ export class AppComponent {
 
         }).subscribe((data : shapeBack) => {
           this.drawShape(data, "");
-          shapesBack.push(data)
+          shapesBack.push(data);
+          this.paintServ.postCanvas(shapesBack).subscribe();
+
 
         })
         circle = null
@@ -570,6 +592,9 @@ export class AppComponent {
 
         created_circle = true;
         create_circle_flag = false;
+
+        console.log(shapesBack);
+
         circle = null;
 
         document.getElementById("circle")!.style.backgroundColor = "rgb(246, 129, 60)"
@@ -632,10 +657,11 @@ export class AppComponent {
 
           }).subscribe((data : shapeBack) => {
             this.drawShape(data, "");
-            shapesBack.push(data)
+            shapesBack.push(data);
+            this.paintServ.postCanvas(shapesBack).subscribe();
+
 
           })
-          rect = null;
 
         }
 
@@ -647,8 +673,14 @@ export class AppComponent {
         created_rect = true;
         create_rect_flag = false;
 
+        console.log(shapesBack);
+        rect = null;
+
+
+
 
         document.getElementById("rect")!.style.backgroundColor = "rgb(246, 129, 60)"
+        console.log(shapesBack);
 
       }
 
@@ -710,7 +742,9 @@ export class AppComponent {
 
           }).subscribe((data : shapeBack) => {
             this.drawShape(data, "");
-            shapesBack.push(data)
+            shapesBack.push(data);
+            this.paintServ.postCanvas(shapesBack).subscribe();
+
 
           })
           square = null;
@@ -724,6 +758,9 @@ export class AppComponent {
       if(squareButtonFlag){
         created_square = true;
         create_square_flag = false;
+        console.log(shapesBack);
+        square = null;
+
 
 
         document.getElementById("square")!.style.backgroundColor = "rgb(246, 129, 60)"
@@ -785,7 +822,9 @@ export class AppComponent {
         shapeID : get_new_ID()
         }).subscribe((data : shapeBack) => {
           this.drawShape(data, "");
-          shapesBack.push(data)
+          shapesBack.push(data);
+          this.paintServ.postCanvas(shapesBack).subscribe();
+
 
         })
         ellipse = null;
@@ -799,6 +838,7 @@ export class AppComponent {
       if(ellipseButtonFlag){
         created_ellipse = true;
         create_ellipse_flag = false;
+
 
         document.getElementById("ellipse")!.style.backgroundColor = "rgb(246, 129, 60)"
 
@@ -818,7 +858,8 @@ export class AppComponent {
 
     var boardGlobal = (<HTMLCanvasElement>document.getElementById("board"));
     var canvasGlobal = boardGlobal.getContext("2d")!;
-    remove_flag = !(remove_flag);
+    remove_flag = true;
+    var isSelected : boolean = false;
     console.log(canvasArea)
     boardGlobal.addEventListener("mousedown",event => {
       if(remove_flag){
@@ -832,6 +873,7 @@ export class AppComponent {
             for(var i = 0; i < shapesBack.length; i++){
               this.drawShape(shapesBack[i],"");
             }
+            isSelected = true;
           }
         }
       }
@@ -839,21 +881,27 @@ export class AppComponent {
         this.drawShape(shapesBack[i],"");
       }
     });
+    boardGlobal.addEventListener("mouseup", e => {
+      if(remove_flag && isSelected){
+        this.paintServ.postCanvas(shapesBack).subscribe();
+        document.getElementById("remove")!.style.backgroundColor = "rgb(246, 129, 60)"
+        remove_flag = false;
+
+
+      }
+    })
     if(remove_flag){
       document.getElementById("remove")!.style.backgroundColor = "rgba(47, 24, 10, 0.856)"
 
     }
-    else{
-      document.getElementById("remove")!.style.backgroundColor = "rgb(246, 129, 60)"
 
-    }
   }
   move(){
     var temp_shape : number = 0;
     var is_selected :boolean = false;
     var boardGlobal = (<HTMLCanvasElement>document.getElementById("board"));
     var canvasGlobal = boardGlobal.getContext("2d")!;
-    move_flag = !move_flag;
+    move_flag = true;
 
     boardGlobal.addEventListener("mousedown",  e => {
       if(move_flag){
@@ -892,18 +940,20 @@ export class AppComponent {
     });
 
     boardGlobal.addEventListener("mouseup", e => {
-      is_selected = false;
-      for(var i = 0; i < shapesBack.length; i++){
-        this.drawShape(shapesBack[temp_shape], "");
+      if(is_selected && move_flag){
+        is_selected = false;
+        for(var i = 0; i < shapesBack.length; i++){
+          this.drawShape(shapesBack[temp_shape], "");
+        }
+        this.paintServ.postCanvas(shapesBack).subscribe();
+        move_flag = false;
+        document.getElementById("move")!.style.backgroundColor = "rgb(246, 129, 60)"
       }
+
     });
 
     if(move_flag){
       document.getElementById("move")!.style.backgroundColor = "rgba(47, 24, 10, 0.856)"
-
-    }
-    else{
-      document.getElementById("move")!.style.backgroundColor = "rgb(246, 129, 60)"
 
     }
 
@@ -916,9 +966,6 @@ export class AppComponent {
     copy_flag = true;
     found = true;
     var copy_shape : shapeBack;
-
-
-
 
 
     boardGlobal.addEventListener("mousedown",  e => {
@@ -998,15 +1045,19 @@ export class AppComponent {
 
 
     boardGlobal.addEventListener("mouseup", e => {
+      if(copy_flag && is_selected){
+        is_selected = false;
+        found = false;
+        this.paintServ.postCanvas(shapesBack).subscribe();
 
-      is_selected = false;
-      found = false;
-      for(var i = 0; i < shapesBack.length; i++){
-        this.drawShape(shapesBack[i], "");
+        for(var i = 0; i < shapesBack.length; i++){
+          this.drawShape(shapesBack[i], "");
+        }
+        copy_flag = false;
+        copy_shape = null;
+
+        document.getElementById("copy")!.style.backgroundColor = "rgb(246, 129, 60)"
       }
-      copy_shape = null;
-
-      document.getElementById("copy")!.style.backgroundColor = "rgb(246, 129, 60)"
 
 
     });
@@ -1026,7 +1077,7 @@ export class AppComponent {
     var is_selected :boolean = false;
     var boardGlobal = (<HTMLCanvasElement>document.getElementById("board"));
     var canvasGlobal = boardGlobal.getContext("2d")!;
-    resize_flag = !resize_flag;
+    resize_flag = true;
 
     boardGlobal.addEventListener("mousedown",  e => {
       if(resize_flag){
@@ -1160,23 +1211,144 @@ export class AppComponent {
     });
 
     boardGlobal.addEventListener("mouseup", e => {
-      is_selected = false;
-      for(var i = 0; i < shapesBack.length; i++){
-        this.drawShape(shapesBack[i], "");
+      if(resize_flag && is_selected){
+        is_selected = false;
+        for(var i = 0; i < shapesBack.length; i++){
+          this.drawShape(shapesBack[i], "");
+        }
+        this.paintServ.postCanvas(shapesBack).subscribe();
+        document.getElementById("resize")!.style.backgroundColor = "rgb(246, 129, 60)"
       }
+      resize_flag = false;
+
 
     });
     if(resize_flag){
       document.getElementById("resize")!.style.backgroundColor = "rgba(47, 24, 10, 0.856)"
 
     }
-    else{
-      document.getElementById("resize")!.style.backgroundColor = "rgb(246, 129, 60)"
 
+
+
+
+  }
+
+  undo(){
+    undo_flag = true;
+
+
+      if(undo_flag){
+        this.paintServ.undoBoard().subscribe((data : shapeBack[]) => {
+          var boardGlobal = (<HTMLCanvasElement>document.getElementById("board"));
+          var canvasGlobal = boardGlobal.getContext("2d")!;
+          canvasGlobal.clearRect(0, 0, boardGlobal.width, boardGlobal.height);
+          shapesBack = data;
+          canvasArea.clear();
+          console.log(shapesBack);
+
+          for(var i = 0; i < shapesBack.length; i++){
+            this.drawShape(shapesBack[i], "");
+          }
+
+        });
+
+
+       }
+       undo_flag = false;
+
+  }
+
+  redo(){
+
+    redo_flag = true;
+
+
+      if(redo_flag){
+        this.paintServ.redoBoard().subscribe((data : shapeBack[]) => {
+          var boardGlobal = (<HTMLCanvasElement>document.getElementById("board"));
+          var canvasGlobal = boardGlobal.getContext("2d")!;
+          canvasGlobal.clearRect(0, 0, boardGlobal.width, boardGlobal.height);
+          shapesBack = data;
+          canvasArea.clear();
+          console.log(shapesBack);
+
+          for(var i = 0; i < shapesBack.length; i++){
+            this.drawShape(shapesBack[i], "");
+          }
+
+        });
+
+
+       }
+       redo_flag = false;
+
+  }
+  openSaveForm(){
+    document.getElementById("saveForm").style.display = "block";
+
+  }
+
+  openLoadForm(){
+    document.getElementById("loadForm").style.display = "block";
+  }
+
+  closeSaveForm(){
+    document.getElementById("saveForm").style.display = "none";
+    alert("File saved successfully");
+  }
+
+  closeLoadForm(){
+    document.getElementById("loadForm").style.display = "none";
+  }
+
+  sendPathSave(){
+    var filePath = <HTMLInputElement>document.getElementById("saveHere2");
+    var fileName = <HTMLInputElement>document.getElementById("saveHere1");
+    var fname = fileName.value;
+    var lengthOfFname = fname.length
+    if (fname.includes(".") && fname.substring(lengthOfFname-5,lengthOfFname)!=".json" && fname.substring(lengthOfFname-4,lengthOfFname)!=".xml"){
+      alert("Please enter a file with your choice of the following extentions ('.json','.xml')");
+      this.openSaveForm();
+    }else{
+      if (!fname.includes("."))
+        fname = fname + ".json"
+      var fullPath = filePath.value + "\\" + fname;
+      fullPath = this.reverseSlashes(fullPath);
+      console.log(filePath);
+      this.paintServ.saveBoard(fullPath).subscribe((msg : String) => {
+        alert(msg);
+      }) ;
+      this.closeSaveForm();
     }
+  }
 
+  sendPathLoad(){
+    var boardGlobal = (<HTMLCanvasElement>document.getElementById("board"));
+    var canvasGlobal = boardGlobal.getContext("2d")!;
+    var fp = <HTMLInputElement>document.getElementById("loadHere");
+    var filePath = fp.value ;
+    filePath = this.reverseSlashes(filePath);
+    console.log(filePath);
+    this.paintServ.loadBoard(filePath).subscribe((data : shapeBack[]) => {
+      if (data[0].type=="Error")
+        alert(data[0].shapeID)
+      else{
+        canvasGlobal.clearRect(0,0,1380,675)
+        canvasArea.clear()
+        shapesBack = data
+        for(var shape of shapesBack)
+          this.drawShape(shape,"")
+      }
+    });
+    this.closeLoadForm();
+  }
 
-
+  reverseSlashes(path: string){
+    for (var i = 0; i < path.length; i++) {
+      if(path.charAt(i)=="\\")
+        path = path.substring(0,i) + "/" + path.substring(i+1,path.length)
+    }
+    return path;
   }
   save(){
     var path:string;
