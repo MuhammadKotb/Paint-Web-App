@@ -11,11 +11,11 @@ public class Rect implements ShapeI {
     private int y = 0;
     private int width = 110;
     private int height = 70;
-    private String fiCo = null;
-    private String stCo = null;
+    private String fiCo = "";
+    private String stCo = "";
     private int stWi = 3;
     private String type = "rect";
-    private boolean isFilled = false;
+    private int is_filled = 0;
     private String shapeID = null;
 
 
@@ -66,8 +66,8 @@ public class Rect implements ShapeI {
         this.type = type;
     }
 
-    public void setFilled(boolean filled) {
-        isFilled = filled;
+    public void setFilled(int is_filled) {
+        this.is_filled = is_filled;
     }
 
     public void setShapeID(String shapeID) {
@@ -104,8 +104,8 @@ public class Rect implements ShapeI {
         return this.type;
     }
 
-    public boolean isFilled() {
-        return this.isFilled;
+    public int getIs_filled() {
+        return this.is_filled;
     }
     public String getShapeID(){
         return this.shapeID;

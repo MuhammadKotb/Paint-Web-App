@@ -5,19 +5,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ShapeClass implements ShapeI {
-    private List <ArrayList <ShapeClass> > database = new ArrayList();
+
     private int x = 0;
     private int y = 0;
     private int width = 80;
     private int height = 80;
-    private String fiCo = null;
-    private String stCo = null;
+    private String fiCo = "";
+    private String stCo = "";
     private int stWi = 3;
     private String type = null;
-    private boolean isFilled = false;
+    private int is_filled = 0;
     private String shapeID = null;
 
-    private List<ShapeClass> shapes = new ArrayList<>();
+    public List<ShapeClass> shapes = new ArrayList<>();
 
     public void addShape(ShapeClass shape){
         this.shapes.add(shape);
@@ -25,18 +25,12 @@ public class ShapeClass implements ShapeI {
 
 
 
-    public void updateDatabase(){
-        List <ShapeClass> listTemp = new ArrayList<>(this.shapes);
-        this.database.add((ArrayList<ShapeClass>) listTemp);
-        for (ArrayList <ShapeClass> list : this.getDatabase())
-            for (ShapeClass s : list)
-                System.out.println(s.toString());
-    }
+
 
     public ShapeClass(){
 
     }
-
+    public ShapeClass(String type, String error){ this.shapeID = error;this.type = type;}
     public ShapeClass(String type){
         this.type = type;
     }
@@ -88,8 +82,8 @@ public class ShapeClass implements ShapeI {
         this.type = type;
     }
 
-    public void setFilled(boolean filled) {
-        isFilled = filled;
+    public void setFilled(int is_filled) {
+        this.is_filled = is_filled;
     }
 
     public void setShapeID(String shapeID) {
@@ -126,16 +120,14 @@ public class ShapeClass implements ShapeI {
         return this.type;
     }
 
-    public boolean isFilled() {
-        return this.isFilled;
+    public int getIs_filled() {
+        return this.is_filled;
     }
     public String getShapeID(){
         return this.shapeID;
     }
 
-    public List<ArrayList<ShapeClass>> getDatabase() {
-        return database;
-    }
+
 
     public List<ShapeClass> getShapes() {
         return shapes;
@@ -145,9 +137,7 @@ public class ShapeClass implements ShapeI {
         this.shapes = shapes;
     }
 
-    public void setDatabase(List<ArrayList<ShapeClass>> database) {
-        this.database = database;
-    }
+
 
     @Override
     public String toString() {
