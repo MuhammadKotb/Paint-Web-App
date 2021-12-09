@@ -1,11 +1,11 @@
 package PainWeb_App.PainWeb_App;
 
-import org.glassfish.jersey.message.internal.StringHeaderProvider;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ShapeClass implements ShapeI {
+    private List <ArrayList <ShapeClass> > database = new ArrayList();
     private int x = 0;
     private int y = 0;
     private int width = 80;
@@ -17,12 +17,21 @@ public class ShapeClass implements ShapeI {
     private boolean isFilled = false;
     private String shapeID = null;
 
-    private List<ShapeI> shapes = new ArrayList<>();
+    private List<ShapeClass> shapes = new ArrayList<>();
 
     public void addShape(ShapeClass shape){
         this.shapes.add(shape);
     }
 
+
+
+    public void updateDatabase(){
+        List <ShapeClass> listTemp = new ArrayList<>(this.shapes);
+        this.database.add((ArrayList<ShapeClass>) listTemp);
+        for (ArrayList <ShapeClass> list : this.getDatabase())
+            for (ShapeClass s : list)
+                System.out.println(s.toString());
+    }
 
     public ShapeClass(){
 
@@ -32,13 +41,14 @@ public class ShapeClass implements ShapeI {
         this.type = type;
     }
 
-    public List<ShapeI> getListofShapes(){
+    public List<ShapeClass> getListofShapes(){
         return this.shapes;
     }
-    public void setListofShapes(List<ShapeI> shapes){
+    public void setListofShapes(List<ShapeClass> shapes){
         this.shapes = shapes;
     }
-    public ShapeI getShape(int index){
+
+    public ShapeClass getShape(int index){
         return this.shapes.get(index);
     }
 
@@ -123,9 +133,44 @@ public class ShapeClass implements ShapeI {
         return this.shapeID;
     }
 
+    public List<ArrayList<ShapeClass>> getDatabase() {
+        return database;
+    }
 
+    public List<ShapeClass> getShapes() {
+        return shapes;
+    }
 
+    public void setShapes(ArrayList<ShapeClass> shapes) {
+        this.shapes = shapes;
+    }
 
+    public void setDatabase(List<ArrayList<ShapeClass>> database) {
+        this.database = database;
+    }
 
-
+    @Override
+    public String toString() {
+        return "ShapeClass{" +
+                "x=" + x +
+                ", y=" + y +
+                ", fiCo='" + fiCo + '\'' +
+                ", type='" + type + '\'' +
+                ", shapeID='" + shapeID + '\'' +
+                '}';
+    }
 }
+/*
+  public ShapeClass(JSONObject copiedShape) {
+        this.x = (int) copiedShape.get("x");
+        this.y = (int) copiedShape.get("y");
+        this.width = (int) copiedShape.get("width");
+        this.height = (int) copiedShape.get("height");
+        this.fiCo = (String) copiedShape.get("fiCo");
+        this.stCo = (String) copiedShape.get("stCo");
+        this.stWi = (int) copiedShape.get("stWi");
+        this.type = (String) copiedShape.get("type");
+        this.isFilled = (String)(copiedShape.get("isFilled"))=="true";
+        this.shapeID = (String) copiedShape.get("shapeID");
+    }
+ */

@@ -16,17 +16,27 @@ export class paintServices{
     createShape(type : String) : Observable<shapeBack> {
         return this.http.post<shapeBack>("http://localhost:8080/create", type);
     }
-    /*editShape(shape : shapeBack){
+    editShape(shape : shapeBack){
         return this.http.post("http://localhost:8080/edit", shape);
-    }*/
+    }
     getCanvas() : Observable<shapeBack[]> {
-        return this.http.get<shapeBack[]>("http://localhost:8080/getCanvas");
+        return this.http.get<shapeBack[]>("http://localhost:8080/canvas");
     }
-    postCanvas(shapesBack : shapeBack[]){
-        return this.http.post("http://localhost:8080/postCanvas", shapesBack)
-    }
-    /*removeShape(shape : shapeBack) : Observable<shapeBack[]>  {
+    removeShape(shape : shapeBack) : Observable<shapeBack[]>  {
         return this.http.post<shapeBack[]>("http://localhost:8080/remove", shape);
-    }*/
+    }
+    undoBoard() : Observable<shapeBack[]> {
+        return this.http.get<shapeBack[]>("http://localhost:8080/undo");
+    }
+    redoBoard() : Observable<shapeBack[]> {
+        return this.http.get<shapeBack[]>("http://localhost:8080/redo");
+    }
+    saveBoard(path: string){
+        return this.http.get("http://localhost:8080/save?path=" + path);
+    }
+    loadBoard(path: string) : Observable<shapeBack[]> {
+        return this.http.get<shapeBack[]>("http://localhost:8080/load?path=" + path);
+    }
+    
 
 }

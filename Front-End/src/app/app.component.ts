@@ -327,98 +327,105 @@ export class AppComponent {
 
 
 
-  createLine(){
-    create_circle_flag = false;
-    create_square_flag = false;
-    create_rect_flag = false;
-    create_triangle_flag = false;
-    create_ellipse_flag = false;
 
-
-    created_circle = false;
-    created_square = false;
-    created_rect = false;
-    created_triangle = false;
-    created_ellipse = false;
-
-    var boardGlobal = (<HTMLCanvasElement>document.getElementById("board"));
-    var canvasGlobal = boardGlobal.getContext("2d")!;
-    var line : shapeBack;
-    this.paintServ.createShape("line").subscribe((data : shapeBack) => {line = data});
-    console.log(line);
-
-    create_line_flag = true;
-    created_line = false;
-    var selectLine = false;
-    boardGlobal.addEventListener("mousedown",e=>{
-
-      if(!created_line && (line != null) && lineButtonFlag){
-
-        line.x = e.offsetX;
-        line.y = e.offsetY;
-        line.shapeID = get_new_ID();
-        selectLine = true;
-        created_line = true;
-
-      }
-
-
-    });
-
-    boardGlobal.addEventListener("mousemove", e => {
-      if(create_line_flag && selectLine && (line != null) && lineButtonFlag){
-        canvasGlobal.clearRect(0,0,1380,675);
-        canvasArea.delete(line.shapeID);
-
-        line.width = e.offsetX;
-        line.height = e.offsetY;
-        this.drawShape(line, "");
-        for(var i = 0; i < shapesBack.length; i++){
-          this.drawShape(shapesBack[i], "");
+ 
+    createLine(){
+      create_circle_flag = false;
+      create_square_flag = false;
+      create_rect_flag = false;
+      create_triangle_flag = false;
+      create_ellipse_flag = false;
+  
+  
+      created_circle = false;
+      created_square = false;
+      created_rect = false;
+      created_triangle = false;
+      created_ellipse = false;
+  
+      var boardGlobal = (<HTMLCanvasElement>document.getElementById("board"));
+      var canvasGlobal = boardGlobal.getContext("2d")!;
+      var line : shapeBack;
+      this.paintServ.createShape("line").subscribe((data : shapeBack) => {line = data});
+  
+      create_line_flag = true;
+      created_line = false;
+      var selectLine = false;
+      boardGlobal.addEventListener("mousedown",e=>{
+  
+        if(!created_line && (line != null) && lineButtonFlag){
+  
+          line.x = e.offsetX;
+          line.y = e.offsetY;
+          line.stCo = strokeColor
+          line.stWi = strokeWidth
+          line.shapeID = get_new_ID();
+          selectLine = true;
+          created_line = true;
+  
         }
+  
+  
+      });
+  
+      boardGlobal.addEventListener("mousemove", e => {
+        if(create_line_flag && selectLine && (line != null) && lineButtonFlag){
+          canvasGlobal.clearRect(0,0,1380,675);
+          canvasArea.delete(line.shapeID);
+  
+          line.width = e.offsetX;
+          line.height = e.offsetY;
+          
+          this.drawShape(line, "");
+          for(var i = 0; i < shapesBack.length; i++){
+            this.drawShape(shapesBack[i], "");
+          }
+        }
+  
+      });
+      boardGlobal.addEventListener("mouseup", e => {
+        if(lineButtonFlag){
+          create_line_flag =false;
+          created_line = true;
+          selectLine = false;
+          if(line != null && (line.width != 0 && line.height != 0)){
+            shapesBack.push(line);
+  
+        }
+        this.paintServ.postShape({
+          x:line.x,
+          y:line.y,
+          width:line.width,
+          height:line.height,
+          fiCo:line.fiCo,
+          stCo:line.stCo,
+          stWi:line.stWi,
+          type:line.type,
+          is_filled:line.is_filled,
+          shapeID : line.shapeID
+  
+          }).subscribe((data : shapeBack) => {
+            this.drawShape(data, "");
+            shapesBack.push(data)
+  
+          })
+        line = null;
+  
+          document.getElementById("line")!.style.backgroundColor = "rgb(246, 129, 60)"
+        }
+  
+      });
+  
+      if(create_line_flag){
+        document.getElementById("line")!.style.backgroundColor = "rgba(47, 24, 10, 0.856)"
+  
       }
-
-    });
-    boardGlobal.addEventListener("mouseup", e => {
-      if(lineButtonFlag){
-        create_line_flag =false;
-        created_line = true;
-        selectLine = false;
-        if(line != null && (line.width != 0 && line.height != 0)){
-          shapesBack.push(line);
-
-      }
-      this.paintServ.postShape({
-        x:line.x,
-        y:line.y,
-        width:line.width,
-        height:line.height,
-        fiCo:line.fiCo,
-        stCo:line.stCo,
-        stWi:line.stWi,
-        type:line.type,
-        is_filled:line.is_filled,
-        shapeID : line.shapeID
-
-        }).subscribe((data : shapeBack) => {
-          this.drawShape(data, "");
-          shapesBack.push(data)
-
-        })
-      line = null;
-
-        document.getElementById("line")!.style.backgroundColor = "rgb(246, 129, 60)"
-      }
-
-    });
-
-    if(create_line_flag){
-      document.getElementById("line")!.style.backgroundColor = "rgba(47, 24, 10, 0.856)"
-
+  
+  
     }
 
 
-  }
+  
 
 
 
