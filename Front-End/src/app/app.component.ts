@@ -8,7 +8,6 @@ import { leadingComment } from '@angular/compiler';
 
 
  //container to hold all different shapes on it
-var shapes:shape[] = [];
 var shapesBack:shapeBack[] = [];
 let canvasArea = new Map<string, Path2D>();
 
@@ -65,21 +64,6 @@ function get_new_ID():string {
 }
 
 //shape interface to cover all shapes under restricted contract
-interface shape{
-  x:number;
-  y:number;
-  width:number;
-  height:number;
-  fiCo:String;
-  stCo:String;
-  stWi:number;
-  area:Path2D;
-  type:String;
-  is_filled:boolean;
-
-  draw(canvasGlobal:CanvasRenderingContext2D,fillcolor:string):void;
-
-}
 export interface shapeBack{
   x:number;
   y:number;
@@ -478,7 +462,7 @@ export class AppComponent {
         this.paintServ.postShape({
         x:triangle.x,
         y:triangle.y,
-        width:60,
+        width:triangle.width,
         height:parseInt((Math.sqrt(3/2) * 60).toString()),
         fiCo:triangle.fiCo,
         stCo:triangle.stCo,
@@ -631,8 +615,8 @@ export class AppComponent {
           this.paintServ.postShape({
             x:rect.x,
             y:rect.y,
-            width:150,
-            height:90,
+            width:rect.width,
+            height:rect.height,
             fiCo:rect.fiCo,
             stCo:rect.stCo,
             stWi:rect.stWi,
@@ -785,8 +769,8 @@ export class AppComponent {
         this.paintServ.postShape({
         x:ellipse.x,
         y:ellipse.y,
-        width:120,
-        height:80,
+        width:ellipse.width,
+        height:ellipse.height,
         fiCo:ellipse.fiCo,
         stCo:ellipse.stCo,
         stWi:ellipse.stWi,

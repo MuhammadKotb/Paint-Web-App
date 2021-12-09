@@ -9,8 +9,8 @@ import java.util.List;
 public class Rect implements ShapeI {
     private int x = 0;
     private int y = 0;
-    private int width = 80;
-    private int height = 80;
+    private int width = 110;
+    private int height = 70;
     private String fiCo = null;
     private String stCo = null;
     private int stWi = 3;

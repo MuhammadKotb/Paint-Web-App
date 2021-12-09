@@ -8,7 +8,7 @@ import java.util.List;
 public class Triangle implements ShapeI {
     private int x = 0;
     private int y = 0;
-    private int width = 80;
+    private int width = 120;
     private int height = 80;
     private String fiCo = null;
     private String stCo = null;
@@ -77,7 +77,7 @@ public class Triangle implements ShapeI {
         return this.y;
     }
 
-    public int getWidth() {
+    public int getWidth(){
         return this.width;
     }
 
