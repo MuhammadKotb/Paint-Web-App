@@ -46,7 +46,9 @@ var triangleButtonFlag : boolean = false;
 var ellipseButtonFlag : boolean = false;
 
 
-var found : boolean = false;
+var found_move : boolean = false;
+var found_copy : boolean = false;
+var found_resize : boolean = false;
 
 var strokeColor:string = 'black';
 var strokeWidth:number = 3;
@@ -902,45 +904,56 @@ export class AppComponent {
     var boardGlobal = (<HTMLCanvasElement>document.getElementById("board"));
     var canvasGlobal = boardGlobal.getContext("2d")!;
     move_flag = true;
+    found_move = true;
 
     boardGlobal.addEventListener("mousedown",  e => {
-      if(move_flag){
-        for (var i = 0; i < shapesBack.length; i++){
-          if(canvasGlobal.isPointInPath(canvasArea.get(shapesBack[i].shapeID), e.offsetX, e.offsetY) || canvasGlobal.isPointInStroke(canvasArea.get(shapesBack[i].shapeID), e.offsetX, e.offsetY)){
-            temp_shape = i;
-            is_selected = true;
+      if(found_move){
+        found_move = false;
+        if(move_flag){
+          for (var i = 0; i < shapesBack.length; i++){
+            if(canvasGlobal.isPointInPath(canvasArea.get(shapesBack[i].shapeID), e.offsetX, e.offsetY) || canvasGlobal.isPointInStroke(canvasArea.get(shapesBack[i].shapeID), e.offsetX, e.offsetY)){
+              temp_shape = i;
+              is_selected = true;
+            }
           }
         }
       }
+      
     });
 
     boardGlobal.addEventListener("mousemove", e => {
-      if(move_flag && is_selected){
-        canvasGlobal.clearRect(0,0,1380,675);
-        canvasArea.delete(shapesBack[temp_shape].shapeID);
-
-        var oldRealWidth = shapesBack[temp_shape].width - shapesBack[temp_shape].x;;
-        var oldRealHeight = shapesBack[temp_shape].height -  shapesBack[temp_shape].y;
-        if(shapesBack[temp_shape].type == "line"){
-          shapesBack[temp_shape].width = e.offsetX
-          shapesBack[temp_shape].height = e.offsetY
-          shapesBack[temp_shape].x = shapesBack[temp_shape].width - oldRealWidth;
-          shapesBack[temp_shape].y = shapesBack[temp_shape].height - oldRealHeight;
-        }
-        else{
-          shapesBack[temp_shape].x = e.offsetX;
-          shapesBack[temp_shape].y = e.offsetY;
-        }
-        this.drawShape(shapesBack[temp_shape], "");
-        for(var i = 0; i < shapesBack.length; i++){
-          this.drawShape(shapesBack[i], "");
-        }
-
+      
+        if(move_flag && is_selected){
+          canvasGlobal.clearRect(0,0,1380,675);
+          canvasArea.delete(shapesBack[temp_shape].shapeID);
+  
+          var oldRealWidth = shapesBack[temp_shape].width - shapesBack[temp_shape].x;;
+          var oldRealHeight = shapesBack[temp_shape].height -  shapesBack[temp_shape].y;
+          if(shapesBack[temp_shape].type == "line"){
+            shapesBack[temp_shape].width = e.offsetX
+            shapesBack[temp_shape].height = e.offsetY
+            shapesBack[temp_shape].x = shapesBack[temp_shape].width - oldRealWidth;
+            shapesBack[temp_shape].y = shapesBack[temp_shape].height - oldRealHeight;
+          }
+          else{
+            shapesBack[temp_shape].x = e.offsetX;
+            shapesBack[temp_shape].y = e.offsetY;
+          }
+          this.drawShape(shapesBack[temp_shape], "");
+          for(var i = 0; i < shapesBack.length; i++){
+            this.drawShape(shapesBack[i], "");
+          }
+          
+  
+        
       }
+
+      
     });
 
     boardGlobal.addEventListener("mouseup", e => {
-      if(is_selected && move_flag){
+      if(move_flag && is_selected){
+        found_move = false;
         is_selected = false;
         for(var i = 0; i < shapesBack.length; i++){
           this.drawShape(shapesBack[temp_shape], "");
@@ -964,13 +977,13 @@ export class AppComponent {
     var boardGlobal = (<HTMLCanvasElement>document.getElementById("board"));
     var canvasGlobal = boardGlobal.getContext("2d")!;
     copy_flag = true;
-    found = true;
+    found_copy = true;
     var copy_shape : shapeBack;
 
 
     boardGlobal.addEventListener("mousedown",  e => {
 
-      if(found){
+      if(found_copy){
 
         for (var i = 0; i < shapesBack.length; i++){
           if(canvasGlobal.isPointInPath(canvasArea.get(shapesBack[i].shapeID), e.offsetX, e.offsetY) || canvasGlobal.isPointInStroke(canvasArea.get(shapesBack[i].shapeID), e.offsetX, e.offsetY)){
@@ -1000,7 +1013,7 @@ export class AppComponent {
               temp_shape = shapesBack.length - 1;
 
             });
-            found = false;
+            found_copy = false;
 
             is_selected = true;
 
@@ -1047,7 +1060,7 @@ export class AppComponent {
     boardGlobal.addEventListener("mouseup", e => {
       if(copy_flag && is_selected){
         is_selected = false;
-        found = false;
+        found_copy = false;
         this.paintServ.postCanvas(shapesBack).subscribe();
 
         for(var i = 0; i < shapesBack.length; i++){
@@ -1078,18 +1091,23 @@ export class AppComponent {
     var boardGlobal = (<HTMLCanvasElement>document.getElementById("board"));
     var canvasGlobal = boardGlobal.getContext("2d")!;
     resize_flag = true;
+    found_resize = true;
 
     boardGlobal.addEventListener("mousedown",  e => {
-      if(resize_flag){
-        for (var i = 0; i < shapesBack.length; i++){
-          if(canvasGlobal.isPointInPath(canvasArea.get(shapesBack[i].shapeID), e.offsetX, e.offsetY) || canvasGlobal.isPointInStroke(canvasArea.get(shapesBack[i].shapeID), e.offsetX, e.offsetY)) {
-            temp_shape = i;
-            is_selected = true;
+      if(found_resize){
+        found_resize = false;
+        if(resize_flag){
+          for (var i = 0; i < shapesBack.length; i++){
+            if(canvasGlobal.isPointInPath(canvasArea.get(shapesBack[i].shapeID), e.offsetX, e.offsetY) || canvasGlobal.isPointInStroke(canvasArea.get(shapesBack[i].shapeID), e.offsetX, e.offsetY)) {
+              temp_shape = i;
+              is_selected = true;
+            }
           }
         }
+        oldx = e.offsetX;
+        oldy = e.offsetY;
       }
-      oldx = e.offsetX;
-      oldy = e.offsetY;
+      
     });
 
 
@@ -1211,6 +1229,7 @@ export class AppComponent {
 
     boardGlobal.addEventListener("mouseup", e => {
       if(resize_flag && is_selected){
+        found_resize = false;
         is_selected = false;
         for(var i = 0; i < shapesBack.length; i++){
           this.drawShape(shapesBack[i], "");

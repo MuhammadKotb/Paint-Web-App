@@ -150,17 +150,4 @@ public class ShapeClass implements ShapeI {
                 '}';
     }
 }
-/*
-  public ShapeClass(JSONObject copiedShape) {
-        this.x = (int) copiedShape.get("x");
-        this.y = (int) copiedShape.get("y");
-        this.width = (int) copiedShape.get("width");
-        this.height = (int) copiedShape.get("height");
-        this.fiCo = (String) copiedShape.get("fiCo");
-        this.stCo = (String) copiedShape.get("stCo");
-        this.stWi = (int) copiedShape.get("stWi");
-        this.type = (String) copiedShape.get("type");
-        this.isFilled = (String)(copiedShape.get("isFilled"))=="true";
-        this.shapeID = (String) copiedShape.get("shapeID");
-    }
- */
+

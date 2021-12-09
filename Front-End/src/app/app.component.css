@@ -58,9 +58,9 @@ button:active{
 .htool_bar input [type = "number"] {
   width: 35px;
 }
-.htool_bar input[type = "button"]{
-  width: 120px;
-  height: 30px;
+.htool_bar button{
+  width: 60px;
+  height: 40px;
   border-radius: 4px;
   background-color: rgb(246, 129, 60);
   border-color: rgb(238, 234, 232);
@@ -87,12 +87,7 @@ button:active{
 
 
 
-canvas{
-  position: absolute;
-  background-color: rgb(255, 255, 255);
-  top: 65px;
-  left: 120px;
-}
+
 
 
 
@@ -104,16 +99,18 @@ canvas{
 }
 
 .htool_bar button:hover {
-  background-color: #FF5100;
+  background-color: #636770;
 }
-
+.vtool_bar button:hover {
+  background-color: #636770;
+}
 
 /* The popup form - hidden by default */
 .form-popup {
   display: none;
   position: fixed;
 }
-  
+
   /* The popup form - hidden by default */
   .form-popup {
     bottom: 150px;
@@ -122,15 +119,15 @@ canvas{
     z-index: 9;
     width: 350px;
   }
-  
-  
+
+
   /* Add styles to the form container */
   .form-container {
     max-width: 300px;
     padding: 10px;
     background-color: white;
   }
-  
+
   /* Full-width input fields */
   .form-container input[type=text] {
     width: 100%;
@@ -139,16 +136,16 @@ canvas{
     border: none;
     background: #f1f1f1;
   }
-  
+
   /* When the inputs get focus, do something */
   .form-container input[type=text]:focus{
     background-color: #ddd;
     outline: none;
   }
-  
+
   /* Set a style for the submit/login button */
   .form-container .btn {
-    background-color: #04AA6D;
+    background-color: #ec710d;
     color: white;
     padding: 16px 20px;
     border: none;
@@ -157,8 +154,8 @@ canvas{
     margin-bottom:10px;
     opacity: 0.8;
   }
-  
-  
+
+
   /* Add some hover effects to buttons */
   .form-container .btn:hover{
     opacity: 1;
@@ -191,7 +188,7 @@ canvas{
 
 /* Set a style for the submit/login button */
 .form-container .btn {
-  background-color: #04AA6D;
+  background-color: #36383d;
   color: white;
   padding: 16px 20px;
   border: none;

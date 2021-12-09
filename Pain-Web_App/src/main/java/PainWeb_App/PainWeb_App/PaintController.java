@@ -22,7 +22,6 @@ import java.util.Stack;
 public class PaintController {
     ShapeClass shape = new ShapeClass();
     Factory factory = new Factory();
-    private int undo_count = 0;
     private Stack<List <ShapeClass> > database = new Stack<>();
     private Stack<List <ShapeClass> > redoStack = new Stack<>();
 
@@ -43,14 +42,12 @@ public class PaintController {
 
     @PostMapping("/paint")
     ShapeI addShapes(@RequestBody ShapeClass paintShape) {
-        undo_count = 0;
 
         return paintShape;
     }
 
     @PostMapping("/create")
     ShapeI createShape(@RequestBody String type) {
-        undo_count = 0;
         return factory.createShape(type);
     }
 
@@ -63,8 +60,6 @@ public class PaintController {
     void postCanvas(@RequestBody List<ShapeClass> shapes) {
        // this.database.pop();
         this.database.push(shapes);
-        System.out.println("Canvas size after post -->" + this.database.peek().size());
-        System.out.println("Database size after post -->" + this.database.size());
 
 
     }
@@ -78,8 +73,7 @@ public class PaintController {
         try{
 
             this.redoStack.push(this.database.pop());
-            System.out.println("Canvas size after pop -->" + this.database.peek().size());
-            System.out.println("Database size after pop -->" + this.database.size());
+
             if(this.database.size() == 0){
                 return new ArrayList<ShapeClass>(0);
             }
@@ -89,7 +83,7 @@ public class PaintController {
             return new ArrayList<ShapeClass>(0);
         }
 
-       // this.database.pop();
+
 
 
 
