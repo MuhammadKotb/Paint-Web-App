@@ -10,11 +10,11 @@
   </div>
   <div>
     <button id="triangle" value="triangle" (click)="createTriangle();disableButtons()"> <img src= "assets/icons/triangle-icon.png" width = 45px length = 45px /> </button>
-    
+
   </div>
   <div>
     <button id="ellipse" value="ellipse" (click)="createEllipse();disableButtons()"> <img src= "assets/icons/ellipse-icon.png" width = 45px length = 45px /> </button>
-    
+
   </div>
   <div>
     <button id="line" value="line" (click) = "createLine();disableButtons()"> <img src= "assets/icons/line-icon.png" width = 45px length = 45px /> </button>
@@ -22,9 +22,7 @@
   <div>
     <button id="brush" value="brush"> <img src= "assets/icons/brush-icon.png" width = 45px length = 45px /> </button>
   </div>
-  <div>
-    <button id="save" value="save" (click) = "getCanvas()"> <img src= "assets/icons/save-icon.png" width = 45px length = 45px /> </button>
-  </div>
+
   <div>
     <button id="remove" value="remove" (click)="remove()"> <img src= "assets/icons/remove-icon.png" width = 37px length = 37px /> </button>
   </div>
@@ -57,7 +55,9 @@
     <input type="number" id="stroke_width" name="Stroke Width" value = "3" min="0" max="100">
     <label for="stroke_width">Stroke Width</label>
   </div>
-
+  <div>
+    <button id="save" value="save" (click) = "save()"> <img src= "assets/icons/save-icon.png" width = 40px length = 40px /> </button>
+  </div>
 
 </div>
 

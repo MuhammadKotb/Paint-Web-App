@@ -3,6 +3,7 @@ import { HttpClientModule } from "@angular/common/http";
 import { paintServices } from './app.services';
 import { range } from 'rxjs';
 import { leadingComment } from '@angular/compiler';
+import { remote } from 'electron';
 
 
 
@@ -417,6 +418,8 @@ export class AppComponent {
 
         line.x = e.offsetX;
         line.y = e.offsetY;
+        line.stCo = strokeColor
+        line.stWi = strokeWidth
         line.shapeID = get_new_ID();
         selectLine = true;
         created_line = true;
@@ -433,6 +436,7 @@ export class AppComponent {
 
         line.width = e.offsetX;
         line.height = e.offsetY;
+
         this.drawShape(line, "");
         for(var i = 0; i < shapesBack.length; i++){
           this.drawShape(shapesBack[i], "");
@@ -971,7 +975,7 @@ export class AppComponent {
     copy_flag = true;
     found = true;
     var copy_shape : shapeBack;
-    
+
 
 
 
@@ -997,21 +1001,21 @@ export class AppComponent {
               copy_shape.is_filled = shapesBack[i].is_filled;
               copy_shape.type = shapesBack[i].type;
               copy_shape.shapeID = get_new_ID();
-  
-  
+
+
               console.log(copy_shape);
 
               shapesBack.push(copy_shape);
 
-  
-             
+
+
               temp_shape = shapesBack.length - 1;
-              
+
             });
             found = false;
 
             is_selected = true;
-            
+
             break;
 
           }
@@ -1027,7 +1031,7 @@ export class AppComponent {
 
         canvasGlobal.clearRect(0,0,1380,675);
         canvasArea.delete(shapesBack[temp_shape].shapeID);
-      
+
         var oldRealWidth = shapesBack[temp_shape].width - shapesBack[temp_shape].x;
         var oldRealHeight = shapesBack[temp_shape].height -  shapesBack[temp_shape].y;
         if(shapesBack[temp_shape].type == "line"){
@@ -1048,7 +1052,7 @@ export class AppComponent {
 
       }
 
-     
+
     });
 
 
@@ -1060,7 +1064,7 @@ export class AppComponent {
         this.drawShape(shapesBack[i], "");
       }
       copy_shape = null;
-     
+
       document.getElementById("copy")!.style.backgroundColor = "rgb(246, 129, 60)"
 
 
@@ -1118,7 +1122,7 @@ export class AppComponent {
           oldx = e.offsetX;
           oldy = e.offsetY;
           this.drawShape(shapesBack[temp_shape], "");
-          
+
         }
         if(shapesBack[temp_shape].type == 'circle'){
           if(e.offsetX > oldx && e.offsetY > oldy){
@@ -1152,7 +1156,7 @@ export class AppComponent {
           oldx = e.offsetX;
           oldy = e.offsetY;
           this.drawShape(shapesBack[temp_shape], "");
-          
+
         }
         if(shapesBack[temp_shape].type == 'rect'){
           if(e.offsetX > oldx && e.offsetY > oldy){
@@ -1191,6 +1195,7 @@ export class AppComponent {
         }
         if(shapesBack[temp_shape].type == 'ellipse'){
           if(e.offsetX > oldx && e.offsetY > oldy){
+
             shapesBack[temp_shape].width +=2;
             shapesBack[temp_shape].height += 2;
           }
@@ -1231,6 +1236,26 @@ export class AppComponent {
 
 
 
+  }
+  save(){
+    var path:any;
+    var dialog = remote.dialog;
+
+    var browserWindow = remote.getCurrentWindow();
+    var options = {
+        title: "Save new file as...",
+        filters: [
+            { name: 'All Files', extensions: ['*']},
+            { name:'json File', extensions: ['json']},
+            { name: 'XML File', extensions: ['XML']}
+        ]
+    }
+
+    let saveDialog = dialog.showSaveDialog(browserWindow, options);
+    saveDialog.then( (result) => {
+        console.log(result.filePath);
+        path = result.filepath
+    })
   }
 
   disableButtons(){
