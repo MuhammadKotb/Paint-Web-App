@@ -7,13 +7,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
+import java.beans.XMLDecoder;
+import java.beans.XMLEncoder;
+
+
 
 /**
  * Controller Class to Update the Canvas after each change that happens in the front-end
@@ -29,7 +30,6 @@ public class PaintController {
     private Stack<List <ShapeClass> > database = new Stack<>();
     private Stack<List <ShapeClass> > redoStack = new Stack<>();
 
-
     public Stack<List<ShapeClass>> getDatabase() {
         return database;
     }
@@ -37,6 +37,7 @@ public class PaintController {
     public void setDatabase(Stack<List<ShapeClass>> database) {
         this.database = database;
     }
+
 
     /**
      * This method gets the Shape to be drawn from the front-end.
@@ -82,6 +83,7 @@ public class PaintController {
      * This Method Undo the current canvas by poping it from the the database stack and pushing it to redoStack
      * @return the List of ShapeClass Objects .. Canvas to be drawn after undo
      */
+
     @GetMapping("/undo")
     public List<ShapeClass> undo() {
         try{
@@ -115,19 +117,23 @@ public class PaintController {
         }
     }
 
-    //XML implementation still missing in save and load
-
     @PostMapping("/save")
     public String save(@RequestBody String path) {
-
         try {
-            ObjectMapper map = new ObjectMapper();
-            File file = new File(path);
-            file.createNewFile();
-            map.writeValue(file, this.database.peek());
+            FileOutputStream fos = new FileOutputStream(path);
+            if (path.contains(".json")) {
+                ObjectMapper map = new ObjectMapper();
+                map.writeValue(fos, this.database.peek());
+            }else{
+                XMLEncoder encoder = new XMLEncoder(fos);
+                encoder.writeObject(this.database.peek());
+                System.out.println(this.database.peek());
+                encoder.close();
+                fos.close();
+            }
             System.out.println("File Saved Successfully");
-            return("File Saved Successfully :)");
-        }catch (StreamWriteException e) {
+            return ("File Saved Successfully :)");
+        } catch (StreamWriteException e) {
             return "Couldn't save. Data doesn't match file type :(";
         } catch (DatabindException e) {
             return "Couldn't save. Data doesn't match file type :(";
@@ -135,16 +141,27 @@ public class PaintController {
             return "Couldn't save. No such directory :(";
         }
 
+
+
     }
 
     @PostMapping("/load")
     public List<ShapeClass> load(@RequestBody String path) {
         try {
-            ObjectMapper map = new ObjectMapper();
-            InputStream input = new FileInputStream(new File(path));
-            TypeReference tr = new TypeReference<List<ShapeClass>>() {};
-            this.database.push((List<ShapeClass>) map.readValue(input, tr));
+            FileInputStream fis = new FileInputStream(path);
+            if (path.contains(".json")) {
+                ObjectMapper map = new ObjectMapper();
+                TypeReference tr = new TypeReference<List<ShapeClass>>() {};
+                this.database.push((List<ShapeClass>) map.readValue(fis, tr));
+            }else{
+                XMLDecoder decoder = new XMLDecoder(fis);
+                this.database.push((List<ShapeClass>) decoder.readObject());
+                System.out.println(this.database.peek());
+                decoder.close();
+                fis.close();
+            }
             return this.database.peek();
+
         } catch (IOException e) {
             List<ShapeClass> errorList = new ArrayList ();
             errorList.add(new ShapeClass("Error", "Couldn't save. No such directory :("));

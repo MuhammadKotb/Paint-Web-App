@@ -1,6 +1,7 @@
+
 <div class="vtool_bar">
   <div>
-    <button id="circle" value="circle" (click)="createCircle();disableButtons();closeSaveForm();closeLoadForm()"> <img src= "assets/icons/circle-icon.png" width = 45px length = 45px /></button>
+  <button id="circle" value="circle" (click)="createCircle();disableButtons();closeSaveForm();closeLoadForm()"> <img src= "assets/icons/circle-icon.png" width = 45px length = 45px /></button>
   </div>
   <div>
     <button id="rect" value="rect" (click)="createRect();disableButtons();closeSaveForm();closeLoadForm()"><img src= "assets/icons/rectangle-icon.png" width = 45px length = 45px /></button>
@@ -75,6 +76,7 @@
     <label for="path"><b>File Path</b></label>
 <input type="text" id="loadHere" placeholder="Enter the file path of desired load file" name="path" required>
     <button type="submit" class="btn" (click)="sendPathLoad() ;">Enter</button>
+    <button type="submit" class="btn" (click)="closeLoadForm();" >Cancel</button>
   </div>
 </div>
 
@@ -85,5 +87,7 @@
     <label for="path"><b>File Full Path:</b></label>
     <input type="text" id="saveHere2" placeholder="Enter file location" name="path" required>
     <button type="submit" class="btn" (click)="sendPathSave() ;" >Enter</button>
+    <button type="submit" class="btn" (click)="closeSaveForm();" >Cancel</button>
   </div>
 </div>
+

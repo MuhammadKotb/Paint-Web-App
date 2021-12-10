@@ -20,6 +20,20 @@ public class ShapeClass implements ShapeI {
     public ShapeClass(){
 
     }
+
+    public ShapeClass(int x, int y, int width, int height, String fiCo, String stCo, int stWi, String type, int is_filled, String shapeID) {
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+        this.fiCo = fiCo;
+        this.stCo = stCo;
+        this.stWi = stWi;
+        this.type = type;
+        this.is_filled = is_filled;
+        this.shapeID = shapeID;
+    }
+
     public ShapeClass(String type, String error){ this.shapeID = error;this.type = type;}
     public ShapeClass(String type){
         this.type = type;
@@ -66,7 +80,45 @@ public class ShapeClass implements ShapeI {
         return this.shapeID;
     }
 
+    public void setX(int x) {
+        this.x = x;
+    }
 
+    public void setY(int y) {
+        this.y = y;
+    }
+
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
+
+    public void setFiCo(String fiCo) {
+        this.fiCo = fiCo;
+    }
+
+    public void setStCo(String stCo) {
+        this.stCo = stCo;
+    }
+
+    public void setStWi(int stWi) {
+        this.stWi = stWi;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public void setIs_filled(int is_filled) {
+        this.is_filled = is_filled;
+    }
+
+    public void setShapeID(String shapeID) {
+        this.shapeID = shapeID;
+    }
 
     @Override
     public String toString() {
