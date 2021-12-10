@@ -1363,7 +1363,6 @@ export class AppComponent {
 
   closeSaveForm(){
     document.getElementById("saveForm").style.display = "none";
-    alert("File saved successfully");
   }
 //----------------------------------------------------------------------//
 
@@ -1390,6 +1389,7 @@ export class AppComponent {
         alert(msg);
       }) ;
       this.closeSaveForm();
+      alert("File Saved successfully :)");
     }
   }
 //----------------------------------------------------------------------//
@@ -1435,6 +1435,8 @@ export class AppComponent {
     shapesBack = []
     this.paintServ.postCanvas(shapesBack).subscribe();
   }
+
+  //----------------------------------------------------------------------//
 
   disableButtons(){
     if(create_line_flag){
