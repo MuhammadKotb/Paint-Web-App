@@ -15,7 +15,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
-
+/**
+ * Controller Class to Update the Canvas after each change that happens in the front-end
+ * It also manages save, load, undo and redo
+ * It Creates Objects of accroding to Type Request from the front-end and returns that object with predefined attributes
+ */
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
 @Component
@@ -34,31 +38,50 @@ public class PaintController {
         this.database = database;
     }
 
-
+    /**
+     * This method gets the Shape to be drawn from the front-end.
+     * @param paintShape a ShapeClass Object with defined attributes.
+     * @return a ShapeI Object to send it to front-end to draw it.
+     */
     @PostMapping("/paint")
     ShapeI addShapes(@RequestBody ShapeClass paintShape) {
         return paintShape;
     }
 
+
+    /**
+     * This method requests the Type of the Object to be created by factory and send it to the front-end.
+     * @param type String that defines the type of Object to be created.
+     * @return a ShapeI object with pre-defined attributes
+     */
     @PostMapping("/create")
     ShapeI createShape(@RequestBody String type) {
 
         return factory.createShape(type);
     }
 
+    /**
+     * This Method responds to the front-end with latest Canvas to draw.
+     * @return List of ShapeClass Objects to be drawn in front-end.
+     */
     @GetMapping("/getCanvas")
     List<ShapeClass> getCanvas() {
         return this.database.peek();
     }
 
+    /**
+     * This Method requests A List of Shapeclass Objects to save in the Database stack.
+     * @param shapes List of ShapeClass Objects
+     */
     @PostMapping("/postCanvas")
     void postCanvas(@RequestBody List<ShapeClass> shapes) {
-
         this.database.push(shapes);
-
-
     }
 
+    /**
+     * This Method Undo the current canvas by poping it from the the database stack and pushing it to redoStack
+     * @return the List of ShapeClass Objects .. Canvas to be drawn after undo
+     */
     @GetMapping("/undo")
     public List<ShapeClass> undo() {
         try{
@@ -75,6 +98,10 @@ public class PaintController {
         }
     }
 
+    /**
+     * This Method saves Changes after Undo so that the user can redo by poping from redoStack and pushing into Database Stack
+     * @return The list of ShapClass Objects to be drawn afer Redo
+     */
     @GetMapping("/redo")
     public List<ShapeClass> redo() {
         try {
