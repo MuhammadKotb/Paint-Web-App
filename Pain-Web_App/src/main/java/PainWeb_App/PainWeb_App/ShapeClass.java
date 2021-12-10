@@ -140,3 +140,7 @@ public class ShapeClass implements ShapeI {
 
 
 }
+<<<<<<< HEAD
+=======
+
+>>>>>>> 6a0c0061f42cb568e3c4f884a8223d26c0caf486
