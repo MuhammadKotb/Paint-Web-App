@@ -13,7 +13,7 @@
   border-color: rgb(246, 129, 60);
   border-style:groove
 }
-button{
+.vtool_bar button{
   width: 76px;
   height: 47px;
   border-radius: 10px;
@@ -26,7 +26,7 @@ button{
 }
 
 
-button:active{
+.vtool_bar button:active{
   background-color: rgba(47, 24, 10, 0.856);
   box-shadow: 0 3px #666;
 

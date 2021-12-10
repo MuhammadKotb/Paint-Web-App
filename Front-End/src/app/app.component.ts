@@ -1,15 +1,18 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClientModule } from "@angular/common/http";
 import { paintServices } from './app.services';
-import { range } from 'rxjs';
-import { leadingComment } from '@angular/compiler';
 
 
 
 
  //container to hold all different shapes on it
 var shapesBack:shapeBack[] = [];
+
+//----------------------------------------------------------------------//
+
+//mapping between shape ID and its area on canvas
 let canvasArea = new Map<string, Path2D>();
+
+//----------------------------------------------------------------------//
 
 //flag to activate buttons
 var remove_flag :boolean = false;
@@ -19,7 +22,14 @@ var fill_flag :boolean = false;
 var copy_flag : boolean = false;
 var undo_flag : boolean = false;
 var redo_flag : boolean = false;
+var found_move : boolean = false;
+var found_copy : boolean = false;
+var found_resize : boolean = false;
+var draw_line : shapeBack = null;
 
+//----------------------------------------------------------------------//
+
+//flag to activate buttons of creation
 var create_line_flag : boolean = false;
 var created_line : boolean = false;
 
@@ -45,27 +55,32 @@ var lineButtonFlag : boolean = false;
 var triangleButtonFlag : boolean = false;
 var ellipseButtonFlag : boolean = false;
 
+var removeButtonFlag : boolean = false;
+var moveButtonFlag : boolean = false;
+var copyButtonFlag : boolean = false;
+var resizeButtonFlag : boolean = false;
 
-var found_move : boolean = false;
-var found_copy : boolean = false;
-var found_resize : boolean = false;
 
+//----------------------------------------------------------------------//
+
+//global values to stroke color and witdth to assign all shapes to it
 var strokeColor:string = 'black';
 var strokeWidth:number = 3;
+
+//----------------------------------------------------------------------//
+
+// array for ID generator
 var serial = Array.from(Array(1000000).keys());
 
-//randomizer function :pick  a random value between two edges
-function getRandomInt(min:number, max:number) {
-	min = Math.ceil(min);
-	max = Math.floor(max);
-	return Math.floor(Math.random() * (max - min + 1)) + min;
-}
+//----------------------------------------------------------------------//
 
+//ID generator which give ID and remove it from the ID generator array
 function get_new_ID():string {
   var ID =   serial.pop()
   return (ID.toString())
 
 }
+//----------------------------------------------------------------------//
 
 //shape interface to cover all shapes under restricted contract
 export interface shapeBack{
@@ -80,10 +95,6 @@ export interface shapeBack{
   is_filled:number;
   shapeID:string;
 }
-
-
-
-
 
 //----------------------------------------------------------------------//
 
@@ -103,10 +114,8 @@ export class AppComponent {
     this.paintServ.getCanvas().subscribe((data : shapeBack[])=> {shapesBack = data; console.log(shapesBack);console.log(canvasArea)});
   }
 
-  
 
-
-
+//----------------------------------------------------------------------//
 
   drawShape(shape : shapeBack, fillcolor : string){
     var boardGlobal = (<HTMLCanvasElement>document.getElementById("board"));
@@ -292,6 +301,7 @@ export class AppComponent {
   }
 
 
+//----------------------------------------------------------------------//
 
   confirm_stroke() {
     var sc = <HTMLInputElement>document.getElementById("stroke_color");
@@ -300,6 +310,9 @@ export class AppComponent {
     var strwid : number = parseInt(sw.value);
     strokeWidth = strwid;
   }
+
+//----------------------------------------------------------------------//
+
   fill_color() {
     var boardGlobal = (<HTMLCanvasElement>document.getElementById("board"));
     var canvasGlobal = boardGlobal.getContext("2d")!;
@@ -315,7 +328,7 @@ export class AppComponent {
 
             shape.is_filled = 1;
             this.drawShape(shape, fillcolor);
-            
+
 
           }
         }
@@ -335,113 +348,119 @@ export class AppComponent {
       document.getElementById("fill")!.style.backgroundColor = "rgba(47, 24, 10, 0.856)"
 
     }
-   
+
   }
 
 
- 
+//----------------------------------------------------------------------//
+
     createLine(){
       create_circle_flag = false;
       create_square_flag = false;
       create_rect_flag = false;
       create_triangle_flag = false;
       create_ellipse_flag = false;
-  
-  
+
+
       created_circle = false;
       created_square = false;
       created_rect = false;
       created_triangle = false;
       created_ellipse = false;
-  
+
+      move_flag = false;
+      copy_flag = false;
+      remove_flag = false;
+      resize_flag = false;
+
       var boardGlobal = (<HTMLCanvasElement>document.getElementById("board"));
       var canvasGlobal = boardGlobal.getContext("2d")!;
-      var line : shapeBack;
-      this.paintServ.createShape("line").subscribe((data : shapeBack) => {line = data});
-  
+      
+      
+
       create_line_flag = true;
       created_line = false;
+      
+      this.paintServ.createShape("line").subscribe((data : shapeBack) => {draw_line = data});
+      
+      
       var selectLine = false;
       boardGlobal.addEventListener("mousedown",e=>{
-  
-        if(!created_line && (line != null) && lineButtonFlag){
-  
-          line.x = e.offsetX;
-          line.y = e.offsetY;
-          line.stCo = strokeColor
-          line.stWi = strokeWidth
-          line.shapeID = get_new_ID();
+
+        if(!created_line && (draw_line != null) && lineButtonFlag){
+          draw_line.x = e.offsetX;
+          draw_line.y = e.offsetY;
+          draw_line.stCo = strokeColor
+          draw_line.stWi = strokeWidth
+          draw_line.shapeID = get_new_ID();
           selectLine = true;
           created_line = true;
-  
+
         }
-  
-  
+
+
       });
-  
+
       boardGlobal.addEventListener("mousemove", e => {
-        if(create_line_flag && selectLine && (line != null) && lineButtonFlag && created_line){
+        if(create_line_flag && selectLine && (draw_line != null) && lineButtonFlag && created_line){
           canvasGlobal.clearRect(0,0,1380,675);
-          canvasArea.delete(line.shapeID);
-  
-          line.width = e.offsetX;
-          line.height = e.offsetY;
-          
-          this.drawShape(line, "");
+          canvasArea.delete(draw_line.shapeID);
+
+          draw_line.width = e.offsetX;
+          draw_line.height = e.offsetY;
+
+          this.drawShape(draw_line, "");
           for(var i = 0; i < shapesBack.length; i++){
             this.drawShape(shapesBack[i], "");
           }
         }
-  
+
       });
       boardGlobal.addEventListener("mouseup", e => {
         if(lineButtonFlag){
           create_line_flag =false;
           created_line = true;
           selectLine = false;
-        if(line != null && (line.width != 0 && line.height != 0)){
+        if(draw_line != null && (draw_line.width != 0 && draw_line.height != 0)){
           this.paintServ.postShape({
-            x:line.x,
-            y:line.y,
-            width:line.width,
-            height:line.height,
-            fiCo:line.fiCo,
-            stCo:line.stCo,
-            stWi:line.stWi,
-            type:line.type,
-            is_filled:line.is_filled,
-            shapeID : line.shapeID
-    
+            x:draw_line.x,
+            y:draw_line.y,
+            width:draw_line.width,
+            height:draw_line.height,
+            fiCo:draw_line.fiCo,
+            stCo:draw_line.stCo,
+            stWi:draw_line.stWi,
+            type:draw_line.type,
+            is_filled:draw_line.is_filled,
+            shapeID : draw_line.shapeID
+
             }).subscribe((data : shapeBack) => {
               this.drawShape(data, "");
               shapesBack.push(data);
               this.paintServ.postCanvas(shapesBack).subscribe();
 
-    
+
             })
 
-  
+
         }
-        
-        line = null;
-  
+
+        draw_line = null;
+
         document.getElementById("line")!.style.backgroundColor = "rgb(246, 129, 60)"
         }
-  
+
       });
-  
+
       if(create_line_flag){
         document.getElementById("line")!.style.backgroundColor = "rgba(47, 24, 10, 0.856)"
-  
+
       }
-  
-  
+
+
     }
 
-
-  
-
-
+//----------------------------------------------------------------------//
 
   createTriangle(){
 
@@ -456,6 +475,11 @@ export class AppComponent {
     created_circle = false;
     created_rect = false;
     created_ellipse = false;
+
+    move_flag = false;
+    copy_flag = false;
+    remove_flag = false;
+    resize_flag = false;
 
     var boardGlobal = (<HTMLCanvasElement>document.getElementById("board"));
     var canvasGlobal = boardGlobal.getContext("2d")!;
@@ -527,6 +551,8 @@ export class AppComponent {
     }
   }
 
+//----------------------------------------------------------------------//
+
   createCircle(){
     create_square_flag = false;
     create_line_flag = false;
@@ -539,6 +565,11 @@ export class AppComponent {
     created_rect = false;
     created_triangle = false;
     created_ellipse = false;
+
+    move_flag = false;
+    copy_flag = false;
+    remove_flag = false;
+    resize_flag = false;
 
     create_circle_flag = true;
     created_circle = false;
@@ -610,6 +641,8 @@ export class AppComponent {
     }
 }
 
+//----------------------------------------------------------------------//
+
   createRect(){
     create_square_flag = false;
     create_line_flag = false;
@@ -622,6 +655,11 @@ export class AppComponent {
     created_circle = false;
     created_triangle = false;
     created_ellipse = false;
+
+    move_flag = false;
+    copy_flag = false;
+    remove_flag = false;
+    resize_flag = false;
 
     create_rect_flag = true;
     created_rect = false;
@@ -674,15 +712,9 @@ export class AppComponent {
       if(rectButtonFlag){
         created_rect = true;
         create_rect_flag = false;
-
-        console.log(shapesBack);
         rect = null;
 
-
-
-
         document.getElementById("rect")!.style.backgroundColor = "rgb(246, 129, 60)"
-        console.log(shapesBack);
 
       }
 
@@ -692,6 +724,8 @@ export class AppComponent {
 
     }
   }
+
+//----------------------------------------------------------------------//
 
   createSquare(){
     create_circle_flag = false;
@@ -705,6 +739,11 @@ export class AppComponent {
     created_rect = false;
     created_triangle = false;
     created_ellipse = false;
+
+    move_flag = false;
+    copy_flag = false;
+    remove_flag = false;
+    resize_flag = false;
 
     create_square_flag = true;
     created_square = false;
@@ -776,6 +815,8 @@ export class AppComponent {
     }
   }
 
+//----------------------------------------------------------------------//
+
   createEllipse(){
     create_square_flag = false;
     create_line_flag = false;
@@ -788,6 +829,11 @@ export class AppComponent {
     created_circle = false;
     created_rect = false;
     created_triangle = false;
+
+    move_flag = false;
+    copy_flag = false;
+    remove_flag = false;
+    resize_flag = false;
 
 
 
@@ -851,12 +897,28 @@ export class AppComponent {
       document.getElementById("ellipse")!.style.backgroundColor = "rgba(47, 24, 10, 0.856)"
 
     }
-
-
-
   }
 
+//----------------------------------------------------------------------//
+
   remove(){
+    create_square_flag = false;
+    create_line_flag = false;
+    create_circle_flag = false;
+    create_rect_flag = false;
+    create_triangle_flag = false;
+    create_ellipse_flag= false
+
+    created_square = false;
+    created_line = false;
+    created_circle = false;
+    created_rect = false;
+    created_triangle = false;
+    created_ellipse = false;
+    
+    move_flag = false;
+    copy_flag = false;
+    resize_flag = false;
 
     var boardGlobal = (<HTMLCanvasElement>document.getElementById("board"));
     var canvasGlobal = boardGlobal.getContext("2d")!;
@@ -864,7 +926,7 @@ export class AppComponent {
     var isSelected : boolean = false;
     console.log(canvasArea)
     boardGlobal.addEventListener("mousedown",event => {
-      if(remove_flag){
+      if(remove_flag && removeButtonFlag){
         for (var shape of shapesBack){
 
           if(canvasGlobal.isPointInPath(canvasArea.get(shape.shapeID), event.offsetX, event.offsetY) || canvasGlobal.isPointInStroke(canvasArea.get(shape.shapeID), event.offsetX, event.offsetY)){
@@ -884,11 +946,11 @@ export class AppComponent {
       }
     });
     boardGlobal.addEventListener("mouseup", e => {
-      if(remove_flag && isSelected){  
+      if(remove_flag && isSelected && removeButtonFlag){
         this.paintServ.postCanvas(shapesBack).subscribe();
         document.getElementById("remove")!.style.backgroundColor = "rgb(246, 129, 60)"
         remove_flag = false;
-        
+
 
       }
     })
@@ -896,9 +958,32 @@ export class AppComponent {
       document.getElementById("remove")!.style.backgroundColor = "rgba(47, 24, 10, 0.856)"
 
     }
-   
+
   }
+
+//----------------------------------------------------------------------//
+
   move(){
+    create_square_flag = false;
+    create_line_flag = false;
+    create_circle_flag = false;
+    create_rect_flag = false;
+    create_triangle_flag = false;
+    create_ellipse_flag= false
+
+    created_square = false;
+    created_line = false;
+    created_circle = false;
+    created_rect = false;
+    created_triangle = false;
+    created_ellipse = false;
+
+   
+    copy_flag = false;
+    remove_flag = false;
+    resize_flag = false;
+
+
     var temp_shape : number = 0;
     var is_selected :boolean = false;
     var boardGlobal = (<HTMLCanvasElement>document.getElementById("board"));
@@ -909,7 +994,7 @@ export class AppComponent {
     boardGlobal.addEventListener("mousedown",  e => {
       if(found_move){
         found_move = false;
-        if(move_flag){
+        if(move_flag && moveButtonFlag){
           for (var i = 0; i < shapesBack.length; i++){
             if(canvasGlobal.isPointInPath(canvasArea.get(shapesBack[i].shapeID), e.offsetX, e.offsetY) || canvasGlobal.isPointInStroke(canvasArea.get(shapesBack[i].shapeID), e.offsetX, e.offsetY)){
               temp_shape = i;
@@ -918,15 +1003,15 @@ export class AppComponent {
           }
         }
       }
-      
+
     });
 
     boardGlobal.addEventListener("mousemove", e => {
-      
-        if(move_flag && is_selected){
+
+        if(move_flag && is_selected && moveButtonFlag){
           canvasGlobal.clearRect(0,0,1380,675);
           canvasArea.delete(shapesBack[temp_shape].shapeID);
-  
+
           var oldRealWidth = shapesBack[temp_shape].width - shapesBack[temp_shape].x;;
           var oldRealHeight = shapesBack[temp_shape].height -  shapesBack[temp_shape].y;
           if(shapesBack[temp_shape].type == "line"){
@@ -943,16 +1028,13 @@ export class AppComponent {
           for(var i = 0; i < shapesBack.length; i++){
             this.drawShape(shapesBack[i], "");
           }
-          
-  
-        
       }
 
-      
+
     });
 
     boardGlobal.addEventListener("mouseup", e => {
-      if(move_flag && is_selected){
+      if(move_flag && is_selected && moveButtonFlag){
         found_move = false;
         is_selected = false;
         for(var i = 0; i < shapesBack.length; i++){
@@ -962,7 +1044,7 @@ export class AppComponent {
         move_flag = false;
         document.getElementById("move")!.style.backgroundColor = "rgb(246, 129, 60)"
       }
-    
+
     });
 
     if(move_flag){
@@ -971,7 +1053,28 @@ export class AppComponent {
     }
 
   }
+
+//----------------------------------------------------------------------//
+
   copy(){
+    create_square_flag = false;
+    create_line_flag = false;
+    create_circle_flag = false;
+    create_rect_flag = false;
+    create_triangle_flag = false;
+    create_ellipse_flag= false
+
+    created_square = false;
+    created_line = false;
+    created_circle = false;
+    created_rect = false;
+    created_triangle = false;
+    created_ellipse = false;
+
+    move_flag = false;
+    remove_flag = false;
+    resize_flag = false;
+    
     var temp_shape : number = 0;
     var is_selected :boolean = false;
     var boardGlobal = (<HTMLCanvasElement>document.getElementById("board"));
@@ -1025,7 +1128,7 @@ export class AppComponent {
     });
 
     boardGlobal.addEventListener("mousemove", e => {
-      if(copy_flag && is_selected){
+      if(copy_flag && is_selected && copyButtonFlag){
         console.log(canvasArea);
         console.log(copy_shape.shapeID)
         console.log(shapesBack[temp_shape - 1].shapeID)
@@ -1058,7 +1161,7 @@ export class AppComponent {
 
 
     boardGlobal.addEventListener("mouseup", e => {
-      if(copy_flag && is_selected){
+      if(copy_flag && is_selected && copyButtonFlag){
         is_selected = false;
         found_copy = false;
         this.paintServ.postCanvas(shapesBack).subscribe();
@@ -1082,10 +1185,31 @@ export class AppComponent {
 
   }
 
+//----------------------------------------------------------------------//
+
   resize(){
+
+    create_square_flag = false;
+    create_line_flag = false;
+    create_circle_flag = false;
+    create_rect_flag = false;
+    create_triangle_flag = false;
+    create_ellipse_flag= false
+
+    created_square = false;
+    created_line = false;
+    created_circle = false;
+    created_rect = false;
+    created_triangle = false;
+    created_ellipse = false;
+
+    move_flag = false;
+    copy_flag = false;
+    remove_flag = false;
+    
     var oldx = 0;
     var oldy = 0;
-
+    var ratio:number;
     var temp_shape : number = 0;
     var is_selected :boolean = false;
     var boardGlobal = (<HTMLCanvasElement>document.getElementById("board"));
@@ -1093,10 +1217,12 @@ export class AppComponent {
     resize_flag = true;
     found_resize = true;
 
+    
+
     boardGlobal.addEventListener("mousedown",  e => {
       if(found_resize){
         found_resize = false;
-        if(resize_flag){
+        if(resize_flag && resizeButtonFlag){
           for (var i = 0; i < shapesBack.length; i++){
             if(canvasGlobal.isPointInPath(canvasArea.get(shapesBack[i].shapeID), e.offsetX, e.offsetY) || canvasGlobal.isPointInStroke(canvasArea.get(shapesBack[i].shapeID), e.offsetX, e.offsetY)) {
               temp_shape = i;
@@ -1107,32 +1233,67 @@ export class AppComponent {
         oldx = e.offsetX;
         oldy = e.offsetY;
       }
-      
+
     });
 
 
     boardGlobal.addEventListener("mousemove", e => {
-      if(resize_flag && is_selected){
+      if(resize_flag && is_selected && resizeButtonFlag){
         canvasGlobal.clearRect(0,0,1380,675);
         canvasArea.delete(shapesBack[temp_shape].shapeID);
 
         if(shapesBack[temp_shape].type == 'line'){
+          ratio = (Math.abs(shapesBack[temp_shape].height - shapesBack[temp_shape].y)/ Math.abs(shapesBack[temp_shape].width - shapesBack[temp_shape].x))
           if(e.offsetX > oldx && e.offsetY > oldy){
-            shapesBack[temp_shape].width +=2;
-            shapesBack[temp_shape].height += 2;
-
+            if((shapesBack[temp_shape].width - shapesBack[temp_shape].x ) > 0 && (shapesBack[temp_shape].height - shapesBack[temp_shape].y) > 0) {
+              shapesBack[temp_shape].width += 2;
+              shapesBack[temp_shape].height += (2*ratio);
+            }else if((shapesBack[temp_shape].width - shapesBack[temp_shape].x)  > 0 &&(shapesBack[temp_shape].height - shapesBack[temp_shape].y) < 0){
+              shapesBack[temp_shape].width += 2;
+              shapesBack[temp_shape].height -= (2*ratio);
+            }else if((shapesBack[temp_shape].width - shapesBack[temp_shape].x)  < 0 && (shapesBack[temp_shape].height - shapesBack[temp_shape].y) < 0){
+              shapesBack[temp_shape].width -= 2;
+              shapesBack[temp_shape].height -= (2*ratio);
+            }else if((shapesBack[temp_shape].width - shapesBack[temp_shape].x)  < 0 && (shapesBack[temp_shape].height - shapesBack[temp_shape].y) > 0){
+              shapesBack[temp_shape].width -= 2;
+              shapesBack[temp_shape].height += (2*ratio);
+            }else if((shapesBack[temp_shape].width - shapesBack[temp_shape].x)  ==  0 && (shapesBack[temp_shape].height - shapesBack[temp_shape].y) > 0){
+              shapesBack[temp_shape].height += 2;
+            }else if((shapesBack[temp_shape].width - shapesBack[temp_shape].x)  ==  0 && (shapesBack[temp_shape].height - shapesBack[temp_shape].y) < 0){
+              shapesBack[temp_shape].height -= 2;
+            }else if((shapesBack[temp_shape].width - shapesBack[temp_shape].x ) >  0 && (shapesBack[temp_shape].height - shapesBack[temp_shape].y) == 0){
+              shapesBack[temp_shape].width += 2;
+            }else if((shapesBack[temp_shape].width - shapesBack[temp_shape].x)  <  0 && (shapesBack[temp_shape].height - shapesBack[temp_shape].y) == 0){
+              shapesBack[temp_shape].width -= 2;
+            }
           }
           else if(e.offsetX < oldx && e.offsetY < oldy){
-            if(shapesBack[temp_shape].width > 2 || shapesBack[temp_shape].height > 2) {
+            if((shapesBack[temp_shape].width - shapesBack[temp_shape].x)  > 3 && (shapesBack[temp_shape].height - shapesBack[temp_shape].y) > 3) {
               shapesBack[temp_shape].width -= 2;
+              shapesBack[temp_shape].height -= (2*ratio);
+            }else if((shapesBack[temp_shape].width - shapesBack[temp_shape].x)  > 3 && (shapesBack[temp_shape].height - shapesBack[temp_shape].y) < 3){
+              shapesBack[temp_shape].width -= 2;
+              shapesBack[temp_shape].height += (2*ratio);
+            }else if((shapesBack[temp_shape].width - shapesBack[temp_shape].x)  < 3 && (shapesBack[temp_shape].height - shapesBack[temp_shape].y) < 3){
+              shapesBack[temp_shape].width += 2;
+              shapesBack[temp_shape].height += (2*ratio);
+            }else if((shapesBack[temp_shape].width - shapesBack[temp_shape].x)  < 3 && (shapesBack[temp_shape].height - shapesBack[temp_shape].y) > 3){
+              shapesBack[temp_shape].width += 2;
+              shapesBack[temp_shape].height -= (2*ratio);
+            }else if((shapesBack[temp_shape].width - shapesBack[temp_shape].x)  ==  3 && (shapesBack[temp_shape].height - shapesBack[temp_shape].y) > 3){
               shapesBack[temp_shape].height -= 2;
-
+            }else if((shapesBack[temp_shape].width - shapesBack[temp_shape].x)  ==  3 && (shapesBack[temp_shape].height - shapesBack[temp_shape].y) < 3){
+              shapesBack[temp_shape].height += 2;
+            }else if((shapesBack[temp_shape].width - shapesBack[temp_shape].x)  >  3 && (shapesBack[temp_shape].height - shapesBack[temp_shape].y) == 3){
+              shapesBack[temp_shape].width -= 2;
+            }else if((shapesBack[temp_shape].width - shapesBack[temp_shape].x)  <  3 && (shapesBack[temp_shape].height - shapesBack[temp_shape].y) == 3){
+              shapesBack[temp_shape].width += 2;
             }
           }
           oldx = e.offsetX;
           oldy = e.offsetY;
           this.drawShape(shapesBack[temp_shape], "");
-          
+
         }
         if(shapesBack[temp_shape].type == 'circle'){
           if(e.offsetX > oldx && e.offsetY > oldy){
@@ -1166,7 +1327,7 @@ export class AppComponent {
           oldx = e.offsetX;
           oldy = e.offsetY;
           this.drawShape(shapesBack[temp_shape], "");
-          
+
         }
         if(shapesBack[temp_shape].type == 'rect'){
           if(e.offsetX > oldx && e.offsetY > oldy){
@@ -1205,6 +1366,7 @@ export class AppComponent {
         }
         if(shapesBack[temp_shape].type == 'ellipse'){
           if(e.offsetX > oldx && e.offsetY > oldy){
+
             shapesBack[temp_shape].width +=2;
             shapesBack[temp_shape].height += 2;
           }
@@ -1228,33 +1390,31 @@ export class AppComponent {
     });
 
     boardGlobal.addEventListener("mouseup", e => {
-      if(resize_flag && is_selected){
+      if(resize_flag && is_selected && resizeButtonFlag){
         found_resize = false;
         is_selected = false;
         for(var i = 0; i < shapesBack.length; i++){
           this.drawShape(shapesBack[i], "");
         }
         this.paintServ.postCanvas(shapesBack).subscribe();
+        resize_flag = false;
         document.getElementById("resize")!.style.backgroundColor = "rgb(246, 129, 60)"
+
       }
-      resize_flag = false;
-      
 
     });
     if(resize_flag){
       document.getElementById("resize")!.style.backgroundColor = "rgba(47, 24, 10, 0.856)"
 
     }
-    
-
-
 
   }
+//----------------------------------------------------------------------//
 
   undo(){
     undo_flag = true;
 
-      
+
       if(undo_flag){
         this.paintServ.undoBoard().subscribe((data : shapeBack[]) => {
           var boardGlobal = (<HTMLCanvasElement>document.getElementById("board"));
@@ -1269,18 +1429,19 @@ export class AppComponent {
           }
 
         });
-  
-  
-       }
-       undo_flag = false;
-       
+
+
+      }
+      undo_flag = false;
   }
+
+//----------------------------------------------------------------------//
 
   redo(){
 
     redo_flag = true;
 
-      
+
       if(redo_flag){
         this.paintServ.redoBoard().subscribe((data : shapeBack[]) => {
           var boardGlobal = (<HTMLCanvasElement>document.getElementById("board"));
@@ -1295,29 +1456,35 @@ export class AppComponent {
           }
 
         });
-  
-  
-       }
-       redo_flag = false;
+
+
+      }
+      redo_flag = false;
 
   }
+
+//----------------------------------------------------------------------//
+
   openSaveForm(){
     document.getElementById("saveForm").style.display = "block";
 
   }
+//----------------------------------------------------------------------//
 
   openLoadForm(){
     document.getElementById("loadForm").style.display = "block";
   }
+//----------------------------------------------------------------------//
 
   closeSaveForm(){
     document.getElementById("saveForm").style.display = "none";
-    alert("File saved successfully");
   }
+//----------------------------------------------------------------------//
 
   closeLoadForm(){
     document.getElementById("loadForm").style.display = "none";
   }
+//----------------------------------------------------------------------//
 
   sendPathSave(){
     var filePath = <HTMLInputElement>document.getElementById("saveHere2");
@@ -1337,8 +1504,10 @@ export class AppComponent {
         alert(msg);
       }) ;
       this.closeSaveForm();
+      alert("File Saved successfully :)");
     }
   }
+//----------------------------------------------------------------------//
 
   sendPathLoad(){
     var boardGlobal = (<HTMLCanvasElement>document.getElementById("board"));
@@ -1361,6 +1530,8 @@ export class AppComponent {
     this.closeLoadForm();
   }
 
+//----------------------------------------------------------------------//
+
   reverseSlashes(path: string){
     for (var i = 0; i < path.length; i++) {
       if(path.charAt(i)=="\\")
@@ -1368,6 +1539,19 @@ export class AppComponent {
     }
     return path;
   }
+
+//----------------------------------------------------------------------//
+
+  clearAll(){
+    var boardGlobal = (<HTMLCanvasElement>document.getElementById("board"));
+    var canvasGlobal = boardGlobal.getContext("2d")!;
+    canvasGlobal.clearRect(0,0,1380,675)
+    canvasArea.clear()
+    shapesBack = []
+    this.paintServ.postCanvas(shapesBack).subscribe();
+  }
+
+  //----------------------------------------------------------------------//
 
   disableButtons(){
     if(create_line_flag){
@@ -1378,7 +1562,14 @@ export class AppComponent {
       triangleButtonFlag  = false;
       ellipseButtonFlag  = false;
 
+      moveButtonFlag = false;
+      resizeButtonFlag = false;
+      copyButtonFlag = false;
+      removeButtonFlag = false;
+
       lineButtonFlag = true;
+
+     
 
     }
     if(create_square_flag){
@@ -1388,9 +1579,13 @@ export class AppComponent {
       lineButtonFlag  = false;
       triangleButtonFlag  = false;
       ellipseButtonFlag  = false;
+      moveButtonFlag = false;
+      resizeButtonFlag = false;
+      copyButtonFlag = false;
+      removeButtonFlag = false;
 
       squareButtonFlag = true;
-
+      draw_line = null;
 
     }
     if(create_circle_flag){
@@ -1402,8 +1597,15 @@ export class AppComponent {
       lineButtonFlag = false;
       triangleButtonFlag = false;
       ellipseButtonFlag = false;
+      moveButtonFlag = false;
+      resizeButtonFlag = false;
+      copyButtonFlag = false;
+      removeButtonFlag = false;
 
       circleButtonFlag = true;
+
+      draw_line = null;
+
 
     }
     if(create_rect_flag){
@@ -1413,8 +1615,14 @@ export class AppComponent {
       lineButtonFlag = false;
       triangleButtonFlag = false;
       ellipseButtonFlag = false;
+      moveButtonFlag = false;
+      resizeButtonFlag = false;
+      copyButtonFlag = false;
+      removeButtonFlag = false;
 
       rectButtonFlag = true;
+      draw_line = null;
+
 
     }
     if(create_triangle_flag){
@@ -1424,8 +1632,15 @@ export class AppComponent {
       rectButtonFlag  = false;
       lineButtonFlag = false;
       ellipseButtonFlag = false;
+      moveButtonFlag = false;
+      resizeButtonFlag = false;
+      copyButtonFlag = false;
+      removeButtonFlag = false;
 
       triangleButtonFlag = true;
+      draw_line = null;
+
+      
 
     }
     if(create_ellipse_flag){
@@ -1437,8 +1652,83 @@ export class AppComponent {
       lineButtonFlag = false;
       triangleButtonFlag = false;
 
+      moveButtonFlag = false;
+      resizeButtonFlag = false;
+      copyButtonFlag = false;
+      removeButtonFlag = false;
+      draw_line = null;
+
+      
+
       ellipseButtonFlag = true;
 
+    }
+
+    if(move_flag){
+      circleButtonFlag = false;
+      squareButtonFlag = false;
+      rectButtonFlag = false;
+      lineButtonFlag = false;
+      triangleButtonFlag = false;
+      draw_line = null;
+
+      removeButtonFlag = false;
+      resizeButtonFlag = false;
+      copyButtonFlag = false;
+
+      moveButtonFlag = true;
+
+      
+
+      ellipseButtonFlag = true;
+    }
+    if(remove_flag){
+      circleButtonFlag = false;
+      squareButtonFlag = false;
+      rectButtonFlag = false;
+      lineButtonFlag = false;
+      triangleButtonFlag = false;
+      draw_line = null;
+      moveButtonFlag = false;
+      resizeButtonFlag = false;
+      copyButtonFlag = false;
+
+
+      removeButtonFlag = true;
+
+      ellipseButtonFlag = true;
+    }
+    if(copy_flag){
+      circleButtonFlag = false;
+      squareButtonFlag = false;
+      rectButtonFlag = false;
+      lineButtonFlag = false;
+      triangleButtonFlag = false;
+      draw_line = null;
+
+      moveButtonFlag = false;
+      resizeButtonFlag = false;
+      removeButtonFlag = false;
+
+      copyButtonFlag = true;
+      
+
+      ellipseButtonFlag = true;
+    }
+    if(resize_flag){
+      circleButtonFlag = false;
+      squareButtonFlag = false;
+      rectButtonFlag = false;
+      lineButtonFlag = false;
+      triangleButtonFlag = false;
+      moveButtonFlag = false;
+      copyButtonFlag = false;
+      removeButtonFlag = false;
+      draw_line = null;
+
+      resizeButtonFlag = true;
+
+      ellipseButtonFlag = true;
     }
 
     if(!create_square_flag){
@@ -1465,12 +1755,28 @@ export class AppComponent {
       document.getElementById("triangle")!.style.backgroundColor = "rgb(246, 129, 60)"
 
     }
+    if(!move_flag){
+      document.getElementById("move")!.style.backgroundColor = "rgb(246, 129, 60)"
+
+    }
+    if(!copy_flag){
+      document.getElementById("copy")!.style.backgroundColor = "rgb(246, 129, 60)"
+
+    }
+    if(!resize_flag){
+      document.getElementById("resize")!.style.backgroundColor = "rgb(246, 129, 60)"
+
+    }
+    if(!remove_flag){
+      document.getElementById("remove")!.style.backgroundColor = "rgb(246, 129, 60)"
+
+    }
 
   }
 
 
 
 }
-
+//----------------------------------------------------------------------//
 
 
