@@ -1,15 +1,18 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClientModule } from "@angular/common/http";
 import { paintServices } from './app.services';
-import { range } from 'rxjs';
-import { leadingComment } from '@angular/compiler';
 
 
 
 
  //container to hold all different shapes on it
 var shapesBack:shapeBack[] = [];
+
+//----------------------------------------------------------------------//
+
+//mapping between shape ID and its area on canvas
 let canvasArea = new Map<string, Path2D>();
+
+//----------------------------------------------------------------------//
 
 //flag to activate buttons
 var remove_flag :boolean = false;
@@ -19,7 +22,13 @@ var fill_flag :boolean = false;
 var copy_flag : boolean = false;
 var undo_flag : boolean = false;
 var redo_flag : boolean = false;
+var found_move : boolean = false;
+var found_copy : boolean = false;
+var found_resize : boolean = false;
 
+//----------------------------------------------------------------------//
+
+//flag to activate buttons of creation
 var create_line_flag : boolean = false;
 var created_line : boolean = false;
 
@@ -46,26 +55,26 @@ var triangleButtonFlag : boolean = false;
 var ellipseButtonFlag : boolean = false;
 
 
-var found_move : boolean = false;
-var found_copy : boolean = false;
-var found_resize : boolean = false;
+//----------------------------------------------------------------------//
 
+//global values to stroke color and witdth to assign all shapes to it
 var strokeColor:string = 'black';
 var strokeWidth:number = 3;
+
+//----------------------------------------------------------------------//
+
+// array for ID generator
 var serial = Array.from(Array(1000000).keys());
 
-//randomizer function :pick  a random value between two edges
-function getRandomInt(min:number, max:number) {
-	min = Math.ceil(min);
-	max = Math.floor(max);
-	return Math.floor(Math.random() * (max - min + 1)) + min;
-}
+//----------------------------------------------------------------------//
 
+//ID generator which give ID and remove it from the ID generator array
 function get_new_ID():string {
   var ID =   serial.pop()
   return (ID.toString())
 
 }
+//----------------------------------------------------------------------//
 
 //shape interface to cover all shapes under restricted contract
 export interface shapeBack{
@@ -80,10 +89,6 @@ export interface shapeBack{
   is_filled:number;
   shapeID:string;
 }
-
-
-
-
 
 //----------------------------------------------------------------------//
 
@@ -104,9 +109,7 @@ export class AppComponent {
   }
 
 
-
-
-
+//----------------------------------------------------------------------//
 
   drawShape(shape : shapeBack, fillcolor : string){
     var boardGlobal = (<HTMLCanvasElement>document.getElementById("board"));
@@ -292,6 +295,7 @@ export class AppComponent {
   }
 
 
+//----------------------------------------------------------------------//
 
   confirm_stroke() {
     var sc = <HTMLInputElement>document.getElementById("stroke_color");
@@ -300,6 +304,9 @@ export class AppComponent {
     var strwid : number = parseInt(sw.value);
     strokeWidth = strwid;
   }
+
+//----------------------------------------------------------------------//
+
   fill_color() {
     var boardGlobal = (<HTMLCanvasElement>document.getElementById("board"));
     var canvasGlobal = boardGlobal.getContext("2d")!;
@@ -339,6 +346,7 @@ export class AppComponent {
   }
 
 
+//----------------------------------------------------------------------//
 
     createLine(){
       create_circle_flag = false;
@@ -438,10 +446,7 @@ export class AppComponent {
 
     }
 
-
-
-
-
+//----------------------------------------------------------------------//
 
   createTriangle(){
 
@@ -527,6 +532,8 @@ export class AppComponent {
     }
   }
 
+//----------------------------------------------------------------------//
+
   createCircle(){
     create_square_flag = false;
     create_line_flag = false;
@@ -610,6 +617,8 @@ export class AppComponent {
     }
 }
 
+//----------------------------------------------------------------------//
+
   createRect(){
     create_square_flag = false;
     create_line_flag = false;
@@ -674,15 +683,9 @@ export class AppComponent {
       if(rectButtonFlag){
         created_rect = true;
         create_rect_flag = false;
-
-        console.log(shapesBack);
         rect = null;
 
-
-
-
         document.getElementById("rect")!.style.backgroundColor = "rgb(246, 129, 60)"
-        console.log(shapesBack);
 
       }
 
@@ -692,6 +695,8 @@ export class AppComponent {
 
     }
   }
+
+//----------------------------------------------------------------------//
 
   createSquare(){
     create_circle_flag = false;
@@ -776,6 +781,8 @@ export class AppComponent {
     }
   }
 
+//----------------------------------------------------------------------//
+
   createEllipse(){
     create_square_flag = false;
     create_line_flag = false;
@@ -851,10 +858,9 @@ export class AppComponent {
       document.getElementById("ellipse")!.style.backgroundColor = "rgba(47, 24, 10, 0.856)"
 
     }
-
-
-
   }
+
+//----------------------------------------------------------------------//
 
   remove(){
 
@@ -898,6 +904,9 @@ export class AppComponent {
     }
 
   }
+
+//----------------------------------------------------------------------//
+
   move(){
     var temp_shape : number = 0;
     var is_selected :boolean = false;
@@ -918,15 +927,15 @@ export class AppComponent {
           }
         }
       }
-      
+
     });
 
     boardGlobal.addEventListener("mousemove", e => {
-      
+
         if(move_flag && is_selected){
           canvasGlobal.clearRect(0,0,1380,675);
           canvasArea.delete(shapesBack[temp_shape].shapeID);
-  
+
           var oldRealWidth = shapesBack[temp_shape].width - shapesBack[temp_shape].x;;
           var oldRealHeight = shapesBack[temp_shape].height -  shapesBack[temp_shape].y;
           if(shapesBack[temp_shape].type == "line"){
@@ -943,12 +952,9 @@ export class AppComponent {
           for(var i = 0; i < shapesBack.length; i++){
             this.drawShape(shapesBack[i], "");
           }
-          
-  
-        
       }
 
-      
+
     });
 
     boardGlobal.addEventListener("mouseup", e => {
@@ -971,6 +977,9 @@ export class AppComponent {
     }
 
   }
+
+//----------------------------------------------------------------------//
+
   copy(){
     var temp_shape : number = 0;
     var is_selected :boolean = false;
@@ -1082,10 +1091,12 @@ export class AppComponent {
 
   }
 
+//----------------------------------------------------------------------//
+
   resize(){
     var oldx = 0;
     var oldy = 0;
-
+    var ratio:number;
     var temp_shape : number = 0;
     var is_selected :boolean = false;
     var boardGlobal = (<HTMLCanvasElement>document.getElementById("board"));
@@ -1107,7 +1118,7 @@ export class AppComponent {
         oldx = e.offsetX;
         oldy = e.offsetY;
       }
-      
+
     });
 
 
@@ -1117,16 +1128,51 @@ export class AppComponent {
         canvasArea.delete(shapesBack[temp_shape].shapeID);
 
         if(shapesBack[temp_shape].type == 'line'){
+          ratio = (Math.abs(shapesBack[temp_shape].height - shapesBack[temp_shape].y)/ Math.abs(shapesBack[temp_shape].width - shapesBack[temp_shape].x))
           if(e.offsetX > oldx && e.offsetY > oldy){
-            shapesBack[temp_shape].width +=2;
-            shapesBack[temp_shape].height += 2;
-
+            if((shapesBack[temp_shape].width - shapesBack[temp_shape].x ) > 0 && (shapesBack[temp_shape].height - shapesBack[temp_shape].y) > 0) {
+              shapesBack[temp_shape].width += 2;
+              shapesBack[temp_shape].height += (2*ratio);
+            }else if((shapesBack[temp_shape].width - shapesBack[temp_shape].x)  > 0 &&(shapesBack[temp_shape].height - shapesBack[temp_shape].y) < 0){
+              shapesBack[temp_shape].width += 2;
+              shapesBack[temp_shape].height -= (2*ratio);
+            }else if((shapesBack[temp_shape].width - shapesBack[temp_shape].x)  < 0 && (shapesBack[temp_shape].height - shapesBack[temp_shape].y) < 0){
+              shapesBack[temp_shape].width -= 2;
+              shapesBack[temp_shape].height -= (2*ratio);
+            }else if((shapesBack[temp_shape].width - shapesBack[temp_shape].x)  < 0 && (shapesBack[temp_shape].height - shapesBack[temp_shape].y) > 0){
+              shapesBack[temp_shape].width -= 2;
+              shapesBack[temp_shape].height += (2*ratio);
+            }else if((shapesBack[temp_shape].width - shapesBack[temp_shape].x)  ==  0 && (shapesBack[temp_shape].height - shapesBack[temp_shape].y) > 0){
+              shapesBack[temp_shape].height += 2;
+            }else if((shapesBack[temp_shape].width - shapesBack[temp_shape].x)  ==  0 && (shapesBack[temp_shape].height - shapesBack[temp_shape].y) < 0){
+              shapesBack[temp_shape].height -= 2;
+            }else if((shapesBack[temp_shape].width - shapesBack[temp_shape].x ) >  0 && (shapesBack[temp_shape].height - shapesBack[temp_shape].y) == 0){
+              shapesBack[temp_shape].width += 2;
+            }else if((shapesBack[temp_shape].width - shapesBack[temp_shape].x)  <  0 && (shapesBack[temp_shape].height - shapesBack[temp_shape].y) == 0){
+              shapesBack[temp_shape].width -= 2;
+            }
           }
           else if(e.offsetX < oldx && e.offsetY < oldy){
-            if(shapesBack[temp_shape].width > 2 || shapesBack[temp_shape].height > 2) {
+            if((shapesBack[temp_shape].width - shapesBack[temp_shape].x)  > 3 && (shapesBack[temp_shape].height - shapesBack[temp_shape].y) > 3) {
               shapesBack[temp_shape].width -= 2;
+              shapesBack[temp_shape].height -= (2*ratio);
+            }else if((shapesBack[temp_shape].width - shapesBack[temp_shape].x)  > 3 && (shapesBack[temp_shape].height - shapesBack[temp_shape].y) < 3){
+              shapesBack[temp_shape].width -= 2;
+              shapesBack[temp_shape].height += (2*ratio);
+            }else if((shapesBack[temp_shape].width - shapesBack[temp_shape].x)  < 3 && (shapesBack[temp_shape].height - shapesBack[temp_shape].y) < 3){
+              shapesBack[temp_shape].width += 2;
+              shapesBack[temp_shape].height += (2*ratio);
+            }else if((shapesBack[temp_shape].width - shapesBack[temp_shape].x)  < 3 && (shapesBack[temp_shape].height - shapesBack[temp_shape].y) > 3){
+              shapesBack[temp_shape].width += 2;
+              shapesBack[temp_shape].height -= (2*ratio);
+            }else if((shapesBack[temp_shape].width - shapesBack[temp_shape].x)  ==  3 && (shapesBack[temp_shape].height - shapesBack[temp_shape].y) > 3){
               shapesBack[temp_shape].height -= 2;
-
+            }else if((shapesBack[temp_shape].width - shapesBack[temp_shape].x)  ==  3 && (shapesBack[temp_shape].height - shapesBack[temp_shape].y) < 3){
+              shapesBack[temp_shape].height += 2;
+            }else if((shapesBack[temp_shape].width - shapesBack[temp_shape].x)  >  3 && (shapesBack[temp_shape].height - shapesBack[temp_shape].y) == 3){
+              shapesBack[temp_shape].width -= 2;
+            }else if((shapesBack[temp_shape].width - shapesBack[temp_shape].x)  <  3 && (shapesBack[temp_shape].height - shapesBack[temp_shape].y) == 3){
+              shapesBack[temp_shape].width += 2;
             }
           }
           oldx = e.offsetX;
@@ -1236,10 +1282,10 @@ export class AppComponent {
           this.drawShape(shapesBack[i], "");
         }
         this.paintServ.postCanvas(shapesBack).subscribe();
+        resize_flag = false;
         document.getElementById("resize")!.style.backgroundColor = "rgb(246, 129, 60)"
-      }
-      resize_flag = false;
 
+      }
 
     });
     if(resize_flag){
@@ -1247,10 +1293,8 @@ export class AppComponent {
 
     }
 
-
-
-
   }
+//----------------------------------------------------------------------//
 
   undo(){
     undo_flag = true;
@@ -1272,10 +1316,11 @@ export class AppComponent {
         });
 
 
-       }
-       undo_flag = false;
-
+      }
+      undo_flag = false;
   }
+
+//----------------------------------------------------------------------//
 
   redo(){
 
@@ -1298,27 +1343,34 @@ export class AppComponent {
         });
 
 
-       }
-       redo_flag = false;
+      }
+      redo_flag = false;
 
   }
+
+//----------------------------------------------------------------------//
+
   openSaveForm(){
     document.getElementById("saveForm").style.display = "block";
 
   }
+//----------------------------------------------------------------------//
 
   openLoadForm(){
     document.getElementById("loadForm").style.display = "block";
   }
+//----------------------------------------------------------------------//
 
   closeSaveForm(){
     document.getElementById("saveForm").style.display = "none";
     alert("File saved successfully");
   }
+//----------------------------------------------------------------------//
 
   closeLoadForm(){
     document.getElementById("loadForm").style.display = "none";
   }
+//----------------------------------------------------------------------//
 
   sendPathSave(){
     var filePath = <HTMLInputElement>document.getElementById("saveHere2");
@@ -1340,6 +1392,7 @@ export class AppComponent {
       this.closeSaveForm();
     }
   }
+//----------------------------------------------------------------------//
 
   sendPathLoad(){
     var boardGlobal = (<HTMLCanvasElement>document.getElementById("board"));
@@ -1362,6 +1415,8 @@ export class AppComponent {
     this.closeLoadForm();
   }
 
+//----------------------------------------------------------------------//
+
   reverseSlashes(path: string){
     for (var i = 0; i < path.length; i++) {
       if(path.charAt(i)=="\\")
@@ -1369,27 +1424,8 @@ export class AppComponent {
     }
     return path;
   }
-  save(){
-    var path:string;
-    path = (<HTMLInputElement>document.getElementById("savePath")).value
-    this.paintServ.saveBoard(path).subscribe((data)=>{},((error:any)=> alert("wrong path is entered")));
 
-  }
-  load(){
-    var path:string;
-    path = (<HTMLInputElement>document.getElementById("loadPath")).value
-    var boardGlobal = (<HTMLCanvasElement>document.getElementById("board"));
-    var canvasGlobal = boardGlobal.getContext("2d")!;
-    this.paintServ.loadBoard(path).subscribe((data:shapeBack[])=>{
-      canvasGlobal.clearRect(0,0,1380,675)
-      canvasArea.clear()
-      shapesBack = data
-      for(var shape of shapesBack){
-        this.drawShape(shape,"")
-      }
-
-    },(error:any)=>alert("wrong path is entered"));
-  }
+//----------------------------------------------------------------------//
 
   disableButtons(){
     if(create_line_flag){
@@ -1493,6 +1529,7 @@ export class AppComponent {
 
 
 }
+//----------------------------------------------------------------------//
 
 
 

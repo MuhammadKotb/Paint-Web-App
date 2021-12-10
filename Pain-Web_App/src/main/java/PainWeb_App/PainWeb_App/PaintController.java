@@ -63,11 +63,6 @@ public class PaintController {
 
 
     }
-
-    /**
-     * remove and edit should be implemented as undo, redo and database depend on them
-     **/
-
     @GetMapping("/undo")
     public List<ShapeClass> undo() {
         try{
@@ -83,11 +78,7 @@ public class PaintController {
             return new ArrayList<ShapeClass>(0);
         }
 
-<<<<<<< HEAD
-        // this.database.pop();
-=======
 
->>>>>>> 6a0c0061f42cb568e3c4f884a8223d26c0caf486
 
 
 
