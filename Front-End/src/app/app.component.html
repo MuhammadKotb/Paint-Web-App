@@ -18,16 +18,16 @@
     <button id="line" value="line" (click) = "createLine();disableButtons()"> <img src= "assets/icons/line-icon.png" width = 45px length = 45px /> </button>
   </div>
   <div>
-    <button id="remove" value="remove" (click)="remove()"> <img src= "assets/icons/remove-icon.png" width = 37px length = 37px /> </button>
+    <button id="remove" value="remove" (click)="remove();disableButtons()"> <img src= "assets/icons/remove-icon.png" width = 37px length = 37px /> </button>
   </div>
   <div>
-    <button id="resize" value="resize" (click)="resize()"> <img src= "assets/icons/resize-icon.png" width = 37px length = 37px /> </button>
+    <button id="resize" value="resize" (click)="resize();disableButtons()"> <img src= "assets/icons/resize-icon.png" width = 37px length = 37px /> </button>
   </div>
   <div>
-    <button id="move" value="move" (click)="move()"> <img src= "assets/icons/move-icon.png" width = 37px length = 37px /> </button>
+    <button id="move" value="move" (click)="move();disableButtons()"> <img src= "assets/icons/move-icon.png" width = 37px length = 37px /> </button>
   </div>
   <div>
-    <button id="copy" value="copy" (click)="copy()"> <img src= "assets/icons/copy-icon.png" width = 37px length = 37px /> </button>
+    <button id="copy" value="copy" (click)="copy();disableButtons()"> <img src= "assets/icons/copy-icon.png" width = 37px length = 37px /> </button>
   </div>
 </div>
 
@@ -73,7 +73,7 @@
 <div class="form-popup" id="loadForm">
   <div class="form-container">
     <label for="path"><b>File Path</b></label>
-<input type="text" id="loadHere" placeholder="Enter the file path of desired load file" name="path" required>
+    <input type="text" id="loadHere" placeholder="Enter the file path of desired load file" name="path" required>
     <button type="submit" class="btn" (click)="sendPathLoad() ;">Enter</button>
   </div>
 </div>
@@ -87,4 +87,3 @@
     <button type="submit" class="btn" (click)="sendPathSave() ;" >Enter</button>
   </div>
 </div>
-

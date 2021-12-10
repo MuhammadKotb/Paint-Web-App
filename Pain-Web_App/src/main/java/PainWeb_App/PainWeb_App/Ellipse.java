@@ -19,10 +19,6 @@ public class Ellipse implements ShapeI {
     private int is_filled = 0;
     private String shapeID = null;
 
-
-
-
-
     public Ellipse(){}
     public Ellipse(String type){
         this.type = type;
@@ -33,46 +29,6 @@ public class Ellipse implements ShapeI {
 
     public int getX() {
         return this.x;
-    }
-
-    public void setX(int x) {
-        this.x = x;
-    }
-
-    public void setY(int y) {
-        this.y = y;
-    }
-
-    public void setWidth(int width) {
-        this.width = width;
-    }
-
-    public void setHeight(int height) {
-        this.height = height;
-    }
-
-    public void setFiCo(String fiCo) {
-        this.fiCo = fiCo;
-    }
-
-    public void setStCo(String stCo) {
-        this.stCo = stCo;
-    }
-
-    public void setStWi(int stWi) {
-        this.stWi = stWi;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public void setFilled(int is_filled) {
-        this.is_filled = is_filled;
-    }
-
-    public void setShapeID(String shapeID) {
-        this.shapeID = shapeID;
     }
 
     public int getY() {

@@ -25,11 +25,6 @@ public class PaintController {
     private Stack<List <ShapeClass> > database = new Stack<>();
     private Stack<List <ShapeClass> > redoStack = new Stack<>();
 
-    public void updateDatabase(){
-        List <ShapeClass> listTemp = new ArrayList<>(shape.getListofShapes());
-        this.database.push((ArrayList<ShapeClass>) listTemp);
-
-    }
 
     public Stack<List<ShapeClass>> getDatabase() {
         return database;
@@ -42,27 +37,28 @@ public class PaintController {
 
     @PostMapping("/paint")
     ShapeI addShapes(@RequestBody ShapeClass paintShape) {
-
         return paintShape;
     }
 
     @PostMapping("/create")
     ShapeI createShape(@RequestBody String type) {
+
         return factory.createShape(type);
     }
 
     @GetMapping("/getCanvas")
     List<ShapeClass> getCanvas() {
-        return shape.getListofShapes();
+        return this.database.peek();
     }
 
     @PostMapping("/postCanvas")
     void postCanvas(@RequestBody List<ShapeClass> shapes) {
-        // this.database.pop();
+
         this.database.push(shapes);
 
 
     }
+
     @GetMapping("/undo")
     public List<ShapeClass> undo() {
         try{
@@ -77,13 +73,6 @@ public class PaintController {
         catch (Exception e){
             return new ArrayList<ShapeClass>(0);
         }
-
-
-
-
-
-
-
     }
 
     @GetMapping("/redo")

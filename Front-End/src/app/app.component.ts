@@ -25,6 +25,7 @@ var redo_flag : boolean = false;
 var found_move : boolean = false;
 var found_copy : boolean = false;
 var found_resize : boolean = false;
+var draw_line : shapeBack = null;
 
 //----------------------------------------------------------------------//
 
@@ -54,6 +55,10 @@ var lineButtonFlag : boolean = false;
 var triangleButtonFlag : boolean = false;
 var ellipseButtonFlag : boolean = false;
 
+var removeButtonFlag : boolean = false;
+var moveButtonFlag : boolean = false;
+var copyButtonFlag : boolean = false;
+var resizeButtonFlag : boolean = false;
 
 //----------------------------------------------------------------------//
 
@@ -107,7 +112,6 @@ export class AppComponent {
 
     this.paintServ.getCanvas().subscribe((data : shapeBack[])=> {shapesBack = data; console.log(shapesBack);console.log(canvasArea)});
   }
-
 
 //----------------------------------------------------------------------//
 
@@ -362,23 +366,31 @@ export class AppComponent {
       created_triangle = false;
       created_ellipse = false;
 
+      move_flag = false;
+      copy_flag = false;
+      remove_flag = false;
+      resize_flag = false;
+
       var boardGlobal = (<HTMLCanvasElement>document.getElementById("board"));
       var canvasGlobal = boardGlobal.getContext("2d")!;
-      var line : shapeBack;
-      this.paintServ.createShape("line").subscribe((data : shapeBack) => {line = data});
+
+
 
       create_line_flag = true;
       created_line = false;
+
+      this.paintServ.createShape("line").subscribe((data : shapeBack) => {draw_line = data});
+
+
       var selectLine = false;
       boardGlobal.addEventListener("mousedown",e=>{
 
-        if(!created_line && (line != null) && lineButtonFlag){
-
-          line.x = e.offsetX;
-          line.y = e.offsetY;
-          line.stCo = strokeColor
-          line.stWi = strokeWidth
-          line.shapeID = get_new_ID();
+        if(!created_line && (draw_line != null) && lineButtonFlag){
+          draw_line.x = e.offsetX;
+          draw_line.y = e.offsetY;
+          draw_line.stCo = strokeColor
+          draw_line.stWi = strokeWidth
+          draw_line.shapeID = get_new_ID();
           selectLine = true;
           created_line = true;
 
@@ -388,14 +400,14 @@ export class AppComponent {
       });
 
       boardGlobal.addEventListener("mousemove", e => {
-        if(create_line_flag && selectLine && (line != null) && lineButtonFlag && created_line){
+        if(create_line_flag && selectLine && (draw_line != null) && lineButtonFlag && created_line){
           canvasGlobal.clearRect(0,0,1380,675);
-          canvasArea.delete(line.shapeID);
+          canvasArea.delete(draw_line.shapeID);
 
-          line.width = e.offsetX;
-          line.height = e.offsetY;
+          draw_line.width = e.offsetX;
+          draw_line.height = e.offsetY;
 
-          this.drawShape(line, "");
+          this.drawShape(draw_line, "");
           for(var i = 0; i < shapesBack.length; i++){
             this.drawShape(shapesBack[i], "");
           }
@@ -407,18 +419,18 @@ export class AppComponent {
           create_line_flag =false;
           created_line = true;
           selectLine = false;
-        if(line != null && (line.width != 0 && line.height != 0)){
+        if(draw_line != null && (draw_line.width != 0 && draw_line.height != 0)){
           this.paintServ.postShape({
-            x:line.x,
-            y:line.y,
-            width:line.width,
-            height:line.height,
-            fiCo:line.fiCo,
-            stCo:line.stCo,
-            stWi:line.stWi,
-            type:line.type,
-            is_filled:line.is_filled,
-            shapeID : line.shapeID
+            x:draw_line.x,
+            y:draw_line.y,
+            width:draw_line.width,
+            height:draw_line.height,
+            fiCo:draw_line.fiCo,
+            stCo:draw_line.stCo,
+            stWi:draw_line.stWi,
+            type:draw_line.type,
+            is_filled:draw_line.is_filled,
+            shapeID : draw_line.shapeID
 
             }).subscribe((data : shapeBack) => {
               this.drawShape(data, "");
@@ -431,7 +443,7 @@ export class AppComponent {
 
         }
 
-        line = null;
+        draw_line = null;
 
         document.getElementById("line")!.style.backgroundColor = "rgb(246, 129, 60)"
         }
@@ -461,6 +473,11 @@ export class AppComponent {
     created_circle = false;
     created_rect = false;
     created_ellipse = false;
+
+    move_flag = false;
+    copy_flag = false;
+    remove_flag = false;
+    resize_flag = false;
 
     var boardGlobal = (<HTMLCanvasElement>document.getElementById("board"));
     var canvasGlobal = boardGlobal.getContext("2d")!;
@@ -547,6 +564,11 @@ export class AppComponent {
     created_triangle = false;
     created_ellipse = false;
 
+    move_flag = false;
+    copy_flag = false;
+    remove_flag = false;
+    resize_flag = false;
+
     create_circle_flag = true;
     created_circle = false;
 
@@ -632,6 +654,11 @@ export class AppComponent {
     created_triangle = false;
     created_ellipse = false;
 
+    move_flag = false;
+    copy_flag = false;
+    remove_flag = false;
+    resize_flag = false;
+
     create_rect_flag = true;
     created_rect = false;
 
@@ -710,6 +737,11 @@ export class AppComponent {
     created_rect = false;
     created_triangle = false;
     created_ellipse = false;
+
+    move_flag = false;
+    copy_flag = false;
+    remove_flag = false;
+    resize_flag = false;
 
     create_square_flag = true;
     created_square = false;
@@ -796,6 +828,11 @@ export class AppComponent {
     created_rect = false;
     created_triangle = false;
 
+    move_flag = false;
+    copy_flag = false;
+    remove_flag = false;
+    resize_flag = false;
+
 
 
     var boardGlobal = (<HTMLCanvasElement>document.getElementById("board"));
@@ -863,6 +900,23 @@ export class AppComponent {
 //----------------------------------------------------------------------//
 
   remove(){
+    create_square_flag = false;
+    create_line_flag = false;
+    create_circle_flag = false;
+    create_rect_flag = false;
+    create_triangle_flag = false;
+    create_ellipse_flag= false
+
+    created_square = false;
+    created_line = false;
+    created_circle = false;
+    created_rect = false;
+    created_triangle = false;
+    created_ellipse = false;
+
+    move_flag = false;
+    copy_flag = false;
+    resize_flag = false;
 
     var boardGlobal = (<HTMLCanvasElement>document.getElementById("board"));
     var canvasGlobal = boardGlobal.getContext("2d")!;
@@ -870,7 +924,7 @@ export class AppComponent {
     var isSelected : boolean = false;
     console.log(canvasArea)
     boardGlobal.addEventListener("mousedown",event => {
-      if(remove_flag){
+      if(remove_flag && removeButtonFlag){
         for (var shape of shapesBack){
 
           if(canvasGlobal.isPointInPath(canvasArea.get(shape.shapeID), event.offsetX, event.offsetY) || canvasGlobal.isPointInStroke(canvasArea.get(shape.shapeID), event.offsetX, event.offsetY)){
@@ -890,7 +944,7 @@ export class AppComponent {
       }
     });
     boardGlobal.addEventListener("mouseup", e => {
-      if(remove_flag && isSelected){
+      if(remove_flag && isSelected && removeButtonFlag){
         this.paintServ.postCanvas(shapesBack).subscribe();
         document.getElementById("remove")!.style.backgroundColor = "rgb(246, 129, 60)"
         remove_flag = false;
@@ -908,6 +962,25 @@ export class AppComponent {
 //----------------------------------------------------------------------//
 
   move(){
+    create_square_flag = false;
+    create_line_flag = false;
+    create_circle_flag = false;
+    create_rect_flag = false;
+    create_triangle_flag = false;
+    create_ellipse_flag= false
+
+    created_square = false;
+    created_line = false;
+    created_circle = false;
+    created_rect = false;
+    created_triangle = false;
+    created_ellipse = false;
+
+    copy_flag = false;
+    remove_flag = false;
+    resize_flag = false;
+
+
     var temp_shape : number = 0;
     var is_selected :boolean = false;
     var boardGlobal = (<HTMLCanvasElement>document.getElementById("board"));
@@ -918,7 +991,7 @@ export class AppComponent {
     boardGlobal.addEventListener("mousedown",  e => {
       if(found_move){
         found_move = false;
-        if(move_flag){
+        if(move_flag && moveButtonFlag){
           for (var i = 0; i < shapesBack.length; i++){
             if(canvasGlobal.isPointInPath(canvasArea.get(shapesBack[i].shapeID), e.offsetX, e.offsetY) || canvasGlobal.isPointInStroke(canvasArea.get(shapesBack[i].shapeID), e.offsetX, e.offsetY)){
               temp_shape = i;
@@ -932,7 +1005,7 @@ export class AppComponent {
 
     boardGlobal.addEventListener("mousemove", e => {
 
-        if(move_flag && is_selected){
+        if(move_flag && is_selected && moveButtonFlag){
           canvasGlobal.clearRect(0,0,1380,675);
           canvasArea.delete(shapesBack[temp_shape].shapeID);
 
@@ -958,7 +1031,7 @@ export class AppComponent {
     });
 
     boardGlobal.addEventListener("mouseup", e => {
-      if(move_flag && is_selected){
+      if(move_flag && is_selected && moveButtonFlag){
         found_move = false;
         is_selected = false;
         for(var i = 0; i < shapesBack.length; i++){
@@ -981,6 +1054,24 @@ export class AppComponent {
 //----------------------------------------------------------------------//
 
   copy(){
+    create_square_flag = false;
+    create_line_flag = false;
+    create_circle_flag = false;
+    create_rect_flag = false;
+    create_triangle_flag = false;
+    create_ellipse_flag= false
+
+    created_square = false;
+    created_line = false;
+    created_circle = false;
+    created_rect = false;
+    created_triangle = false;
+    created_ellipse = false;
+
+    move_flag = false;
+    remove_flag = false;
+    resize_flag = false;
+
     var temp_shape : number = 0;
     var is_selected :boolean = false;
     var boardGlobal = (<HTMLCanvasElement>document.getElementById("board"));
@@ -1034,7 +1125,7 @@ export class AppComponent {
     });
 
     boardGlobal.addEventListener("mousemove", e => {
-      if(copy_flag && is_selected){
+      if(copy_flag && is_selected && copyButtonFlag){
         console.log(canvasArea);
         console.log(copy_shape.shapeID)
         console.log(shapesBack[temp_shape - 1].shapeID)
@@ -1067,7 +1158,7 @@ export class AppComponent {
 
 
     boardGlobal.addEventListener("mouseup", e => {
-      if(copy_flag && is_selected){
+      if(copy_flag && is_selected && copyButtonFlag){
         is_selected = false;
         found_copy = false;
         this.paintServ.postCanvas(shapesBack).subscribe();
@@ -1094,6 +1185,25 @@ export class AppComponent {
 //----------------------------------------------------------------------//
 
   resize(){
+
+    create_square_flag = false;
+    create_line_flag = false;
+    create_circle_flag = false;
+    create_rect_flag = false;
+    create_triangle_flag = false;
+    create_ellipse_flag= false
+
+    created_square = false;
+    created_line = false;
+    created_circle = false;
+    created_rect = false;
+    created_triangle = false;
+    created_ellipse = false;
+
+    move_flag = false;
+    copy_flag = false;
+    remove_flag = false;
+
     var oldx = 0;
     var oldy = 0;
     var ratio:number;
@@ -1104,10 +1214,12 @@ export class AppComponent {
     resize_flag = true;
     found_resize = true;
 
+
+
     boardGlobal.addEventListener("mousedown",  e => {
       if(found_resize){
         found_resize = false;
-        if(resize_flag){
+        if(resize_flag && resizeButtonFlag){
           for (var i = 0; i < shapesBack.length; i++){
             if(canvasGlobal.isPointInPath(canvasArea.get(shapesBack[i].shapeID), e.offsetX, e.offsetY) || canvasGlobal.isPointInStroke(canvasArea.get(shapesBack[i].shapeID), e.offsetX, e.offsetY)) {
               temp_shape = i;
@@ -1123,7 +1235,7 @@ export class AppComponent {
 
 
     boardGlobal.addEventListener("mousemove", e => {
-      if(resize_flag && is_selected){
+      if(resize_flag && is_selected && resizeButtonFlag){
         canvasGlobal.clearRect(0,0,1380,675);
         canvasArea.delete(shapesBack[temp_shape].shapeID);
 
@@ -1275,7 +1387,7 @@ export class AppComponent {
     });
 
     boardGlobal.addEventListener("mouseup", e => {
-      if(resize_flag && is_selected){
+      if(resize_flag && is_selected && resizeButtonFlag){
         found_resize = false;
         is_selected = false;
         for(var i = 0; i < shapesBack.length; i++){
@@ -1447,7 +1559,14 @@ export class AppComponent {
       triangleButtonFlag  = false;
       ellipseButtonFlag  = false;
 
+      moveButtonFlag = false;
+      resizeButtonFlag = false;
+      copyButtonFlag = false;
+      removeButtonFlag = false;
+
       lineButtonFlag = true;
+
+
 
     }
     if(create_square_flag){
@@ -1457,9 +1576,13 @@ export class AppComponent {
       lineButtonFlag  = false;
       triangleButtonFlag  = false;
       ellipseButtonFlag  = false;
+      moveButtonFlag = false;
+      resizeButtonFlag = false;
+      copyButtonFlag = false;
+      removeButtonFlag = false;
 
       squareButtonFlag = true;
-
+      draw_line = null;
 
     }
     if(create_circle_flag){
@@ -1471,8 +1594,15 @@ export class AppComponent {
       lineButtonFlag = false;
       triangleButtonFlag = false;
       ellipseButtonFlag = false;
+      moveButtonFlag = false;
+      resizeButtonFlag = false;
+      copyButtonFlag = false;
+      removeButtonFlag = false;
 
       circleButtonFlag = true;
+
+      draw_line = null;
+
 
     }
     if(create_rect_flag){
@@ -1482,8 +1612,14 @@ export class AppComponent {
       lineButtonFlag = false;
       triangleButtonFlag = false;
       ellipseButtonFlag = false;
+      moveButtonFlag = false;
+      resizeButtonFlag = false;
+      copyButtonFlag = false;
+      removeButtonFlag = false;
 
       rectButtonFlag = true;
+      draw_line = null;
+
 
     }
     if(create_triangle_flag){
@@ -1493,8 +1629,15 @@ export class AppComponent {
       rectButtonFlag  = false;
       lineButtonFlag = false;
       ellipseButtonFlag = false;
+      moveButtonFlag = false;
+      resizeButtonFlag = false;
+      copyButtonFlag = false;
+      removeButtonFlag = false;
 
       triangleButtonFlag = true;
+      draw_line = null;
+
+
 
     }
     if(create_ellipse_flag){
@@ -1506,8 +1649,83 @@ export class AppComponent {
       lineButtonFlag = false;
       triangleButtonFlag = false;
 
+      moveButtonFlag = false;
+      resizeButtonFlag = false;
+      copyButtonFlag = false;
+      removeButtonFlag = false;
+      draw_line = null;
+
+
+
       ellipseButtonFlag = true;
 
+    }
+
+    if(move_flag){
+      circleButtonFlag = false;
+      squareButtonFlag = false;
+      rectButtonFlag = false;
+      lineButtonFlag = false;
+      triangleButtonFlag = false;
+      draw_line = null;
+
+      removeButtonFlag = false;
+      resizeButtonFlag = false;
+      copyButtonFlag = false;
+
+      moveButtonFlag = true;
+
+
+
+      ellipseButtonFlag = true;
+    }
+    if(remove_flag){
+      circleButtonFlag = false;
+      squareButtonFlag = false;
+      rectButtonFlag = false;
+      lineButtonFlag = false;
+      triangleButtonFlag = false;
+      draw_line = null;
+      moveButtonFlag = false;
+      resizeButtonFlag = false;
+      copyButtonFlag = false;
+
+
+      removeButtonFlag = true;
+
+      ellipseButtonFlag = true;
+    }
+    if(copy_flag){
+      circleButtonFlag = false;
+      squareButtonFlag = false;
+      rectButtonFlag = false;
+      lineButtonFlag = false;
+      triangleButtonFlag = false;
+      draw_line = null;
+
+      moveButtonFlag = false;
+      resizeButtonFlag = false;
+      removeButtonFlag = false;
+
+      copyButtonFlag = true;
+
+
+      ellipseButtonFlag = true;
+    }
+    if(resize_flag){
+      circleButtonFlag = false;
+      squareButtonFlag = false;
+      rectButtonFlag = false;
+      lineButtonFlag = false;
+      triangleButtonFlag = false;
+      moveButtonFlag = false;
+      copyButtonFlag = false;
+      removeButtonFlag = false;
+      draw_line = null;
+
+      resizeButtonFlag = true;
+
+      ellipseButtonFlag = true;
     }
 
     if(!create_square_flag){
@@ -1534,6 +1752,22 @@ export class AppComponent {
       document.getElementById("triangle")!.style.backgroundColor = "rgb(246, 129, 60)"
 
     }
+    if(!move_flag){
+      document.getElementById("move")!.style.backgroundColor = "rgb(246, 129, 60)"
+
+    }
+    if(!copy_flag){
+      document.getElementById("copy")!.style.backgroundColor = "rgb(246, 129, 60)"
+
+    }
+    if(!resize_flag){
+      document.getElementById("resize")!.style.backgroundColor = "rgb(246, 129, 60)"
+
+    }
+    if(!remove_flag){
+      document.getElementById("remove")!.style.backgroundColor = "rgb(246, 129, 60)"
+
+    }
 
   }
 
@@ -1541,6 +1775,9 @@ export class AppComponent {
 
 }
 //----------------------------------------------------------------------//
+<<<<<<< HEAD
 
+=======
+>>>>>>> c64664586b059f3eac842f8851a8734df9b44a31
 
 
