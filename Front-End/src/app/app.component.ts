@@ -1427,6 +1427,15 @@ export class AppComponent {
 
 //----------------------------------------------------------------------//
 
+  clearAll(){
+    var boardGlobal = (<HTMLCanvasElement>document.getElementById("board"));
+    var canvasGlobal = boardGlobal.getContext("2d")!;
+    canvasGlobal.clearRect(0,0,1380,675)
+    canvasArea.clear()
+    shapesBack = []
+    this.paintServ.postCanvas(shapesBack).subscribe();
+  }
+
   disableButtons(){
     if(create_line_flag){
 
