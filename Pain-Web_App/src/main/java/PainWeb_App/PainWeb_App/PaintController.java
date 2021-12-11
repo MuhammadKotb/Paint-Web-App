@@ -79,7 +79,7 @@ public class PaintController {
     @PostMapping("/postCanvas")
     void postCanvas(@RequestBody List<ShapeClass> shapes) {
         this.database.push(shapes);
-        this.undoCtr = 0;
+        this.redoStack.clear();
     }
 
     /**
@@ -90,7 +90,6 @@ public class PaintController {
     @GetMapping("/undo")
     public List<ShapeClass> undo() {
         try{
-            this.undoCtr++;
 
             this.redoStack.push(this.database.pop());
 
@@ -111,12 +110,9 @@ public class PaintController {
     @GetMapping("/redo")
     public List<ShapeClass> redo() {
         try {
-            if(undoCtr > 0){
-                this.undoCtr --;
 
-                this.database.push(this.redoStack.pop());
 
-            }
+            this.database.push(this.redoStack.pop());
             return this.database.peek();
 
         } catch (Exception e) {
