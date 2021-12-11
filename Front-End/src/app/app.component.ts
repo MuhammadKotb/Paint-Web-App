@@ -1327,13 +1327,15 @@ export class AppComponent {
 
         }
         if(shapesBack[temp_shape].type == 'rect'){
-          if(e.offsetX > oldx && e.offsetY > oldy){
+          if(e.offsetX > oldx ){
             shapesBack[temp_shape].width += 2;
+          } if(e.offsetY > oldy ){
             shapesBack[temp_shape].height += 2;
           }
-          else if(e.offsetX < oldx && e.offsetY < oldy){
-            if(shapesBack[temp_shape].width > 2 && shapesBack[temp_shape].height > 2 ){
+          if(shapesBack[temp_shape].width > 2 && shapesBack[temp_shape].height > 2 ){
+            if(e.offsetX < oldx ){
               shapesBack[temp_shape].width -= 2;
+            } if(e.offsetY < oldy ){
               shapesBack[temp_shape].height -= 2;
             }
           }
@@ -1343,18 +1345,17 @@ export class AppComponent {
 
         }
         if(shapesBack[temp_shape].type == 'triangle'){
-          if(e.offsetX > oldx && e.offsetY > oldy){
-
+          if(e.offsetX > oldx ){
             shapesBack[temp_shape].width += 2;
+          } if(e.offsetY > oldy ){
             shapesBack[temp_shape].height += 2;
           }
-          else if(e.offsetX < oldx && e.offsetY < oldy){
-            if(shapesBack[temp_shape].width > 2 && shapesBack[temp_shape].height > 2 ){
+          if(shapesBack[temp_shape].width > 2 && shapesBack[temp_shape].height > 2 ){
+            if(e.offsetX < oldx ){
               shapesBack[temp_shape].width -= 2;
+            } if(e.offsetY < oldy ){
               shapesBack[temp_shape].height -= 2;
             }
-
-
           }
           oldx = e.offsetX;
           oldy = e.offsetY;
@@ -1362,14 +1363,15 @@ export class AppComponent {
 
         }
         if(shapesBack[temp_shape].type == 'ellipse'){
-          if(e.offsetX > oldx && e.offsetY > oldy){
-
-            shapesBack[temp_shape].width +=2;
+          if(e.offsetX > oldx ){
+            shapesBack[temp_shape].width += 2;
+          } if(e.offsetY > oldy ){
             shapesBack[temp_shape].height += 2;
           }
-          else if(e.offsetX < oldx && e.offsetY < oldy){
-            if(shapesBack[temp_shape].width > 2 && shapesBack[temp_shape].height > 2 ){
+          if(shapesBack[temp_shape].width > 2 && shapesBack[temp_shape].height > 2 ){
+            if(e.offsetX < oldx ){
               shapesBack[temp_shape].width -= 2;
+            } if(e.offsetY < oldy ){
               shapesBack[temp_shape].height -= 2;
             }
           }
@@ -1775,9 +1777,5 @@ export class AppComponent {
 
 }
 //----------------------------------------------------------------------//
-<<<<<<< HEAD
-
-=======
->>>>>>> c64664586b059f3eac842f8851a8734df9b44a31
 
 
