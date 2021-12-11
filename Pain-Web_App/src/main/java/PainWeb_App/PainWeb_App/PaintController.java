@@ -121,6 +121,11 @@ public class PaintController {
         }
     }
 
+    /**
+     * This Method Saves the Current Canvas by Saving the Peek of the Database Stack.
+     * @param path Request sent from the front-end to save the canvas in.
+     * @return a confirmation String that verifies the Save process.
+     */
     @PostMapping("/save")
     public String save(@RequestBody String path) {
         try {
@@ -149,6 +154,11 @@ public class PaintController {
 
     }
 
+    /**
+     * This Method Loads a JSON or XML to send to the front-end to Draw and save it as the Database Peek.
+     * @param path path Request sent from the front-end to Load the canvas from.
+     * @return a confirmation String that verifies the Load process.
+     */
     @PostMapping("/load")
     public List<ShapeClass> load(@RequestBody String path) {
         try {
