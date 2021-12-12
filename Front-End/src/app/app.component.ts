@@ -1578,6 +1578,7 @@ export class AppComponent {
       lineButtonFlag  = false;
       triangleButtonFlag  = false;
       ellipseButtonFlag  = false;
+
       moveButtonFlag = false;
       resizeButtonFlag = false;
       copyButtonFlag = false;
@@ -1655,6 +1656,7 @@ export class AppComponent {
       resizeButtonFlag = false;
       copyButtonFlag = false;
       removeButtonFlag = false;
+
       draw_line = null;
 
 
@@ -1669,6 +1671,8 @@ export class AppComponent {
       rectButtonFlag = false;
       lineButtonFlag = false;
       triangleButtonFlag = false;
+      ellipseButtonFlag = false;
+
       draw_line = null;
 
       removeButtonFlag = false;
@@ -1687,6 +1691,8 @@ export class AppComponent {
       rectButtonFlag = false;
       lineButtonFlag = false;
       triangleButtonFlag = false;
+      ellipseButtonFlag = false;
+
       draw_line = null;
       moveButtonFlag = false;
       resizeButtonFlag = false;
@@ -1695,7 +1701,7 @@ export class AppComponent {
 
       removeButtonFlag = true;
 
-      ellipseButtonFlag = true;
+      
     }
     if(copy_flag){
       circleButtonFlag = false;
@@ -1703,6 +1709,7 @@ export class AppComponent {
       rectButtonFlag = false;
       lineButtonFlag = false;
       triangleButtonFlag = false;
+      ellipseButtonFlag = false;
       draw_line = null;
 
       moveButtonFlag = false;
@@ -1712,7 +1719,7 @@ export class AppComponent {
       copyButtonFlag = true;
 
 
-      ellipseButtonFlag = true;
+      
     }
     if(resize_flag){
       circleButtonFlag = false;
@@ -1720,14 +1727,17 @@ export class AppComponent {
       rectButtonFlag = false;
       lineButtonFlag = false;
       triangleButtonFlag = false;
+      ellipseButtonFlag = false;
+
       moveButtonFlag = false;
       copyButtonFlag = false;
       removeButtonFlag = false;
+      
       draw_line = null;
 
       resizeButtonFlag = true;
 
-      ellipseButtonFlag = true;
+      
     }
 
     if(!create_square_flag){
